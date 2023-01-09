@@ -21,8 +21,8 @@ public class MemberDAOImpl implements MemberDAO {
 
 	//아이디 중복 검사
 	@Override
-	public int idCheck(MemberVO member) throws Exception {
-		int result = template.selectOne("MemberMapper.idCheck", member);
+	public int idCheck(String memberId) throws Exception {
+		int result = template.selectOne("MemberMapper.idCheck", memberId);
 		return result;
 	}
 

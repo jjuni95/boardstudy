@@ -15,18 +15,24 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public void memberJoin(MemberVO member) throws Exception{
 		
+		//핸드폰번호 합치기
 		member.setPhone(member.getPhone1() + member.getPhone2() + member.getPhone3());
 		
-		//여기에 email 합치기
+		//이메일 합치기
+		String selectEmail = member.getSelecetEmail();
+		if(selectEmail == "1") {
+			member.setEmail(member.getEmailId() + member.getInputEmail());
+		} else 
+			member.setEmail(member.getEmailId() + member.getSelecetEmail()); 
 		
 		memberDAO.memberJoin(member);
 	}
 
 	//아이디 중복 검사
 	@Override
-	public int idCheck(MemberVO member) throws Exception {
+	public int idCheck(String memberId) throws Exception {
 
-		int result = memberDAO.idCheck(member);
+		int result = memberDAO.idCheck(memberId);
 		return result;
 	}
 
@@ -37,4 +43,7 @@ public class MemberServiceImpl implements MemberService{
 //		return result;
 		
 //	}
+	
+	//회원번호(ex.CU + 20221125 + A + 00001)
+	
 }

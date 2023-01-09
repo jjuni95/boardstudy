@@ -147,12 +147,12 @@ $(document).ready(function(){
 		}
 		
 		//패스워드 체크
-		$.ajax({
+		/* $.ajax({
 			url : "member/passChk",
 			type : "POST",
 			dataType : "json"
 			data : $("")
-		})
+		}) */
 		
 	})
 		
@@ -169,7 +169,6 @@ function fn_idChk(){
 				if(data == 1){
 					alert("중복된 아이디입니다.");
 				}else if(data == 0){
-					$("#idChk_button").attr("value", "Y");
 					alert("사용가능한 아이디입니다.");
 				}
 			}
