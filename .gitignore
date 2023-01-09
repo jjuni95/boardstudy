@@ -1,0 +1,4 @@
+.settings/
+target/
+.project
+src/main/resources/config/db.properties
