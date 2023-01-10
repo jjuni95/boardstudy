@@ -1,5 +1,7 @@
 package com.study.dao;
 
+import java.util.HashMap;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,6 +27,27 @@ public class MemberDAOImpl implements MemberDAO {
 		int result = template.selectOne("MemberMapper.idCheck", memberId);
 		return result;
 	}
+
+	//로그인
+	@Override
+	public MemberVO memberLogin(MemberVO member) {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("memberId", member.getMemberId());
+		map.put("memberPassword", member.getMemberPassword());
+		
+		
+		MemberVO returnMember = template.selectOne("MemberMapper.memberLogin", map);
+		
+		return returnMember;
+	}
+
+	//REG_DATE가 최신인 MEMBER_NO 가져오기
+	@Override
+	public String selectMemberNo() {
+		String result = template.selectOne("MemberMapper.selectMemberNo");
+		return result;
+	}
+
 
 
 	// 패스워드 체크

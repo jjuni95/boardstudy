@@ -32,12 +32,12 @@
 				<div class="pw_wrap">
 					<div class="pw_name">비밀번호</div>
 					<div class="pw_input_box">
-						<input class="pw_input" id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요.">
+						<input type="text" class="pw_input" id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요.">
 					</div>
 				</div>
 				<div class="pwck_wrap">
 					<div class="pwck_input_box">
-						<input class="pwck_input" name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
+						<input class="pwck_input" id="chkMemberPassword" name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
 					</div>
 				</div>
 
@@ -78,17 +78,17 @@
 					<div class="zipcode_name">주소</div>
 					<div class="zipcode_input_wrap">
 						<div class="zipcode_input_box">
-							<input class="zipcode_input" id="zipcode" name="zipcode" placeholder="우편번호">
+							<input class="zipcode_input" id="zipcode" name="zipcode" readonly="readonly" placeholder="우편번호">
 						</div>
 						<div class="clearfix"></div>
-						<div class="join_button_wrap">
-							<input type="button" class="join_button" value="우편번호 찾기">
+						<div class="address_button_wrap" onclick="daum_address()">
+							<input type="button" class="address_button" value="우편번호 찾기">
 						</div>
 
 					</div>
 					<div class="streetadr_input_wrap">
 						<div class="streetadr_input_box">
-							<input class="streetadr_input" id="streeAdr" name="streeAdr" placeholder="기본주소">
+							<input class="streetadr_input" id="streeAdr" name="streeAdr" readonly="readonly" placeholder="기본주소">
 						</div>
 					</div>
 					<div class="detailadr_input_wrap">
@@ -108,14 +108,24 @@
 	</div>
 </body>
 
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript"
 	src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
+
+//비밀번호(특수문자 포함한 8자리 이상)
+
 
 
 //회원가입 버튼(회원가입 기능 작동)
 $(document).ready(function(){
 	$(".join_button").click(function(){
+		
+		var pw = $('#memberPassword').val();
+		var num = pw.search(/[0-9]/g); 							//숫자포함
+		var eng = pw.search(/[a-z]/ig);							//영문(대소문자) 포함
+		var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩';:₩/?]/gi);		//특수문자 포함
+		
 		if($("#memberId").val()==""){
 			alert("아이디를 입력해주세요.");
 			$("#memberId").focus();
@@ -127,6 +137,12 @@ $(document).ready(function(){
 			$("#memberPassword").focus();
 			return false;
 		}
+		
+		if($("#memberPassword").val() != $("#chkMemberPassword").val()){
+	        alert("비밀번호가 서로 다릅니다. 비밀번호를 확인해 주세요."); 
+	        $("#chkMemberPassword").focus();
+	        return false; 
+	    }
 		
 		if($("#memberName").val()==""){
 			alert("성명을 입력해주세요.");
@@ -146,6 +162,25 @@ $(document).ready(function(){
 			return false;
 		}
 		
+		//비밀번호(특수문자 포함한 8자리 이상)
+		if(pw.length < 8 || pw.length > 20){
+			alert(pw);
+			alert(pw.length);
+			alert("비밀번호를 8자리 ~ 20자리 이내로 입력해주세요.");
+			return false;
+		}else if(pw.search(/\s/) != -1){
+	  		alert("비밀번호는 공백 없이 입력해주세요.");
+	  		return false;
+	 	}else if(num < 0 || eng < 0 || spe < 0 ){
+	  		alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+	  		return false;
+	 	}else {
+			console.log("통과"); 
+	    return true;
+	    }
+	
+		
+		
 		//패스워드 체크
 		/* $.ajax({
 			url : "member/passChk",
@@ -157,6 +192,9 @@ $(document).ready(function(){
 	})
 		
 });
+
+
+
 
 //아이디 중복검사
 function fn_idChk(){
@@ -188,6 +226,55 @@ $('#selectEmail').change(function(){
 		}
    });
 });
+
+
+
+/* 다음 주소 연동 */
+function daum_address(){
+	
+	new daum.Postcode({
+		oncomplete: function(data) {
+	            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분
+	            
+			 // 도로명 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var fullRoadAddr = data.roadAddress; // 도로명 주소 변수
+            var extraRoadAddr = ''; // 도로명 조합형 주소 변수
+
+            // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+            // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+            if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                extraRoadAddr += data.bname;
+            }
+            // 건물명이 있고, 공동주택일 경우 추가한다.
+            if(data.buildingName !== '' && data.apartment === 'Y'){
+               extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+            }
+            // 도로명, 지번 조합형 주소가 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+            if(extraRoadAddr !== ''){
+                extraRoadAddr = ' (' + extraRoadAddr + ')';
+            }
+            // 도로명, 지번 주소의 유무에 따라 해당 조합형 주소를 추가한다.
+            if(fullRoadAddr !== ''){
+                fullRoadAddr += extraRoadAddr;
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            console.log(data.zonecode);
+            console.log(fullRoadAddr);
+            
+            
+            $("[name=zipcode]").val(data.zonecode);
+            $("[name=streeAdr]").val(fullRoadAddr);
+            
+            /* document.getElementById('signUpUserPostNo').value = data.zonecode; //5자리 새우편번호 사용
+            document.getElementById('signUpUserCompanyAddress').value = fullRoadAddr;
+            document.getElementById('signUpUserCompanyAddressDetail').value = data.jibunAddress; */
+	 }
+	}).open();    
+}
+ 
+ 
 </script>
 
 </html>

@@ -25,6 +25,21 @@ public class MemberServiceImpl implements MemberService{
 		} else 
 			member.setEmail(member.getEmailId() + member.getSelecetEmail()); 
 		
+		//회원번호
+		String result = memberDAO.selectMemberNo();
+		
+		System.out.println("result= " + result);
+		
+//		for(int i = 0; i<result.length(); i++) {
+//			System.out.println(result.charAt(10));
+//		}
+		
+		String asdf = result.substring(10,11);    //A
+		String aaaa = result.substring(11,16); //00004
+		
+		System.out.println("asdf= " + asdf);
+		System.out.println("aaaa= " + aaaa);
+		
 		memberDAO.memberJoin(member);
 	}
 
@@ -36,6 +51,13 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
+	//로그인
+	@Override
+	public MemberVO memberLogin(MemberVO member) throws Exception {
+		return memberDAO.memberLogin(member);
+	}
+
+	
 	//패스워드 체크
 //	@Override
 //	public int passChk(MemberVO member) throws Exception {
