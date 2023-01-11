@@ -32,12 +32,12 @@
 				<div class="pw_wrap">
 					<div class="pw_name">비밀번호</div>
 					<div class="pw_input_box">
-						<input type="text" class="pw_input" id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요.">
+						<input type="password" class="pw_input" id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요.">
 					</div>
 				</div>
 				<div class="pwck_wrap">
 					<div class="pwck_input_box">
-						<input class="pwck_input" id="chkMemberPassword" name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
+						<input type="password" class="pwck_input" id="chkMemberPassword" name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
 					</div>
 				</div>
 
@@ -56,7 +56,7 @@
 
 				</div>
 				<div class="mail_button_wrap">
-					<input type="button" class="mail_button" value="중복확인">
+					<input type="button" class="mail_button" onclick="fn_emailChk();" value="중복확인">
 				</div>
 
 
@@ -193,9 +193,6 @@ $(document).ready(function(){
 		
 });
 
-
-
-
 //아이디 중복검사
 function fn_idChk(){
 	$.ajax({
@@ -204,7 +201,7 @@ function fn_idChk(){
 		dataType : "json",
 		data : {"memberId" : $("#memberId").val()},
 		success : function(data){
-				if(data == 1){
+				if(data != 0){
 					alert("중복된 아이디입니다.");
 				}else if(data == 0){
 					alert("사용가능한 아이디입니다.");
@@ -212,6 +209,26 @@ function fn_idChk(){
 			}
 		})
 	}
+	
+//이메일 중복검사
+function fn_emailChk(){
+	$.ajax({
+		url : "/member/memberEmailChk", 
+		type : "post",
+		dataType : "json",
+		data : {"emailId" : $("#emailId").val(),
+				"inputEmail" : $("#inputEmail").val(),
+				"selectEmail" : $("#selectEmail").val()},
+		success : function(data){
+				if(data != 0){
+					alert("중복된 이메일입니다.");
+				}else if(data == 0){
+					alert("사용가능한 이메일입니다.");
+				}
+			}
+		})
+	}
+
 
 //이메일 입력방식 선택
 $('#selectEmail').change(function(){

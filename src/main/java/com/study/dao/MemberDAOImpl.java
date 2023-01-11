@@ -27,6 +27,13 @@ public class MemberDAOImpl implements MemberDAO {
 		int result = template.selectOne("MemberMapper.idCheck", memberId);
 		return result;
 	}
+	
+	//이메일 중복 검사
+	@Override
+	public int emailCheck(String email) throws Exception {
+		int result = template.selectOne("MemberMapper.emailCheck", email);
+		return result;
+	}
 
 	//로그인
 	@Override
@@ -48,12 +55,13 @@ public class MemberDAOImpl implements MemberDAO {
 		return result;
 	}
 
+	//비밀번호 일치
+	@Override
+	public String pwCheck(String memberId) throws Exception {
+		String result = template.selectOne("MemberMapper.pwCheck");
+		return result;
+	}
 
 
-	// 패스워드 체크
-//	@Override
-//	public int passChk(MemberVO member) throws Exception {
-//		int result = template.selectOne("MemberMapper.passChk", member);
-//		return result;
-//	}
+
 }

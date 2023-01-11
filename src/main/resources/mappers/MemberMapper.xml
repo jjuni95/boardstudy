@@ -5,7 +5,7 @@
   <mapper namespace="MemberMapper">
   	
   	<!-- 회원가입 -->
-	<insert id= "memberJoin">
+	<insert id= "memberJoin" parameterType="com.study.model.MemberVO">
 		 INSERT INTO Cu_MEMBER VALUES(#{memberNo}, GETDATE(), #{memberId}, #{memberName}, #{memberPassword}
 		 							, #{email}, #{phone}, #{zipcode}, #{streeAdr}, #{detailAdr} , 'N')
 	</insert>
@@ -15,14 +15,18 @@
 		SELECT COUNT(*) FROM Cu_MEMBER
 		WHERE MEMBER_ID = #{memberId}
 	</select>
-
-
-	<!-- 패스워드 체크 
-	<select id="passChk" resultType="int">
+	
+	<!-- 이메일 중복 검사 -->
+	<select id="emailCheck" resultType="int">
 		SELECT COUNT(*) FROM Cu_MEMBER
-			WHERE MEMBER_ID = #{memberId}
-	  		AND MEMBER_PASSWORD = #{memberPassword}
-	</select> -->
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<!-- 비밀번호 검사 -->
+	<select id="pwCheck" resultType="String">
+		SELECT MEMBER_PASSWORD FROM Cu_MEMBER
+		WHERE MEMBER_ID = #{memberId}
+	</select>
 
 	<!-- 로그인 -->
 	<select id="memberLogin" resultType="com.study.model.MemberVO" parameterType="String">

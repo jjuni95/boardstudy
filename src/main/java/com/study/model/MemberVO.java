@@ -21,7 +21,7 @@ public class MemberVO {
 	private String email;			//전체 이메일
 	private String emailId;			//이메일 id
 	private String inputEmail;		//직접입력 이메일
-	private String selecetEmail;	//선택된 이메일
+	private String selectEmail;		//선택된 이메일
 	
 
 	// PHONE 핸드폰
@@ -106,12 +106,12 @@ public class MemberVO {
 		this.inputEmail = inputEmail;
 	}
 
-	public String getSelecetEmail() {
-		return selecetEmail;
+	public String getSelectEmail() {
+		return selectEmail;
 	}
 
-	public void setSelecetEmail(String selecetEmail) {
-		this.selecetEmail = selecetEmail;
+	public void setSelectEmail(String selectEmail) {
+		this.selectEmail = selectEmail;
 	}
 
 	public String getPhone() {
@@ -182,10 +182,11 @@ public class MemberVO {
 	public String toString() {
 		return "MemberVO [memberNo=" + memberNo + ", regDate=" + regDate + ", memberId=" + memberId + ", memberName="
 				+ memberName + ", memberPassword=" + memberPassword + ", email=" + email + ", emailId=" + emailId
-				+ ", inputEmail=" + inputEmail + ", selecetEmail=" + selecetEmail + ", phone=" + phone + ", phone1="
+				+ ", inputEmail=" + inputEmail + ", selectEmail=" + selectEmail + ", phone=" + phone + ", phone1="
 				+ phone1 + ", phone2=" + phone2 + ", phone3=" + phone3 + ", zipcode=" + zipcode + ", streeAdr="
 				+ streeAdr + ", detailAdr=" + detailAdr + ", isenabled=" + isenabled + "]";
 	}
+
 
 
 

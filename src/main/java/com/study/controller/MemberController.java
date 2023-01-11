@@ -63,35 +63,50 @@ public class MemberController {
 
 		return result;
 	}
+	
+	
+	// 이메일 중복 검사
+	@ResponseBody
+	@RequestMapping(value = "/memberEmailChk", method = RequestMethod.POST)
+	public int memberEmailChkPOST(String emailId,String inputEmail,String selectEmail) throws Exception {
+
+		System.out.println("memberEmailChk() 진입");
+
+		int result = memberservice.emailCheck(emailId,inputEmail,selectEmail);
+
+		System.out.println("결과값 = " + result);
+
+		return result;
+	}
 
 	//로그인
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String loginPOST(HttpServletRequest request, MemberVO member, RedirectAttributes rttr) throws Exception {
 
+		
+		
 		System.out.println("login 메서드 진입");
 		System.out.println("전달된 데이터 : " + member);
 
 		HttpSession session = request.getSession();
-		MemberVO lvo = memberservice.memberLogin(member);
-		
 
-        if(lvo == null) {                                // 일치하지 않는 아이디, 비밀번호 입력 경우
+		String flag = memberservice.memberLogin(member);
+		
+        if(flag == "k01") {                                // 일치하지 않는 아이디, 비밀번호 입력 경우
             
             int result = 0;
             rttr.addFlashAttribute("result", result); //"name", value
             return "redirect:/member/login";
-            
         }
-        
-        session.setAttribute("member", lvo);             // 일치하는 아이디, 비밀번호 경우 (로그인 성공)
-        
-        return "redirect:/main";
+        else {
+        	session.setAttribute("member", lvo);             // 일치하는 아이디, 비밀번호 경우 (로그인 성공)
+        	return "redirect:/main";
+        }
 	}
-	// 패스워드 체크
-//	@ResponseBody
-//	@RequestMapping(value = "/passChk", method = RequestMethod.POST)
-//	public int passChk(MemberVO member) throws Exception {
-//		int result = memberservice.passChk(member);
-//		return result;
-//	}
+	
+	//비밀번호 암호화
+	
+	
+	
+
 }
