@@ -1,5 +1,8 @@
 package com.study.service;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -8,7 +11,12 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.study.component.AESUtil;
 import com.study.dao.MemberDAO;
 import com.study.model.MemberVO;
 
@@ -84,11 +92,46 @@ public class MemberServiceImpl implements MemberService {
 		String encPassword = passwordEncoder.encode(member.getMemberPassword());
 		member.setMemberPassword(encPassword);
 	
+		//개인정보 암호화
+		
 		
 		System.out.println(member);
 		memberDAO.memberJoin(member);
 	}
 
+	
+	//개인정보 암호화
+	@Autowired
+	AESUtil aes;
+	
+	@RequestMapping(method=RequestMethod.POST)
+    public String joinHash(@RequestParam("memberName") String memberName
+    				, @RequestParam("email") String email
+    				, @RequestParam("phone") String phone
+    				, @RequestParam("zipcode") String zipcode
+    				, @RequestParam("streeAdr") String streeAdr
+    				, @RequestParam("detailAdr") String detailAdr
+    				,Model model) throws NoSuchAlgorithmException, UnsupportedEncodingException, GeneralSecurityException {
+        
+        System.out.println("암호화 전 아이디 : " + memberName);
+        System.out.println("암호화 전 이메일 : " + email);
+        
+        memberName = aes.encrypt(memberName);
+        email = aes.encrypt(email);
+        
+        System.out.println("-----------------------------");
+        System.out.println("암호화 후 아이디 : " + memberName);
+        System.out.println("암호화 후 이메일 : " + email);
+        
+        System.out.println("-----------------------------");
+        System.out.println("복호화 후 아이디 : " + aes.decrypt(memberName));
+        System.out.println("복호화 후 이메일 : " + aes.decrypt(email));
+        
+        model.addAttribute("memberName", memberName);
+        model.addAttribute("email", email);
+        return "login";
+    }
+	
 	
 	// 아이디 중복 검사
 	@Override
@@ -115,24 +158,21 @@ public class MemberServiceImpl implements MemberService {
 		return result;
 	}
 
-	// 로그인
+	//회원 조회
+	@Override
+	public MemberVO memberCheck(String memberId) throws Exception {
+		MemberVO mVo= memberDAO.memberCheck(memberId); //memberId를 넘겨준다
+				return mVo;
+	}
+	
+	
+	// 로그인 체크
 	@Override
 	public String memberLogin(MemberVO member) throws Exception {
 		String pw = memberDAO.pwCheck(member.getMemberId());
 		String rawPw = member.getMemberPassword(); //인코딩 전 비밀번호
-		//System.out.println("member = " + member);
-		String pwCorrect;
-		if(passwordEncoder.matches(rawPw, pw)) {
-			pwCorrect="pass";
-			//System.out.println("비밀번호 일치");
-//			member.setMemberPassword(pw);
-		}else {
-			pwCorrect="fail";
-			//System.out.println("로그인 불가");
-//			member.setMemberPassword(pw);
-		}
 		
-		return pwCorrect;
+		return passwordEncoder.matches(rawPw, pw) ? "pass" : "fail";
 	}
 
 }

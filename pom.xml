@@ -83,6 +83,13 @@
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
+		</dependency>
 
 		<!-- ajax의 데이터를 컨트롤러에서 사용할 수 있도록 함 -->
 		<dependency>
@@ -101,13 +108,7 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.10.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/jstl/jstl -->
-		<dependency>
-		    <groupId>jstl</groupId>
-		    <artifactId>jstl</artifactId>
-		    <version>1.2</version>
-		</dependency>
-				
+					
 		  <!-- security -->
         <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
         <dependency>

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,6 +34,7 @@ public class MemberController {
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
 	public String joinPOST(MemberVO member) throws Exception {
 		System.out.println("join 진입");
+		System.out.println("member.getMemberName()= " + member.getMemberName());
 
 		// 회원가입 서비스 실행
 		memberservice.memberJoin(member);
@@ -81,25 +83,36 @@ public class MemberController {
 
 	//로그인
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String loginPOST(HttpServletRequest request, MemberVO member, RedirectAttributes rttr) throws Exception {
+	public String loginPOST(HttpServletRequest request, MemberVO member, RedirectAttributes rttr, Model model) throws Exception {
 
 		System.out.println("login 메서드 진입");
 		//System.out.println("전달된 데이터 : " + member);
 
-		HttpSession session = request.getSession();
-
+		HttpSession session = request.getSession(); //세션에서 가져올때 얘 꼭 붙여넣기!!!!
+		//로그인 여부 체크: id랑 pw를 보낸다(memberLogin여기서)
 		String flag = memberservice.memberLogin(member);
 		
+//		model.addAttribute("result", 0);
+//		 return "/member/login";
+		 
+		//로그인 실패했을 경우
         if(flag == "fail") {                                // 일치하지 않는 아이디, 비밀번호 입력 경우
             
             int result = 0;
-            rttr.addFlashAttribute("result", result); //"name", value
-            return "redirect:/member/login";
+            //request.setAttribute("result", result); //"name", value
+            model.addAttribute("result", result);
+            
+            request.setAttribute("msg", "로그인에 실패했습니당.");
+        	request.setAttribute("url", "/member/login");
+        	return "member/alert"; //alert.jsp로 이동
+   //         return "/member/login";
         }
+        //로그인 성공했을 경우
         else {
         	//로그인할때 저장하고싶은 값 담아오기
+        	MemberVO mVo = memberservice.memberCheck(member.getMemberId()); //id를 넘겨서 mVo에 저장을 한다
         	
-        	session.setAttribute("member", flag);             // 일치하는 아이디, 비밀번호 경우 (로그인 성공)
+        	session.setAttribute("member", mVo);             // 일치하는 아이디, 비밀번호 경우 (로그인 성공) : 세션에 id랑 pw만 들어가있음
         	return "redirect:/main";
         }
 	}

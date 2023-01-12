@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +29,7 @@
 				<input class="pw_iput" name="memberPassword" placeholder="비밀번호를 입력하세요.">
 			</div>
 		</div>
-		
+		${result}
 		<c:if test = "${result == 0 }">
 			<div class = "login_warn">사용자 ID 또는 비밀번호를 잘못 입력하셨습니다.</div>
 		</c:if>
@@ -55,6 +55,8 @@
 		
  
 <script>
+
+
  
     /* 로그인 버튼 클릭 메서드 */
     $(".login_button").click(function(){
@@ -71,6 +73,8 @@
     	if
     }))
   */
+  
+  
 </script>
 </body>
 </html>

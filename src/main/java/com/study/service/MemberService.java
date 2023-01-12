@@ -10,6 +10,9 @@ public interface MemberService {
 	//아이디 중복 검사
 	public int idCheck(String memberId) throws Exception;
 	
+	//회원정보 체크 
+	public MemberVO memberCheck(String memberId) throws Exception;
+	
 	//이메일 중복 검사
 	public int emailCheck(String emailId,String inputEmail,String selectEmail) throws Exception;
 

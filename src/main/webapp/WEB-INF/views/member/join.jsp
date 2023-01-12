@@ -51,7 +51,7 @@
 							<option value="@radcns.com" selected>@radcns.com</option>
 							<option value="@hanmail.net">@hanmail.net</option>
 							<option value="@naver.com">@naver.com</option>
-						</select>
+						</select>	
 					</div>
 
 				</div>

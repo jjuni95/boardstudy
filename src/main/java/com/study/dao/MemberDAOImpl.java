@@ -62,6 +62,13 @@ public class MemberDAOImpl implements MemberDAO {
 		return result;
 	}
 
+	//회원조회
+	@Override
+	public MemberVO memberCheck(String memberId) {
+		MemberVO mVO = template.selectOne("MemberMapper.memberLogin", memberId);
+		return mVO;
+	}
+
 
 
 }
