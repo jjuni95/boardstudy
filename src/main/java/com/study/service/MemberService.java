@@ -14,7 +14,7 @@ public interface MemberService {
 	public int emailCheck(String emailId,String inputEmail,String selectEmail) throws Exception;
 
 	//로그인
-	 public int memberLogin(MemberVO member) throws Exception;
+	 public String memberLogin(MemberVO member) throws Exception;
 
 	
 	 

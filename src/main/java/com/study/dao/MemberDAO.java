@@ -9,6 +9,7 @@ public interface MemberDAO {
 	
 	//아이디 중복 검사
 	public int idCheck(String memberId) throws Exception;
+	
 	//비밀번호 검사
 	public String pwCheck(String memberId) throws Exception;
 	

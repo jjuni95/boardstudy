@@ -117,21 +117,22 @@ public class MemberServiceImpl implements MemberService {
 
 	// 로그인
 	@Override
-	public int memberLogin(MemberVO member) throws Exception {
+	public String memberLogin(MemberVO member) throws Exception {
 		String pw = memberDAO.pwCheck(member.getMemberId());
-		String rawPw = member.getMemberPassword();
-		String k;
+		String rawPw = member.getMemberPassword(); //인코딩 전 비밀번호
+		//System.out.println("member = " + member);
+		String pwCorrect;
 		if(passwordEncoder.matches(rawPw, pw)) {
-			k="cc";
-			System.out.println("비밀번호 일치");
+			pwCorrect="pass";
+			//System.out.println("비밀번호 일치");
 //			member.setMemberPassword(pw);
 		}else {
-			k="k01";
-			System.out.println("로그인 불가");
+			pwCorrect="fail";
+			//System.out.println("로그인 불가");
 //			member.setMemberPassword(pw);
 		}
 		
-		return k;
+		return pwCorrect;
 	}
 
 }

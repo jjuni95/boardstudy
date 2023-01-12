@@ -58,7 +58,7 @@ public class MemberDAOImpl implements MemberDAO {
 	//비밀번호 일치
 	@Override
 	public String pwCheck(String memberId) throws Exception {
-		String result = template.selectOne("MemberMapper.pwCheck");
+		String result = template.selectOne("MemberMapper.pwCheck", memberId);
 		return result;
 	}
 

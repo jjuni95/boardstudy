@@ -83,29 +83,27 @@ public class MemberController {
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String loginPOST(HttpServletRequest request, MemberVO member, RedirectAttributes rttr) throws Exception {
 
-		
-		
 		System.out.println("login 메서드 진입");
-		System.out.println("전달된 데이터 : " + member);
+		//System.out.println("전달된 데이터 : " + member);
 
 		HttpSession session = request.getSession();
 
 		String flag = memberservice.memberLogin(member);
 		
-        if(flag == "k01") {                                // 일치하지 않는 아이디, 비밀번호 입력 경우
+        if(flag == "fail") {                                // 일치하지 않는 아이디, 비밀번호 입력 경우
             
             int result = 0;
             rttr.addFlashAttribute("result", result); //"name", value
             return "redirect:/member/login";
         }
         else {
-        	session.setAttribute("member", lvo);             // 일치하는 아이디, 비밀번호 경우 (로그인 성공)
+        	//로그인할때 저장하고싶은 값 담아오기
+        	
+        	session.setAttribute("member", flag);             // 일치하는 아이디, 비밀번호 경우 (로그인 성공)
         	return "redirect:/main";
         }
 	}
-	
-	//비밀번호 암호화
-	
+
 	
 	
 

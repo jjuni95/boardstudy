@@ -67,8 +67,8 @@
 							<option value="010" selected>010</option>
 							<option value="011">011</option>
 						</select>  
-				- &nbsp;	<input name="phone2" class="phone_input2"> - 
-						<input name="phone3" class="phone_input3">
+				- &nbsp;	<input name="phone2" class="phone_input2" onlyNumber> - 
+						<input name="phone3" class="phone_input3" onlyNumber>
 					</div>
 				</div>
 
@@ -179,15 +179,7 @@ $(document).ready(function(){
 	    return true;
 	    }
 	
-		
-		
-		//패스워드 체크
-		/* $.ajax({
-			url : "member/passChk",
-			type : "POST",
-			dataType : "json"
-			data : $("")
-		}) */
+
 		
 	})
 		
@@ -229,6 +221,10 @@ function fn_emailChk(){
 		})
 	}
 
+//연락처 숫자만 입력 가능
+$('input[onlyNumber]').on('keyup', function () {
+    $(this).val($(this).val().replace(/[^0-9]/g, ""));
+});
 
 //이메일 입력방식 선택
 $('#selectEmail').change(function(){
