@@ -52,8 +52,14 @@
 		<constructor-arg ref="sqlSessionFactory" />
 	</bean>
 	
-	<!-- 양방향 암호화의 서비스 클래스 빈 등록 -->
-    <bean id="AESUtil" class="com.study.component.AESUtil"> </bean>
+	<bean id="AES256Util" class="com.study.component.AES256Util">
+		<constructor-arg>
+			<value>1111111111111111</value> <!-- 16자리로 제한 -->
+		</constructor-arg>
+	</bean>
+	
 
 </beans>
+
+
 

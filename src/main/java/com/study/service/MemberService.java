@@ -19,7 +19,15 @@ public interface MemberService {
 	//로그인
 	 public String memberLogin(MemberVO member) throws Exception;
 
-	
+	//회원정보 수정
+	 public void memberUpdate(MemberVO member) throws Exception;
+	 
+	 //회원 탈퇴
+	 public void memberDelete(String memberNo) throws Exception;
+	 
+	 //회원 조회
+	 public MemberVO getMember(String memberNo) throws Exception;
+	 
 	 
 	 
 }

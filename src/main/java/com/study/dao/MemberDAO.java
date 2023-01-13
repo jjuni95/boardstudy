@@ -18,11 +18,20 @@ public interface MemberDAO {
 	public int emailCheck(String email) throws Exception;
 	
 	//로그인
-	public MemberVO memberLogin(MemberVO member);
+	public MemberVO memberLogin(MemberVO member) throws Exception;
 
 	//회원정보 체크 
-	public MemberVO memberCheck(String memberId);
+	public MemberVO memberCheck(String memberId) throws Exception;
 	
 	//REG_DATE가 최신인 MEMBER_NO 가져오기
-	public String selectMemberNo();
+	public String selectMemberNo() throws Exception;
+	
+	//회원정보 수정
+	public void memberUpdate(MemberVO member) throws Exception;
+	
+	//회원 탈퇴
+	public void memberDelete(String memberNo) throws Exception;
+	
+	//회원조회
+	public MemberVO getMember(String memberNo) throws Exception;
 }

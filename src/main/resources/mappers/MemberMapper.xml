@@ -13,36 +13,71 @@
 	<!-- 아이디 중복 검사 -->
 	<select id="idCheck" resultType="int">
 		SELECT COUNT(*) FROM Cu_MEMBER
-		WHERE MEMBER_ID = #{memberId}
+			WHERE MEMBER_ID = #{memberId}
+			AND ISENABLED = 'N'
 	</select>
 	
 	<!-- 이메일 중복 검사 -->
 	<select id="emailCheck" resultType="int">
 		SELECT COUNT(*) FROM Cu_MEMBER
-		WHERE EMAIL = #{email}
+			WHERE EMAIL = #{email}
+			AND ISENABLED = 'N'
 	</select>
 	
 	<!-- 비밀번호 검사 -->
 	<select id="pwCheck" resultType="String">
 		SELECT MEMBER_PASSWORD FROM Cu_MEMBER
-		WHERE MEMBER_ID = #{memberId}
-		AND ISENABLED = 'N'
+			WHERE MEMBER_ID = #{memberId}
+			AND ISENABLED = 'N'
 	</select>
 
 	<!-- 로그인 -->
 	<select id="memberLogin" resultType="com.study.model.MemberVO" parameterType="String">
-		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName
-		FROM Cu_MEMBER 
-		WHERE MEMBER_ID = #{memberId}
+		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName, MEMBER_NO AS memberNo
+			FROM Cu_MEMBER 
+			WHERE MEMBER_ID = #{memberId}
+			AND ISENABLED = 'N'
 	</select>
 	
 	<!-- REG_DATE가 최신인 MEMBER_NO 가져오기 -->
 	<select id="selectMemberNo" resultType="String" >
 		SELECT TOP 1 MEMBER_NO
-		FROM Cu_MEMBER 
-		WHERE CONVERT(INT, CONVERT(CHAR(8), REG_DATE , 112)) = CONVERT(VARCHAR, GETDATE(), 112)
+			FROM Cu_MEMBER 
+			WHERE CONVERT(INT, CONVERT(CHAR(8), REG_DATE , 112)) = CONVERT(VARCHAR, GETDATE(), 112)
 		ORDER BY REG_DATE DESC
 	</select>
+	
+	
+	<!-- 회원정보 수정 -->
+	<update id="memberUpdate">
+		UPDATE Cu_MEMBER 
+		SET MEMBER_PASSWORD = #{memberPassword},
+			EMAIL = #{email},
+			PHONE = #{phone},
+			ZIPCODE = #{zipcode},
+			STREETADR = #{streeAdr},
+			DETAILADR = #{detailAdr}
+		WHERE MEMBER_ID = #{memberId}
+	
+	</update>
+	
+	
+	<!-- 회원 탈퇴 -->
+	<update id="memberDelete" parameterType="String">
+		UPDATE Cu_MEMBER 
+		SET	ISENABLED = 'Y'
+		WHERE
+			MEMBER_NO = #{memberNo} AND  ISENABLED = 'N'
+	</update>
+	
+		<!-- 회원조회 -->
+	<select id="getMember" resultType="com.study.model.MemberVO" parameterType="String">
+		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName, MEMBER_NO AS memberNo
+			FROM Cu_MEMBER 
+			WHERE MEMBER_NO = #{memberNo}
+			AND ISENABLED = 'N'
+	</select>
+	
 	
   </mapper>
   

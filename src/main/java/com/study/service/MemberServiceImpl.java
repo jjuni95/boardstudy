@@ -1,8 +1,5 @@
 package com.study.service;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -11,12 +8,8 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.study.component.AESUtil;
+import com.study.component.AES256Util;
 import com.study.dao.MemberDAO;
 import com.study.model.MemberVO;
 
@@ -26,30 +19,37 @@ public class MemberServiceImpl implements MemberService {
 	@Autowired
 	MemberDAO memberDAO;
 
-	@Inject
-    PasswordEncoder passwordEncoder;
+	@Autowired
+	private AES256Util aesutil;
 	
+	@Inject
+	PasswordEncoder passwordEncoder;
+
 	// 회원가입
 	@Override
 	public void memberJoin(MemberVO member) throws Exception {
-
+		
+		String phone = "";
 		// phone2,3 이 없으면 phone을 null처리
 		if ((member.getPhone2() == "" || member.getPhone2() == null)
 				|| (member.getPhone3() == "" || member.getPhone3() == null)) {
 			member.setPhone(null);
-		} else {
-			// 핸드폰번호 합치기
-			member.setPhone(member.getPhone1() + member.getPhone2() + member.getPhone3());
 		}
+		
+		// 핸드폰번호 합치기
+		phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
+		member.setPhone(phone);
+		
 
 		// 이메일 합치기
 		String selectEmail = member.getSelectEmail();
 		System.out.println(member.getSelectEmail());
 		if (selectEmail == "1") {
 			member.setEmail(member.getEmailId() + member.getInputEmail());
-		} else
+		} else {
 			member.setEmail(member.getEmailId() + member.getSelectEmail());
-
+		}
+		
 		// 회원번호 구하기 ㅠㅠ
 		String result = memberDAO.selectMemberNo();
 		System.out.println("result= " + result);
@@ -88,51 +88,40 @@ public class MemberServiceImpl implements MemberService {
 		}
 		member.setMemberNo(result);
 
-		//비밀번호 암호화
+		// 비밀번호 암호화
 		String encPassword = passwordEncoder.encode(member.getMemberPassword());
 		member.setMemberPassword(encPassword);
-	
-		//개인정보 암호화
+
+		// 개인정보 암호화
+		String encName = aesutil.encrypt(member.getMemberName());		//이름
+		String encEmail = aesutil.encrypt(member.getEmail());			//이메일
+		String encPhone = aesutil.encrypt(member.getPhone()); 			//핸드폰번호
+		String encZipcode = aesutil.encrypt(member.getZipcode());		//우편번호
+		String encStreetAdr = aesutil.encrypt(member.getStreeAdr());	//주소
+		String encDetailAdr = aesutil.encrypt(member.getDetailAdr());	//상세주소
 		
+		member.setMemberName(encName);
+		member.setEmail(encEmail);
+		member.setPhone(encPhone);
+		member.setZipcode(encZipcode);
+		member.setStreeAdr(encStreetAdr);
+		member.setDetailAdr(encDetailAdr);
+		System.out.println(member);
+		
+		//member.setMemeberName(aesutil.encrypt(member.getMemberName())); 이렇게 합쳐도 됨
+		
+		//개인정보 복호화 확인용
+		String decName = aesutil.decrypt(encName);		//이름 복호화
+		String decEmail = aesutil.decrypt(encEmail);	//이메일 복호화
+		
+		//여기서 복호화한 개인정보들을 (decName이런 변수들) 매퍼랑 연결을 시켜야하는건지?
+		
+//		System.out.println(decName);
 		
 		System.out.println(member);
 		memberDAO.memberJoin(member);
 	}
 
-	
-	//개인정보 암호화
-	@Autowired
-	AESUtil aes;
-	
-	@RequestMapping(method=RequestMethod.POST)
-    public String joinHash(@RequestParam("memberName") String memberName
-    				, @RequestParam("email") String email
-    				, @RequestParam("phone") String phone
-    				, @RequestParam("zipcode") String zipcode
-    				, @RequestParam("streeAdr") String streeAdr
-    				, @RequestParam("detailAdr") String detailAdr
-    				,Model model) throws NoSuchAlgorithmException, UnsupportedEncodingException, GeneralSecurityException {
-        
-        System.out.println("암호화 전 아이디 : " + memberName);
-        System.out.println("암호화 전 이메일 : " + email);
-        
-        memberName = aes.encrypt(memberName);
-        email = aes.encrypt(email);
-        
-        System.out.println("-----------------------------");
-        System.out.println("암호화 후 아이디 : " + memberName);
-        System.out.println("암호화 후 이메일 : " + email);
-        
-        System.out.println("-----------------------------");
-        System.out.println("복호화 후 아이디 : " + aes.decrypt(memberName));
-        System.out.println("복호화 후 이메일 : " + aes.decrypt(email));
-        
-        model.addAttribute("memberName", memberName);
-        model.addAttribute("email", email);
-        return "login";
-    }
-	
-	
 	// 아이디 중복 검사
 	@Override
 	public int idCheck(String memberId) throws Exception {
@@ -158,21 +147,43 @@ public class MemberServiceImpl implements MemberService {
 		return result;
 	}
 
-	//회원 조회
+	// 회원 조회
 	@Override
 	public MemberVO memberCheck(String memberId) throws Exception {
-		MemberVO mVo= memberDAO.memberCheck(memberId); //memberId를 넘겨준다
-				return mVo;
+		MemberVO mVo = memberDAO.memberCheck(memberId); // memberId를 넘겨준다
+		return mVo;
 	}
-	
-	
+
 	// 로그인 체크
 	@Override
 	public String memberLogin(MemberVO member) throws Exception {
 		String pw = memberDAO.pwCheck(member.getMemberId());
-		String rawPw = member.getMemberPassword(); //인코딩 전 비밀번호
-		
+		String rawPw = member.getMemberPassword(); // 인코딩 전 비밀번호
+
 		return passwordEncoder.matches(rawPw, pw) ? "pass" : "fail";
 	}
+
+	//회원정보 수정
+	//controller에서 보내는 파라미터들을 memberUpdate(MemberVO member)로 받고
+	//받은 member를 DAO로 보내준다!
+	@Override
+	public void memberUpdate(MemberVO member) throws Exception {
+		memberDAO.memberUpdate(member);
+	}
+
+	//회원탈퇴
+	@Override
+	public void memberDelete(String memberNo) throws Exception {
+		memberDAO.memberDelete(memberNo);
+	}
+
+	//회원조회
+	@Override
+	public MemberVO getMember(String memberNo) throws Exception {
+		MemberVO mVo = memberDAO.getMember(memberNo);
+		return mVo;
+	}
+
+
 
 }

@@ -69,6 +69,26 @@ public class MemberDAOImpl implements MemberDAO {
 		return mVO;
 	}
 
+	//회원정보 수정
+	//서비스에서 보낸 파라미터들을 memberUpdate(MemberVO member)에 담음..
+	@Override
+	public void memberUpdate(MemberVO member) {
+		template.update("MemberMapper.memberUpdate", member);
+	}
+
+	//회원 탈퇴
+	@Override
+	public void memberDelete(String memberNo) throws Exception {
+		template.update("MemberMapper.memberDelete", memberNo);
+	}
+
+	//회원조회
+	@Override
+	public MemberVO getMember(String memberNo) throws Exception {
+		MemberVO mVO = template.selectOne("MemberMapper.getMember", memberNo);
+		return mVO;
+	}
+
 
 
 }

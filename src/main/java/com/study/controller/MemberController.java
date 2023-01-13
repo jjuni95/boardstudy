@@ -65,59 +65,97 @@ public class MemberController {
 
 		return result;
 	}
-	
-	
+
 	// 이메일 중복 검사
 	@ResponseBody
 	@RequestMapping(value = "/memberEmailChk", method = RequestMethod.POST)
-	public int memberEmailChkPOST(String emailId,String inputEmail,String selectEmail) throws Exception {
+	public int memberEmailChkPOST(String emailId, String inputEmail, String selectEmail) throws Exception {
 
 		System.out.println("memberEmailChk() 진입");
 
-		int result = memberservice.emailCheck(emailId,inputEmail,selectEmail);
+		int result = memberservice.emailCheck(emailId, inputEmail, selectEmail);
 
 		System.out.println("결과값 = " + result);
 
 		return result;
 	}
 
-	//로그인
+	// 로그인
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String loginPOST(HttpServletRequest request, MemberVO member, RedirectAttributes rttr, Model model) throws Exception {
+	public String loginPOST(HttpServletRequest request, MemberVO member, RedirectAttributes rttr, Model model)
+			throws Exception {
 
 		System.out.println("login 메서드 진입");
-		//System.out.println("전달된 데이터 : " + member);
+		// System.out.println("전달된 데이터 : " + member);
 
-		HttpSession session = request.getSession(); //세션에서 가져올때 얘 꼭 붙여넣기!!!!
-		//로그인 여부 체크: id랑 pw를 보낸다(memberLogin여기서)
+		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
+		// 로그인 여부 체크: id랑 pw를 보낸다(memberLogin여기서)
 		String flag = memberservice.memberLogin(member);
-		
+
 //		model.addAttribute("result", 0);
 //		 return "/member/login";
-		 
-		//로그인 실패했을 경우
-        if(flag == "fail") {                                // 일치하지 않는 아이디, 비밀번호 입력 경우
-            
-            int result = 0;
-            //request.setAttribute("result", result); //"name", value
-            model.addAttribute("result", result);
-            
-            request.setAttribute("msg", "로그인에 실패했습니당.");
-        	request.setAttribute("url", "/member/login");
-        	return "member/alert"; //alert.jsp로 이동
-   //         return "/member/login";
-        }
-        //로그인 성공했을 경우
-        else {
-        	//로그인할때 저장하고싶은 값 담아오기
-        	MemberVO mVo = memberservice.memberCheck(member.getMemberId()); //id를 넘겨서 mVo에 저장을 한다
-        	
-        	session.setAttribute("member", mVo);             // 일치하는 아이디, 비밀번호 경우 (로그인 성공) : 세션에 id랑 pw만 들어가있음
-        	return "redirect:/main";
-        }
+
+		// 로그인 실패했을 경우
+		if (flag == "fail") { // 일치하지 않는 아이디, 비밀번호 입력 경우
+
+			int result = 0;
+			// request.setAttribute("result", result); //"name", value
+			model.addAttribute("result", result);
+
+			request.setAttribute("msg", "로그인에 실패했습니당.");
+			request.setAttribute("url", "/member/login");
+			return "member/alert"; // alert.jsp로 이동
+			// return "/member/login";
+		}
+		// 로그인 성공했을 경우
+		else {
+			// 로그인할때 저장하고싶은 값 담아오기
+			MemberVO mVo = memberservice.memberCheck(member.getMemberId()); // id를 넘겨서 mVo에 저장을 한다
+
+			session.setAttribute("member", mVo); // 일치하는 아이디, 비밀번호 경우 (로그인 성공) : 세션에 id랑, 이름이랑 memberNo 들어가있음
+			return "redirect:/main";
+		}
 	}
 
+	// 로그아웃
+	@RequestMapping(value = "logout", method = RequestMethod.GET)
+	public String logoutMainGET(HttpServletRequest request) throws Exception {
+		System.out.println("logoutMainGET 메서드 진입");
+
+		HttpSession session = request.getSession();
+
+		session.invalidate();
+
+		return "redirect:/main";
+	}
 	
+	//회원정보수정 페이지 이동
+	@RequestMapping(value ="/memberUpdateView", method = RequestMethod.GET)
+	public String memberUpdateGET() throws Exception {
+		return "member/memberUpdateView";
+	}
+	
+	//회원정보 수정
+	@RequestMapping(value = "/memberUpdate", method = RequestMethod.POST)
+	public String memberUpdatePOST(MemberVO member) throws Exception{
+		memberservice.memberUpdate(member);
+		
+		return "redirect:/main";
+	}
+	
+	//회원탈퇴
+	@RequestMapping(value = "/memberDelete", method = RequestMethod.POST)
+	public String memberDelete(String memberNo) throws Exception{
+		memberservice.memberDelete(memberNo);
+		
+		//String result = memberservice.memberDelete(memberNo);
+		MemberVO member = memberservice.getMember(memberNo);
+		String result = "";
+		if(member == null) {
+			result = "success";
+		}
+		return result;
+	}
 	
 
 }

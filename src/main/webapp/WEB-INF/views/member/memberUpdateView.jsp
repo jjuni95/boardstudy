@@ -9,54 +9,63 @@
 </head>
 <body>
 	<div class="wrapper">
-		<form id="join_form" action="/member/join"  method="post">
+		<form id="join_form" action="/member/memberUpdate" method="post">
 			<div class="wrap">
 				<div class="subjecet">
-					<span>회원 정보 입력</span>
+					<span>회원 정보 수정</span>
 				</div>
 				<div class="id_wrap">
 					<div class="id_name">아이디</div>
+					dd ${member.memberId}
+					${member.memberNo}
 					<div class="id_input_box">
-						<input id="memberId" class="id_input" name="memberId" placeholder="아이디를 입력하세요.">
+						<input id="memberId" class="id_input" name="memberId"
+							placeholder="아이디를 입력하세요." value="${member.memberId}">
 					</div>
 					<div class="join_button_wrap">
-						<input type="button" onclick="fn_idChk();" class="idChk_button" id="idChk_button" value="중복확인">
+						<input type="button" onclick="fn_idChk();" class="idChk_button"
+							id="idChk_button" value="중복확인">
 					</div>
 				</div>
 				<div class="user_wrap">
 					<div class="user_name">이름</div>
 					<div class="user_input_box">
-						<input class="user_input" id="memberName" name="memberName" placeholder="이름을 입력하세요.">
+						<input class="user_input" id="memberName" name="memberName"
+							placeholder="이름을 입력하세요.">
 					</div>
 				</div>
 				<div class="pw_wrap">
 					<div class="pw_name">비밀번호</div>
 					<div class="pw_input_box">
-						<input type="password" class="pw_input" id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요.">
+						<input type="password" class="pw_input" id="memberPassword"
+							name="memberPassword" placeholder="비밀번호를 입력하세요.">
 					</div>
 				</div>
 				<div class="pwck_wrap">
 					<div class="pwck_input_box">
-						<input type="password" class="pwck_input" id="chkMemberPassword" name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
+						<input type="password" class="pwck_input" id="chkMemberPassword"
+							name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
 					</div>
 				</div>
 
 				<div class="mail_wrap">
 					<div class="mail_name">이메일</div>
 					<div class="mail_input_box">
-						<input class="mail_input" id="emailId" name="emailId" placeholder="이메일 아이디"> 
-						<input class="mail_input_1" id=inputEmail name="inputEmail" style="display: none">
-						 <select name="selectEmail" id="selectEmail">
+						<input class="mail_input" id="emailId" name="emailId"
+							placeholder="이메일 아이디"> <input class="mail_input_1"
+							id=inputEmail name="inputEmail" style="display: none"> <select
+							name="selectEmail" id="selectEmail">
 							<option value="1">직접입력</option>
 							<option value="@radcns.com" selected>@radcns.com</option>
 							<option value="@hanmail.net">@hanmail.net</option>
 							<option value="@naver.com">@naver.com</option>
-						</select>	
+						</select>
 					</div>
 
 				</div>
 				<div class="mail_button_wrap">
-					<input type="button" class="mail_button" onclick="fn_emailChk();" value="중복확인">
+					<input type="button" class="mail_button" onclick="fn_emailChk();"
+						value="중복확인">
 				</div>
 
 
@@ -66,9 +75,8 @@
 						<select name="phone1" id="phone1">
 							<option value="010" selected>010</option>
 							<option value="011">011</option>
-						</select>  
-				- &nbsp;	<input name="phone2" class="phone_input2" onlyNumber> - 
-						<input name="phone3" class="phone_input3" onlyNumber>
+						</select> - &nbsp; <input name="phone2" class="phone_input2" onlyNumber>
+						- <input name="phone3" class="phone_input3" onlyNumber>
 					</div>
 				</div>
 
@@ -78,7 +86,8 @@
 					<div class="zipcode_name">주소</div>
 					<div class="zipcode_input_wrap">
 						<div class="zipcode_input_box">
-							<input class="zipcode_input" id="zipcode" name="zipcode" readonly="readonly" placeholder="우편번호">
+							<input class="zipcode_input" id="zipcode" name="zipcode"
+								readonly="readonly" placeholder="우편번호">
 						</div>
 						<div class="clearfix"></div>
 						<div class="address_button_wrap" onclick="daum_address()">
@@ -88,32 +97,36 @@
 					</div>
 					<div class="streetadr_input_wrap">
 						<div class="streetadr_input_box">
-							<input class="streetadr_input" id="streeAdr" name="streeAdr" readonly="readonly" placeholder="기본주소">
+							<input class="streetadr_input" id="streeAdr" name="streeAdr"
+								readonly="readonly" placeholder="기본주소">
 						</div>
 					</div>
 					<div class="detailadr_input_wrap">
 						<div class="detailadr_input_box">
-							<input class="detailadr_input" id="detailAdr" name="detailAdr" placeholder="상세주소">
+							<input class="detailadr_input" id="detailAdr" name="detailAdr"
+								placeholder="상세주소">
 						</div>
 					</div>
 				</div>
 				<div class="join_button_wrap">
-					<input type="submit" class="join_button" value="가입">
+					<input type="submit" class="join_button" value="수정">
 				</div>
 				<div class="joinCancel_button_wrap">
 					<a href="/login" class="joinCancel_button" value="취소"></a>
+				</div>
+				<div class="delete_button_wrap">
+					<input type="button" onClick="fn_memberDelete()" class="delete_button" value="탈퇴">
 				</div>
 			</div>
 		</form>
 	</div>
 </body>
 
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script
+	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript"
 	src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
-
-
 
 //회원가입 버튼(회원가입 기능 작동)
 $(document).ready(function(){
@@ -218,6 +231,32 @@ function fn_emailChk(){
 			}
 		})
 	}
+
+//회원탈퇴: 탈퇴버튼 
+function fn_memberDelete(){
+	if (!confirm("확인 또는 취소를 선택해주세요.")) {
+        alert("취소를 누르셨습니다.");
+    } else {
+        alert("확인을 누르셨습니다.");
+        $.ajax({
+    		url : "/member/memberDelete", 
+    		type : "post",
+    		dataType : "json",
+    		data : {"memberNo" : "${member.memberNo}"}, //회원번호를 controller에 보낸다
+    		success : function(data){
+    			
+    			if(data == "success"){
+    				alert("탈퇴되었습니다!");	
+    			}else
+    				alert("탈퇴되지않았습니다!")
+    			
+    			location.replace("/member/main")
+    			
+    			}
+    		})
+    	}
+	}
+
 
 //연락처 숫자만 입력 가능
 $('input[onlyNumber]').on('keyup', function () {
