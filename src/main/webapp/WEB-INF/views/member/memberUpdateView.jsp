@@ -5,34 +5,24 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="/resources/css/member/join.css">
 </head>
 <body>
 	<div class="wrapper">
-		<form id="join_form" action="/member/memberUpdate" method="post">
+		<form id="join_form" action="/member/memberUpdate" method="post" name="update_form">
+		<input type="hidden" name="memberId" value="${member.memberId}">
 			<div class="wrap">
 				<div class="subjecet">
 					<span>회원 정보 수정</span>
 				</div>
 				<div class="id_wrap">
 					<div class="id_name">아이디</div>
-					dd ${member.memberId}
-					${member.memberNo}
-					<div class="id_input_box">
-						<input id="memberId" class="id_input" name="memberId"
-							placeholder="아이디를 입력하세요." value="${member.memberId}">
-					</div>
-					<div class="join_button_wrap">
-						<input type="button" onclick="fn_idChk();" class="idChk_button"
-							id="idChk_button" value="중복확인">
-					</div>
+					<div> ${member.memberId} </div> 
+					<div> ${member.memberPassword} </div>
+					<%-- ${member.memberNo} --%>
 				</div>
 				<div class="user_wrap">
 					<div class="user_name">이름</div>
-					<div class="user_input_box">
-						<input class="user_input" id="memberName" name="memberName"
-							placeholder="이름을 입력하세요.">
-					</div>
+					<div> ${decName} </div>
 				</div>
 				<div class="pw_wrap">
 					<div class="pw_name">비밀번호</div>
@@ -109,10 +99,11 @@
 					</div>
 				</div>
 				<div class="join_button_wrap">
-					<input type="submit" class="join_button" value="수정">
+					<input type="button" onClick="fn_memberUpdate()" class="update_button" value="수정">
 				</div>
 				<div class="joinCancel_button_wrap">
-					<a href="/login" class="joinCancel_button" value="취소"></a>
+					<input  type="button" class="joinCancel_button" value="취소" 
+					onClick="location.href='http://localhost:8080/main'"></input>
 				</div>
 				<div class="delete_button_wrap">
 					<input type="button" onClick="fn_memberDelete()" class="delete_button" value="탈퇴">
@@ -127,74 +118,6 @@
 <script type="text/javascript"
 	src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
-
-//회원가입 버튼(회원가입 기능 작동)
-$(document).ready(function(){
-	$(".join_button").click(function(){
-		
-		var pw = $('#memberPassword').val();
-		var num = pw.search(/[0-9]/g); 							//숫자포함
-		var eng = pw.search(/[a-z]/ig);							//영문(대소문자) 포함
-		var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩';:₩/?]/gi);		//특수문자 포함
-		
-		if($("#memberId").val()==""){
-			alert("아이디를 입력해주세요.");
-			$("#memberId").focus();
-			return false;
-		}
-		
-		if($("#memberPassword").val()==""){
-			alert("비밀번호를 입력해주세요.");
-			$("#memberPassword").focus();
-			return false;
-		}
-		
-		if($("#memberPassword").val() != $("#chkMemberPassword").val()){
-	        alert("비밀번호가 서로 다릅니다. 비밀번호를 확인해 주세요."); 
-	        $("#chkMemberPassword").focus();
-	        return false; 
-	    }
-		
-		if($("#memberName").val()==""){
-			alert("성명을 입력해주세요.");
-			$("#memberName").focus();
-			return false;
-		}
-		
-		if($("#emailId").val()=="" || $("#email").val()=="" || $("#selectEmail").val()==""){
-			alert("이메일을 입력해주세요.");
-			$("#emailId").focus();
-			return false;
-		}
-		
-		if($("#zipcode").val()=="" || $("#streeAdr").val()=="" || $("#detailAdr").val()==""){
-			alert("주소를 입력해주세요.");
-			$("#streeAdr").focus();
-			return false;
-		}
-		
-		//비밀번호(특수문자 포함한 8자리 이상)
-		if(pw.length < 8 || pw.length > 20){
-			alert(pw);
-			alert(pw.length);
-			alert("비밀번호를 8자리 ~ 20자리 이내로 입력해주세요.");
-			return false;
-		}else if(pw.search(/\s/) != -1){
-	  		alert("비밀번호는 공백 없이 입력해주세요.");
-	  		return false;
-	 	}else if(num < 0 || eng < 0 || spe < 0 ){
-	  		alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
-	  		return false;
-	 	}else {
-			console.log("통과"); 
-	    return true;
-	    }
-	
-
-		
-	})
-		
-});
 
 //아이디 중복검사
 function fn_idChk(){
@@ -231,6 +154,83 @@ function fn_emailChk(){
 			}
 		})
 	}
+	
+	
+//회원수정: 수정버튼
+function fn_memberUpdate(){
+	
+	var result = prompt("비밀번호를 입력하세요"); //수정버튼 누르면 비밀번호 입력하는 prompt창 뜸
+	
+/* 	if(result != ""){
+		alert("비밀번호가 일치하지 않습니다.")
+		
+	} else{ 	//비밀번호 일치하면
+		var pw = $('#memberPassword').val();
+		var num = pw.search(/[0-9]/g); 							//숫자포함
+		var eng = pw.search(/[a-z]/ig);							//영문(대소문자) 포함
+		var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩';:₩/?]/gi);		//특수문자 포함
+		
+
+		if($("#memberPassword").val()==""){
+			alert("비밀번호를 입력해주세요.");
+			$("#memberPassword").focus();
+			return false;
+		}
+		
+		if($("#memberPassword").val() != $("#chkMemberPassword").val()){
+	        alert("비밀번호가 서로 다릅니다. 비밀번호를 확인해 주세요."); 
+	        $("#chkMemberPassword").focus();
+	        return false; 
+	    }
+
+		
+		if($("#emailId").val()=="" || $("#email").val()=="" || $("#selectEmail").val()==""){
+			alert("이메일을 입력해주세요.");
+			$("#emailId").focus();
+			return false;
+		}
+		
+		if($("#zipcode").val()=="" || $("#streeAdr").val()=="" || $("#detailAdr").val()==""){
+			alert("주소를 입력해주세요.");
+			$("#streeAdr").focus();
+			return false;
+		}
+		
+		//비밀번호(특수문자 포함한 8자리 이상)
+		if(pw.length < 8 || pw.length > 20){
+			alert(pw);
+			alert(pw.length);
+			alert("비밀번호를 8자리 ~ 20자리 이내로 입력해주세요.");
+			return false;
+		}else if(pw.search(/\s/) != -1){
+	  		alert("비밀번호는 공백 없이 입력해주세요.");
+	  		return false;
+	 	}else if(num < 0 || eng < 0 || spe < 0 ){
+	  		alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+	  		return false;
+	 	}else {
+	 		
+			console.log("통과"); 
+	    return true;
+	    }
+		
+		
+		
+	} */
+	
+	//var queryString = $("form[name=update_form]").serialize() ;
+	
+	$.ajax({
+		url : "/member/memberUpdate", 
+		type : "post",
+		dataType : "json",
+		data : {"memberNo" : "${member.memberNo}",
+				"$("#memberPassword").val()" : memberPassword},
+		success : function(data){
+			console.log(data);
+		}
+	})
+	}
 
 //회원탈퇴: 탈퇴버튼 
 function fn_memberDelete(){
@@ -244,13 +244,14 @@ function fn_memberDelete(){
     		dataType : "json",
     		data : {"memberNo" : "${member.memberNo}"}, //회원번호를 controller에 보낸다
     		success : function(data){
-    			
-    			if(data == "success"){
+    		/* 	var a =0;
+    			console.log(data.msg); */
+    			if(data.msg == "success"){
     				alert("탈퇴되었습니다!");	
     			}else
-    				alert("탈퇴되지않았습니다!")
+    				alert("탈퇴되지 않았습니다.")
     			
-    			location.replace("/member/main")
+    			location.replace("/main")
     			
     			}
     		})

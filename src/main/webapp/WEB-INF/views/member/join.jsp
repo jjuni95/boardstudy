@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -59,7 +58,6 @@
 					<input type="button" class="mail_button" onclick="fn_emailChk();" value="중복확인">
 				</div>
 
-
 				<div class="phoner_wrap">
 					<div class="phone">연락처</div>
 					<div class="phone_input_box">
@@ -71,8 +69,6 @@
 						<input name="phone3" class="phone_input3" onlyNumber>
 					</div>
 				</div>
-
-
 
 				<div class="address_wrap">
 					<div class="zipcode_name">주소</div>
@@ -109,13 +105,9 @@
 </body>
 
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
-
-
-
-//회원가입 버튼(회원가입 기능 작동)
+<%-- 회원가입 버튼(회원가입 기능 작동 --%>
 $(document).ready(function(){
 	$(".join_button").click(function(){
 		
@@ -174,12 +166,9 @@ $(document).ready(function(){
 	  		return false;
 	 	}else {
 			console.log("통과"); 
-	    return true;
+	    	return true;
 	    }
-	
-
-		
-	})
+	});
 		
 });
 

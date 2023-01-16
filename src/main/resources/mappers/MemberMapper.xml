@@ -6,7 +6,7 @@
   	
   	<!-- 회원가입 -->
 	<insert id= "memberJoin" parameterType="com.study.model.MemberVO">
-		 INSERT INTO Cu_MEMBER VALUES(#{memberNo}, GETDATE(), #{memberId}, #{memberName}, #{memberPassword}
+		 INSERT INTO Cu_MEMBER (  ) VALUES(#{memberNo}, GETDATE(), #{memberId}, #{memberName}, #{memberPassword}
 		 							, #{email}, #{phone}, #{zipcode}, #{streeAdr}, #{detailAdr} , 'N')
 	</insert>
 	
@@ -31,9 +31,17 @@
 			AND ISENABLED = 'N'
 	</select>
 
+<!-- 	 회원정보 수정할때 비밀번호 검사 
+	<select id="updatePwCheck" resultType="int">
+		SELECT MEMBER_PASSWORD FROM Cu_MEMBER
+				WHERE MEMBER_ID = #{memberId}
+				AND ISENABLED = 'N'
+	</select>
+ -->
+ 
 	<!-- 로그인 -->
 	<select id="memberLogin" resultType="com.study.model.MemberVO" parameterType="String">
-		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName, MEMBER_NO AS memberNo
+		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName, MEMBER_NO AS memberNo, MEMBER_PASSWORD AS memberPassword
 			FROM Cu_MEMBER 
 			WHERE MEMBER_ID = #{memberId}
 			AND ISENABLED = 'N'

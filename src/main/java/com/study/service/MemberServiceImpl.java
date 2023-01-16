@@ -158,7 +158,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String memberLogin(MemberVO member) throws Exception {
 		String pw = memberDAO.pwCheck(member.getMemberId());
-		String rawPw = member.getMemberPassword(); // 인코딩 전 비밀번호
+		String rawPw = member.getMemberPassword(); // 암호화 전 비밀번호
 
 		return passwordEncoder.matches(rawPw, pw) ? "pass" : "fail";
 	}

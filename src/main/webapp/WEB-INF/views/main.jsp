@@ -10,13 +10,13 @@
 </head>
 <body>
 
-	<div class="login_area">
+<!-- 	<div class="login_area">
 		<div class="login_button">
 			<a href="/member/login">로그인</a>
 		</div>
 		<span><a href="/member/join">회원가입</a></span>
-	</div>
-
+	</div> -->
+	<div onClick="location.href='http://localhost:8080/member/memberUpdateView'">${member.memberId}</div>
 	<a href="/member/logout">로그아웃</a>
 
 </body>

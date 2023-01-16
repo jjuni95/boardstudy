@@ -10,9 +10,11 @@ public interface MemberDAO {
 	//아이디 중복 검사
 	public int idCheck(String memberId) throws Exception;
 	
-	//비밀번호 검사
+	//비밀번호 검사(암호화 체크)
 	public String pwCheck(String memberId) throws Exception;
 	
+	//회원정보 수정할때 비밀번호 검사
+//	public int updatePwCheck()
 	
 	//이메일 중복 검사
 	public int emailCheck(String email) throws Exception;

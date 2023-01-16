@@ -29,9 +29,9 @@
 				<input type="password" class="pw_iput" name="memberPassword" placeholder="비밀번호를 입력하세요.">
 			</div>
 		</div>
-		<c:if test = "${result == 0 }">
-			<div class = "login_warn">사용자 ID 또는 비밀번호를 잘못 입력하셨습니다.</div>
-		</c:if>
+		<%-- <c:if test = "${result == 0 }">
+			<div class = "login_warn" style="color: red;" >사용자 ID 또는 비밀번호를 잘못 입력하셨습니다.</div>
+		</c:if> --%>
 		
 		<div class="login_button_wrap">
 			<input type="button" class="login_button" value="로그인">

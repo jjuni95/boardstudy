@@ -1,5 +1,8 @@
 package com.study.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.study.component.AES256Util;
 import com.study.model.MemberVO;
 import com.study.service.MemberService;
 
@@ -20,6 +24,9 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberservice;
+	
+	@Autowired
+	private AES256Util aesutil;
 
 	// 회원가입 페이지 이동
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
@@ -39,6 +46,10 @@ public class MemberController {
 		// 회원가입 서비스 실행
 		memberservice.memberJoin(member);
 		System.out.println("join Service 성공?!");
+		
+		
+		
+		
 		return "redirect:/main";
 
 	}
@@ -82,7 +93,7 @@ public class MemberController {
 
 	// 로그인
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String loginPOST(HttpServletRequest request, MemberVO member, RedirectAttributes rttr, Model model)
+	public String loginPOST(HttpServletRequest request, MemberVO member, Model model)
 			throws Exception {
 
 		System.out.println("login 메서드 진입");
@@ -102,7 +113,7 @@ public class MemberController {
 			// request.setAttribute("result", result); //"name", value
 			model.addAttribute("result", result);
 
-			request.setAttribute("msg", "로그인에 실패했습니당.");
+			request.setAttribute("msg", "로그인에 실패했습니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 			// return "/member/login";
@@ -131,29 +142,59 @@ public class MemberController {
 	
 	//회원정보수정 페이지 이동
 	@RequestMapping(value ="/memberUpdateView", method = RequestMethod.GET)
-	public String memberUpdateGET() throws Exception {
+	public String memberUpdateGET(HttpServletRequest request, Model model) throws Exception {
+		
+		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
+		MemberVO mVo = (MemberVO) session.getAttribute("member"); //MemberVO로 형변환 시키고 다시 객체를 담아준다
+		//System.out.println("mVo= " + mVo);
+		
+		String decName = aesutil.decrypt(mVo.getMemberName());
+		model.addAttribute("decName" , decName);
+		
+		//String pw = aesutil.decrypt(mVo.getMemberPassword());
+		System.out.println("mVo.getMemberPassword()= "+ mVo.getMemberPassword() );
+		//model.addAttribute("pw" , pw);
+		
 		return "member/memberUpdateView";
 	}
 	
 	//회원정보 수정
 	@RequestMapping(value = "/memberUpdate", method = RequestMethod.POST)
-	public String memberUpdatePOST(MemberVO member) throws Exception{
-		memberservice.memberUpdate(member);
+	public String memberUpdatePOST(HttpServletRequest request, MemberVO member, Model model) throws Exception{
+		
+		//HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
+//		MemberVO mVo = (MemberVO) session.getAttribute("member");
+		String flag = memberservice.memberLogin(member);
+		
+		if(flag == "fail") {	//수정 실패했을때
+			int result = 0;
+			model.addAttribute("result", result);
+			request.setAttribute("msg", "수정에 실패했습니다.");
+			request.setAttribute("url", "/member/memberUpdateView");
+			return "member/alert"; // alert.jsp로 이동
+		} else {			//수정 성공했을때
+			System.out.println("asdf");
+			memberservice.memberUpdate(member);
+		}
+		
+		
 		
 		return "redirect:/main";
 	}
 	
 	//회원탈퇴
+	@ResponseBody //값을 넘겨줘야할때 사용
 	@RequestMapping(value = "/memberDelete", method = RequestMethod.POST)
-	public String memberDelete(String memberNo) throws Exception{
+	public Map<String,String> memberDelete(String memberNo) throws Exception{
 		memberservice.memberDelete(memberNo);
 		
 		//String result = memberservice.memberDelete(memberNo);
 		MemberVO member = memberservice.getMember(memberNo);
-		String result = "";
+		Map<String,String> result = new HashMap<String, String>();
 		if(member == null) {
-			result = "success";
+			result.put("msg", "success");
 		}
+					
 		return result;
 	}
 	
