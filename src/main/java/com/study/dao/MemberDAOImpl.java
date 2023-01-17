@@ -89,6 +89,12 @@ public class MemberDAOImpl implements MemberDAO {
 		return mVO;
 	}
 
+	//이메일 찾기
+	@Override
+	public void fingId(MemberVO member) throws Exception {
+		template.selectOne("MemberMapper.fingId", member);
+	}
+
 
 
 }

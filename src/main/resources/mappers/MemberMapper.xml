@@ -6,8 +6,9 @@
   	
   	<!-- 회원가입 -->
 	<insert id= "memberJoin" parameterType="com.study.model.MemberVO">
-		 INSERT INTO Cu_MEMBER (  ) VALUES(#{memberNo}, GETDATE(), #{memberId}, #{memberName}, #{memberPassword}
-		 							, #{email}, #{phone}, #{zipcode}, #{streeAdr}, #{detailAdr} , 'N')
+		 INSERT INTO Cu_MEMBER (MEMBER_NO, MEMBER_ID, MEMBER_NAME, MEMBER_PASSWORD, EMAIL,PHONE, ZIPCODE, STREETADR, DETAILADR)
+		 				 VALUES(#{memberNo}, #{memberId}, #{memberName}, #{memberPassword}
+		 							, #{email}, #{phone}, #{zipcode}, #{streeAdr}, #{detailAdr})
 	</insert>
 	
 	<!-- 아이디 중복 검사 -->
@@ -31,14 +32,6 @@
 			AND ISENABLED = 'N'
 	</select>
 
-<!-- 	 회원정보 수정할때 비밀번호 검사 
-	<select id="updatePwCheck" resultType="int">
-		SELECT MEMBER_PASSWORD FROM Cu_MEMBER
-				WHERE MEMBER_ID = #{memberId}
-				AND ISENABLED = 'N'
-	</select>
- -->
- 
 	<!-- 로그인 -->
 	<select id="memberLogin" resultType="com.study.model.MemberVO" parameterType="String">
 		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName, MEMBER_NO AS memberNo, MEMBER_PASSWORD AS memberPassword
@@ -57,10 +50,9 @@
 	
 	
 	<!-- 회원정보 수정 -->
-	<update id="memberUpdate">
+	<update id="memberUpdate" parameterType="com.study.model.MemberVO">
 		UPDATE Cu_MEMBER 
-		SET MEMBER_PASSWORD = #{memberPassword},
-			EMAIL = #{email},
+		SET EMAIL = #{email},
 			PHONE = #{phone},
 			ZIPCODE = #{zipcode},
 			STREETADR = #{streeAdr},
@@ -85,6 +77,13 @@
 			WHERE MEMBER_NO = #{memberNo}
 			AND ISENABLED = 'N'
 	</select>
+	
+	
+	<!-- 이메일 찾기 -->
+	<insert id="fingId" parameterType="com.study.model.MemberVO">
+		INSERT INTO Cu_MEMBER (MEMBER_NO, MEMBER_ID)
+		 				 VALUES(#{memberNo}, #{memberId})
+	</insert>
 	
 	
   </mapper>

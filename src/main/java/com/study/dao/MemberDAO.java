@@ -13,9 +13,6 @@ public interface MemberDAO {
 	//비밀번호 검사(암호화 체크)
 	public String pwCheck(String memberId) throws Exception;
 	
-	//회원정보 수정할때 비밀번호 검사
-//	public int updatePwCheck()
-	
 	//이메일 중복 검사
 	public int emailCheck(String email) throws Exception;
 	
@@ -36,4 +33,7 @@ public interface MemberDAO {
 	
 	//회원조회
 	public MemberVO getMember(String memberNo) throws Exception;
+	
+	//이메일 찾기
+	public void fingId(MemberVO member) throws Exception;
 }

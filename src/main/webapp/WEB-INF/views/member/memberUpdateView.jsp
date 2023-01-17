@@ -17,45 +17,41 @@
 				<div class="id_wrap">
 					<div class="id_name">아이디</div>
 					<div> ${member.memberId} </div> 
-					<div> ${member.memberPassword} </div>
-					<%-- ${member.memberNo} --%>
 				</div>
 				<div class="user_wrap">
 					<div class="user_name">이름</div>
 					<div> ${decName} </div>
 				</div>
 				<div class="pw_wrap">
-					<div class="pw_name">비밀번호</div>
+					<div class="pw_name">비밀번호 <span style="color:red">*</span></div>
 					<div class="pw_input_box">
 						<input type="password" class="pw_input" id="memberPassword"
-							name="memberPassword" placeholder="비밀번호를 입력하세요.">
+							name="memberPassword" placeholder="비밀번호를 입력하세요." maxlength='20'>
 					</div>
 				</div>
 				<div class="pwck_wrap">
 					<div class="pwck_input_box">
 						<input type="password" class="pwck_input" id="chkMemberPassword"
-							name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
+							name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요." maxlength='20'>
 					</div>
 				</div>
 
 				<div class="mail_wrap">
-					<div class="mail_name">이메일</div>
+					<div class="mail_name">이메일 <span style="color:red">*</span></div>
 					<div class="mail_input_box">
-						<input class="mail_input" id="emailId" name="emailId"
-							placeholder="이메일 아이디"> <input class="mail_input_1"
-							id=inputEmail name="inputEmail" style="display: none"> <select
-							name="selectEmail" id="selectEmail">
-							<option value="1">직접입력</option>
-							<option value="@radcns.com" selected>@radcns.com</option>
-							<option value="@hanmail.net">@hanmail.net</option>
-							<option value="@naver.com">@naver.com</option>
-						</select>
+						<input class="mail_input" id="emailId" name="emailId" placeholder="이메일 아이디" maxlength='10'>
+						<input type="hidden" id="checkEmail" value="N">
+						 @ <input class="mail_input_1" id="inputEmail" name="inputEmail">
+							  <select name="selectEmail" id="selectEmail">
+								<option value="1" selected>직접입력</option>
+								<option value="radcns.com">radcns.com</option>
+								<option value="hanmail.net">hanmail.net</option>
+								<option value="naver.com">naver.com</option>
+							</select>
 					</div>
-
 				</div>
 				<div class="mail_button_wrap">
-					<input type="button" class="mail_button" onclick="fn_emailChk();"
-						value="중복확인">
+					<input type="button" class="mail_button" onclick="fn_emailChk();" value="중복확인">
 				</div>
 
 
@@ -65,19 +61,18 @@
 						<select name="phone1" id="phone1">
 							<option value="010" selected>010</option>
 							<option value="011">011</option>
-						</select> - &nbsp; <input name="phone2" class="phone_input2" onlyNumber>
-						- <input name="phone3" class="phone_input3" onlyNumber>
+						</select> - &nbsp; <input name="phone2" class="phone_input2" onlyNumber maxlength='4'>
+						- <input name="phone3" class="phone_input3" onlyNumber maxlength='4'>
 					</div>
 				</div>
 
 
 
 				<div class="address_wrap">
-					<div class="zipcode_name">주소</div>
+					<div class="zipcode_name">주소 <span style="color:red">*</span></div>
 					<div class="zipcode_input_wrap">
 						<div class="zipcode_input_box">
-							<input class="zipcode_input" id="zipcode" name="zipcode"
-								readonly="readonly" placeholder="우편번호">
+							<input class="zipcode_input" id="zipcode" name="zipcode" readonly="readonly" placeholder="우편번호">
 						</div>
 						<div class="clearfix"></div>
 						<div class="address_button_wrap" onclick="daum_address()">
@@ -87,19 +82,18 @@
 					</div>
 					<div class="streetadr_input_wrap">
 						<div class="streetadr_input_box">
-							<input class="streetadr_input" id="streeAdr" name="streeAdr"
-								readonly="readonly" placeholder="기본주소">
+							<input class="streetadr_input" id="streeAdr" name="streeAdr" readonly="readonly" placeholder="기본주소">
 						</div>
 					</div>
 					<div class="detailadr_input_wrap">
 						<div class="detailadr_input_box">
-							<input class="detailadr_input" id="detailAdr" name="detailAdr"
-								placeholder="상세주소">
+							<input class="detailadr_input" id="detailAdr" name="detailAdr" placeholder="상세주소">
 						</div>
 					</div>
 				</div>
-				<div class="join_button_wrap">
-					<input type="button" onClick="fn_memberUpdate()" class="update_button" value="수정">
+				
+				<div class="update_button_wrap">
+					<input type="submit" onClick="fn_memberUpdate()" class="update_button" value="수정">
 				</div>
 				<div class="joinCancel_button_wrap">
 					<input  type="button" class="joinCancel_button" value="취소" 
@@ -119,23 +113,6 @@
 	src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 
-//아이디 중복검사
-function fn_idChk(){
-	$.ajax({
-		url : "/member/memberIdChk",
-		type : "post",
-		dataType : "json",
-		data : {"memberId" : $("#memberId").val()},
-		success : function(data){
-				if(data != 0){
-					alert("중복된 아이디입니다.");
-				}else if(data == 0){
-					alert("사용가능한 아이디입니다.");
-				}
-			}
-		})
-	}
-	
 //이메일 중복검사
 function fn_emailChk(){
 	$.ajax({
@@ -150,6 +127,7 @@ function fn_emailChk(){
 					alert("중복된 이메일입니다.");
 				}else if(data == 0){
 					alert("사용가능한 이메일입니다.");
+					$("#checkEmail").val("Y");
 				}
 			}
 		})
@@ -158,18 +136,6 @@ function fn_emailChk(){
 	
 //회원수정: 수정버튼
 function fn_memberUpdate(){
-	
-	var result = prompt("비밀번호를 입력하세요"); //수정버튼 누르면 비밀번호 입력하는 prompt창 뜸
-	
-/* 	if(result != ""){
-		alert("비밀번호가 일치하지 않습니다.")
-		
-	} else{ 	//비밀번호 일치하면
-		var pw = $('#memberPassword').val();
-		var num = pw.search(/[0-9]/g); 							//숫자포함
-		var eng = pw.search(/[a-z]/ig);							//영문(대소문자) 포함
-		var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩';:₩/?]/gi);		//특수문자 포함
-		
 
 		if($("#memberPassword").val()==""){
 			alert("비밀번호를 입력해주세요.");
@@ -196,6 +162,29 @@ function fn_memberUpdate(){
 			return false;
 		}
 		
+		var emailId = $("#emailId").val();
+		var inputEmail = $("#inputEmail").val();
+		var selectEmail =$("#selectEmail").val();
+		var email_rule =  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i; 
+		var mail1 = "";
+		var mail2 = "";
+		
+		mail1 = emailId + "@" + inputEmail;
+		mail2 = emailId + "@" + selectEmail;
+		
+		if(!email_rule.test(mail1) || !email_rule.test(mail2)){
+			alert("이메일을 형식에 맞게 입력해주세요.");
+			   return false; 
+		}
+		
+	
+		
+		if($("#zipcode").val()=="" || $("#streeAdr").val()=="" || $("#detailAdr").val()==""){
+			alert("주소를 입력해주세요.");
+			$("#streeAdr").focus();
+			return false;
+		}
+		
 		//비밀번호(특수문자 포함한 8자리 이상)
 		if(pw.length < 8 || pw.length > 20){
 			alert(pw);
@@ -209,28 +198,16 @@ function fn_memberUpdate(){
 	  		alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
 	  		return false;
 	 	}else {
-	 		
 			console.log("통과"); 
-	    return true;
+	    	return true;
 	    }
-		
-		
-		
-	} */
+
+}
 	
-	//var queryString = $("form[name=update_form]").serialize() ;
-	
-	$.ajax({
-		url : "/member/memberUpdate", 
-		type : "post",
-		dataType : "json",
-		data : {"memberNo" : "${member.memberNo}",
-				"$("#memberPassword").val()" : memberPassword},
-		success : function(data){
-			console.log(data);
-		}
-	})
-	}
+//이메일 값이 변경되면 중복체크 풀림
+$("#emailId").change(function(){
+	$("#checkEmail").val("N");
+});
 
 //회원탈퇴: 탈퇴버튼 
 function fn_memberDelete(){
@@ -244,15 +221,11 @@ function fn_memberDelete(){
     		dataType : "json",
     		data : {"memberNo" : "${member.memberNo}"}, //회원번호를 controller에 보낸다
     		success : function(data){
-    		/* 	var a =0;
-    			console.log(data.msg); */
     			if(data.msg == "success"){
     				alert("탈퇴되었습니다!");	
     			}else
     				alert("탈퇴되지 않았습니다.")
-    			
     			location.replace("/main")
-    			
     			}
     		})
     	}
@@ -267,18 +240,16 @@ $('input[onlyNumber]').on('keyup', function () {
 //이메일 입력방식 선택
 $('#selectEmail').change(function(){
    $("#selectEmail option:selected").each(function () {
-		
-		if($(this).val()== '1'){ //직접입력일 경우
-			 $("#inputEmail").css('display', 'inline-block'); //활성화
-			 $("#selectEmail").css('display', 'none'); //비활성화
-			 $("#inputEmail").val('');                        //값 초기화
-		}else{ //직접입력이 아닐경우
-			 $("#inputEmail").val($(this).text());      //선택값 입력
-		}
+      
+      if($(this).val()== '1'){ //직접입력일 경우
+          $("#inputEmail").val('');                        //값 초기화
+          $("#inputEmail").attr("disabled",false); //활성화
+      }else{ //직접입력이 아닐경우
+          $("#inputEmail").val($(this).text());      //선택값 입력
+          $("#inputEmail").attr("disabled",true); //비활성화
+      }
    });
 });
-
-
 
 /* 다음 주소 연동 */
 function daum_address(){

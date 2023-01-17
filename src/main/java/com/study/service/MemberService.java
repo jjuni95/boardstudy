@@ -28,6 +28,8 @@ public interface MemberService {
 	 //회원 조회
 	 public MemberVO getMember(String memberNo) throws Exception;
 	 
-	 
+	 //이메일 찾기
+	 public int fingId(String email) throws Exception;
+
 	 
 }

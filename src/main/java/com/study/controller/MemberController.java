@@ -24,7 +24,7 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberservice;
-	
+
 	@Autowired
 	private AES256Util aesutil;
 
@@ -39,18 +39,27 @@ public class MemberController {
 
 	// 회원가입
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
-	public String joinPOST(MemberVO member) throws Exception {
-		System.out.println("join 진입");
-		System.out.println("member.getMemberName()= " + member.getMemberName());
+	public String joinPOST(HttpServletRequest request, MemberVO member) throws Exception {
+		
+		//유효성 검사
+		if((member.getMemberName() ==null)
+		//	|| (member.getPhone2().length() != 4 || member.getPhone3().length() != 4)
+			|| (member.getMemberPassword() == null)
+			|| (member.getMemberId() == null)) {
+				request.setAttribute("msg", "회원가입에 실패했습니다.");
+				request.setAttribute("url", "/member/login");
+				return "member/alert"; // alert.jsp로 이동
+		}
 
 		// 회원가입 서비스 실행
 		memberservice.memberJoin(member);
-		System.out.println("join Service 성공?!");
-		
-		
-		
-		
-		return "redirect:/main";
+
+		// 여기에 request어쩌고 넣기
+		request.setAttribute("msg", "회원가입에 성공했습니다.");
+		request.setAttribute("url", "/member/login");
+		return "member/alert"; // alert.jsp로 이동
+
+		//return "redirect:/main";
 
 	}
 
@@ -93,18 +102,11 @@ public class MemberController {
 
 	// 로그인
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String loginPOST(HttpServletRequest request, MemberVO member, Model model)
-			throws Exception {
-
-		System.out.println("login 메서드 진입");
-		// System.out.println("전달된 데이터 : " + member);
+	public String loginPOST(HttpServletRequest request, MemberVO member, Model model) throws Exception {
 
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		// 로그인 여부 체크: id랑 pw를 보낸다(memberLogin여기서)
 		String flag = memberservice.memberLogin(member);
-
-//		model.addAttribute("result", 0);
-//		 return "/member/login";
 
 		// 로그인 실패했을 경우
 		if (flag == "fail") { // 일치하지 않는 아이디, 비밀번호 입력 경우
@@ -137,66 +139,89 @@ public class MemberController {
 
 		session.invalidate();
 
-		return "redirect:/main";
+		return "redirect:/member/login";
 	}
-	
-	//회원정보수정 페이지 이동
-	@RequestMapping(value ="/memberUpdateView", method = RequestMethod.GET)
+
+	// 회원정보수정 페이지 이동
+	@RequestMapping(value = "/memberUpdateView", method = RequestMethod.GET)
 	public String memberUpdateGET(HttpServletRequest request, Model model) throws Exception {
-		
+
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
-		MemberVO mVo = (MemberVO) session.getAttribute("member"); //MemberVO로 형변환 시키고 다시 객체를 담아준다
-		//System.out.println("mVo= " + mVo);
-		
+		MemberVO mVo = (MemberVO) session.getAttribute("member"); // MemberVO로 형변환 시키고 다시 객체를 담아준다
+
+		//복호화하기
 		String decName = aesutil.decrypt(mVo.getMemberName());
-		model.addAttribute("decName" , decName);
-		
-		//String pw = aesutil.decrypt(mVo.getMemberPassword());
-		System.out.println("mVo.getMemberPassword()= "+ mVo.getMemberPassword() );
-		//model.addAttribute("pw" , pw);
-		
+		model.addAttribute("decName", decName);
+
 		return "member/memberUpdateView";
 	}
-	
-	//회원정보 수정
+
+	// 회원정보 수정
 	@RequestMapping(value = "/memberUpdate", method = RequestMethod.POST)
-	public String memberUpdatePOST(HttpServletRequest request, MemberVO member, Model model) throws Exception{
-		
-		//HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
+	public String memberUpdatePOST(HttpServletRequest request, MemberVO member, Model model) throws Exception {
+
+		// HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 //		MemberVO mVo = (MemberVO) session.getAttribute("member");
 		String flag = memberservice.memberLogin(member);
-		
-		if(flag == "fail") {	//수정 실패했을때
+
+		//비밀번호 일치 여부 확인
+		if (flag == "fail") { // 수정 실패했을때
 			int result = 0;
 			model.addAttribute("result", result);
 			request.setAttribute("msg", "수정에 실패했습니다.");
 			request.setAttribute("url", "/member/memberUpdateView");
 			return "member/alert"; // alert.jsp로 이동
-		} else {			//수정 성공했을때
-			System.out.println("asdf");
+		} else { // 수정 성공했을때
 			memberservice.memberUpdate(member);
 		}
-		
-		
-		
+
 		return "redirect:/main";
 	}
-	
-	//회원탈퇴
-	@ResponseBody //값을 넘겨줘야할때 사용
+
+	// 회원탈퇴
+	@ResponseBody // 값을 넘겨줘야할때 사용
 	@RequestMapping(value = "/memberDelete", method = RequestMethod.POST)
-	public Map<String,String> memberDelete(String memberNo) throws Exception{
+	public Map<String, String> memberDelete(String memberNo) throws Exception {
 		memberservice.memberDelete(memberNo);
-		
-		//String result = memberservice.memberDelete(memberNo);
+
+		// String result = memberservice.memberDelete(memberNo);
 		MemberVO member = memberservice.getMember(memberNo);
-		Map<String,String> result = new HashMap<String, String>();
-		if(member == null) {
+		Map<String, String> result = new HashMap<String, String>();
+		if (member == null) {
 			result.put("msg", "success");
 		}
-					
+
 		return result;
 	}
-	
 
+	
+	// 아이디찾기 페이지 이동
+	@RequestMapping(value = "/findId", method = RequestMethod.GET)
+	public String findIdGET() {
+
+		return "/member/findId";
+	}
+	
+	//아이디찾기
+	@RequestMapping(value = "/findId", method = RequestMethod.POST)
+	public String findIdPOST(String email, HttpServletRequest request) throws Exception {
+		
+		
+		int result = memberservice.fingId(email);
+
+		System.out.println("결과값 = " + result);
+
+		return result;
+		
+		memberservice.fingId(member);
+
+		//입력한 이메일이 일치했을때
+		request.setAttribute("msg", "가입하신 아이디를 이메일로 전송했습니다.");
+		request.setAttribute("url", "/member/login");
+		return "member/alert"; // alert.jsp로 이동
+
+		//입력한 이메일이 불일치할때 
+	}
+	
+	
 }

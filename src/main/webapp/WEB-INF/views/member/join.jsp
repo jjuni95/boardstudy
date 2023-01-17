@@ -14,42 +14,44 @@
 					<span>회원 정보 입력</span>
 				</div>
 				<div class="id_wrap">
-					<div class="id_name">아이디</div>
+					<div class="id_name">아이디 <span style="color:red">*</span></div>
 					<div class="id_input_box">
-						<input id="memberId" class="id_input" name="memberId" placeholder="아이디를 입력하세요.">
+						<input id="memberId" class="id_input" name="memberId" placeholder="아이디를 입력하세요." maxlength='10'>
+						<input type="hidden" id="checkId" value="N">
 					</div>
 					<div class="join_button_wrap">
 						<input type="button" onclick="fn_idChk();" class="idChk_button" id="idChk_button" value="중복확인">
 					</div>
 				</div>
 				<div class="user_wrap">
-					<div class="user_name">이름</div>
+					<div class="user_name">이름 <span style="color:red">*</span></div>
 					<div class="user_input_box">
-						<input class="user_input" id="memberName" name="memberName" placeholder="이름을 입력하세요.">
+						<input class="user_input" id="memberName" name="memberName" placeholder="이름을 입력하세요." maxlength='5'>
 					</div>
 				</div>
 				<div class="pw_wrap">
-					<div class="pw_name">비밀번호</div>
+					<div class="pw_name">비밀번호 <span style="color:red">*</span></div>
 					<div class="pw_input_box">
-						<input type="password" class="pw_input" id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요.">
+						<input type="password" class="pw_input" id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요." maxlength='20'>
 					</div>
 				</div>
 				<div class="pwck_wrap">
 					<div class="pwck_input_box">
-						<input type="password" class="pwck_input" id="chkMemberPassword" name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요.">
+						<input type="password" class="pwck_input" id="chkMemberPassword" name="chkMemberPassword" placeholder="비밀번호를 한번 더 입력하세요." maxlength='20'>
 					</div>
 				</div>
 
 				<div class="mail_wrap">
-					<div class="mail_name">이메일</div>
+					<div class="mail_name">이메일 <span style="color:red">*</span></div>
 					<div class="mail_input_box">
-						<input class="mail_input" id="emailId" name="emailId" placeholder="이메일 아이디"> 
-						<input class="mail_input_1" id=inputEmail name="inputEmail" style="display: none">
+						<input class="mail_input" id="emailId" name="emailId" placeholder="이메일 아이디" maxlength='10'> 
+						<input type="hidden" id="checkEmail" value="N">
+						@ <input class="mail_input_1" id="inputEmail" name="inputEmail">
 						 <select name="selectEmail" id="selectEmail">
-							<option value="1">직접입력</option>
-							<option value="@radcns.com" selected>@radcns.com</option>
-							<option value="@hanmail.net">@hanmail.net</option>
-							<option value="@naver.com">@naver.com</option>
+							<option value="1" selected>직접입력</option>
+							<option value="radcns.com">radcns.com</option>
+							<option value="hanmail.net">hanmail.net</option>
+							<option value="naver.com">naver.com</option>
 						</select>	
 					</div>
 
@@ -65,13 +67,13 @@
 							<option value="010" selected>010</option>
 							<option value="011">011</option>
 						</select>  
-				- &nbsp;	<input name="phone2" class="phone_input2" onlyNumber> - 
-						<input name="phone3" class="phone_input3" onlyNumber>
+				- &nbsp;	<input name="phone2" class="phone_input2" onlyNumber maxlength='4'> - 
+						<input name="phone3" class="phone_input3" onlyNumber maxlength='4'>
 					</div>
 				</div>
 
 				<div class="address_wrap">
-					<div class="zipcode_name">주소</div>
+					<div class="zipcode_name">주소 <span style="color:red">*</span></div>
 					<div class="zipcode_input_wrap">
 						<div class="zipcode_input_box">
 							<input class="zipcode_input" id="zipcode" name="zipcode" readonly="readonly" placeholder="우편번호">
@@ -93,11 +95,13 @@
 						</div>
 					</div>
 				</div>
+				
 				<div class="join_button_wrap">
 					<input type="submit" class="join_button" value="가입">
 				</div>
 				<div class="joinCancel_button_wrap">
-					<a href="/login" class="joinCancel_button" value="취소"></a>
+					<input type="button" onClick="location.href='http://localhost:8080/member/login'" 
+							class="joinCancel_button" value="취소"></input>
 				</div>
 			</div>
 		</form>
@@ -122,6 +126,13 @@ $(document).ready(function(){
 			return false;
 		}
 		
+		if($("#checkId").val() == "N"){
+			alert("중복확인해주세요.");
+			$("#memberId").focus();
+			return false;
+		}
+		
+		
 		if($("#memberPassword").val()==""){
 			alert("비밀번호를 입력해주세요.");
 			$("#memberPassword").focus();
@@ -134,17 +145,42 @@ $(document).ready(function(){
 	        return false; 
 	    }
 		
+		
+		
 		if($("#memberName").val()==""){
 			alert("성명을 입력해주세요.");
 			$("#memberName").focus();
 			return false;
 		}
 		
-		if($("#emailId").val()=="" || $("#email").val()=="" || $("#selectEmail").val()==""){
+		if($("#emailId").val()=="" || $("#inputEmail").val()=="" || $("#selectEmail").val()==""){
 			alert("이메일을 입력해주세요.");
 			$("#emailId").focus();
 			return false;
 		}
+		
+		if($("#checkEmail").val() == "N"){
+			alert("중복확인해주세요.");
+			$("#emailId").focus();
+			return false;
+		}
+		
+	 	var emailId = $("#emailId").val();
+		var inputEmail = $("#inputEmail").val();
+		var selectEmail =$("#selectEmail").val();
+		var email_rule =  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i; 
+		var mail1 = "";
+		var mail2 = "";
+		
+		mail1 = emailId + "@" + inputEmail;
+		mail2 = emailId + "@" + selectEmail;
+		
+		if(!email_rule.test(mail1) || !email_rule.test(mail2)){
+			alert("이메일을 형식에 맞게 입력해주세요.");
+			   return false; 
+		}
+		
+	
 		
 		if($("#zipcode").val()=="" || $("#streeAdr").val()=="" || $("#detailAdr").val()==""){
 			alert("주소를 입력해주세요.");
@@ -172,8 +208,20 @@ $(document).ready(function(){
 		
 });
 
+
+//아이디 값이 변경되면 중복체크 풀림
+$("#memberId").change(function(){
+	$("#checkId").val("N");
+});
+
+//이메일 값이 변경되면 중복체크 풀림
+$("#emailId").change(function(){
+	$("#checkEmail").val("N");
+});
+
 //아이디 중복검사
 function fn_idChk(){
+
 	$.ajax({
 		url : "/member/memberIdChk",
 		type : "post",
@@ -184,6 +232,7 @@ function fn_idChk(){
 					alert("중복된 아이디입니다.");
 				}else if(data == 0){
 					alert("사용가능한 아이디입니다.");
+					$("#checkId").val("Y");
 				}
 			}
 		})
@@ -203,6 +252,7 @@ function fn_emailChk(){
 					alert("중복된 이메일입니다.");
 				}else if(data == 0){
 					alert("사용가능한 이메일입니다.");
+					$("#checkEmail").val("Y");
 				}
 			}
 		})
@@ -216,17 +266,16 @@ $('input[onlyNumber]').on('keyup', function () {
 //이메일 입력방식 선택
 $('#selectEmail').change(function(){
    $("#selectEmail option:selected").each(function () {
-		
-		if($(this).val()== '1'){ //직접입력일 경우
-			 $("#inputEmail").css('display', 'inline-block'); //활성화
-			 $("#selectEmail").css('display', 'none'); //비활성화
-			 $("#inputEmail").val('');                        //값 초기화
-		}else{ //직접입력이 아닐경우
-			 $("#inputEmail").val($(this).text());      //선택값 입력
-		}
+      
+      if($(this).val()== '1'){ //직접입력일 경우
+          $("#inputEmail").val('');                        //값 초기화
+          $("#inputEmail").attr("disabled",false); //활성화
+      }else{ //직접입력이 아닐경우
+          $("#inputEmail").val($(this).text());      //선택값 입력
+          $("#inputEmail").attr("disabled",true); //비활성화
+      }
    });
 });
-
 
 
 /* 다음 주소 연동 */

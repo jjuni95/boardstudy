@@ -40,6 +40,8 @@ public class MemberServiceImpl implements MemberService {
 		phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
 		member.setPhone(phone);
 		
+		
+		
 
 		// 이메일 합치기
 		String selectEmail = member.getSelectEmail();
@@ -114,10 +116,6 @@ public class MemberServiceImpl implements MemberService {
 		String decName = aesutil.decrypt(encName);		//이름 복호화
 		String decEmail = aesutil.decrypt(encEmail);	//이메일 복호화
 		
-		//여기서 복호화한 개인정보들을 (decName이런 변수들) 매퍼랑 연결을 시켜야하는건지?
-		
-//		System.out.println(decName);
-		
 		System.out.println(member);
 		memberDAO.memberJoin(member);
 	}
@@ -154,7 +152,7 @@ public class MemberServiceImpl implements MemberService {
 		return mVo;
 	}
 
-	// 로그인 체크
+	// 로그인 체크(비밀번호 체크)
 	@Override
 	public String memberLogin(MemberVO member) throws Exception {
 		String pw = memberDAO.pwCheck(member.getMemberId());
@@ -168,6 +166,28 @@ public class MemberServiceImpl implements MemberService {
 	//받은 member를 DAO로 보내준다!
 	@Override
 	public void memberUpdate(MemberVO member) throws Exception {
+		
+		String phone = "";
+		// phone2,3 이 없으면 phone을 null처리
+		if ((member.getPhone2() == "" || member.getPhone2() == null)
+				|| (member.getPhone3() == "" || member.getPhone3() == null)) {
+			member.setPhone(null);
+		}
+		
+		// 핸드폰번호 합치기
+		phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
+		member.setPhone(phone);
+		
+
+		// 이메일 합치기
+		String selectEmail = member.getSelectEmail();
+		System.out.println(member.getSelectEmail());
+		if (selectEmail == "1") {
+			member.setEmail(member.getEmailId() + member.getInputEmail());
+		} else {
+			member.setEmail(member.getEmailId() + member.getSelectEmail());
+		}
+		
 		memberDAO.memberUpdate(member);
 	}
 
@@ -182,6 +202,13 @@ public class MemberServiceImpl implements MemberService {
 	public MemberVO getMember(String memberNo) throws Exception {
 		MemberVO mVo = memberDAO.getMember(memberNo);
 		return mVo;
+	}
+
+	//이메일 찾기
+	@Override
+	public void fingId(MemberVO member) throws Exception {
+		//메일이 일치하면 fingId로 인서트
+		if(member.getEmail() == input_email)
 	}
 
 
