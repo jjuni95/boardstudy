@@ -1,6 +1,7 @@
 package com.study.dao;
 
 import com.study.model.MemberVO;
+import com.study.model.NewPwVO;
 
 public interface MemberDAO {
 	
@@ -34,6 +35,16 @@ public interface MemberDAO {
 	//회원조회
 	public MemberVO getMember(String memberNo) throws Exception;
 	
-	//이메일 찾기
-	public void fingId(MemberVO member) throws Exception;
+	//이메일로 아이디, 비밀번호 찾기
+	public MemberVO findIdByEmail(String email) throws Exception;
+	
+	//아이디찾는 이력 저장
+	public void insertId(MemberVO member) throws Exception;
+	
+	//비밀번호 찾는 이력 저장
+	public void insertTempPw(NewPwVO newPwVO) throws Exception;
+	
+	//임시비밀번호로 업데이트
+	public void updatePw(String encTempPw, String memberNo) throws Exception;
+
 }

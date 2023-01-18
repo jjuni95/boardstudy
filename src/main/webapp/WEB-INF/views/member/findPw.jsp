@@ -8,14 +8,14 @@
 <body>
 
 	
-<form id="findId_form" action="/member/findId"  method="post">
+<form id="findPw_form" action="/member/findPw"  method="post">
 	<div>
-		<span>아이디 찾기</span>
+		<span>비밀번호 찾기</span>
 		<input id="input_email" name="email"
 			placeholder="이메일 주소를 입력해 주세요.">
 	</div>
 	<div class="id_email_submit">
-		<input type="submit" onclick="fn_idEmailSubmit();" 
+		<input type="submit"
 			id="EmailSubmit_button" value="임시 비밀번호 이메일 전송">
 	</div>
 </form>

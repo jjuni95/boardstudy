@@ -79,12 +79,30 @@
 	</select>
 	
 	
-	<!-- 이메일 찾기 -->
-	<insert id="fingId" parameterType="com.study.model.MemberVO">
-		INSERT INTO Cu_MEMBER (MEMBER_NO, MEMBER_ID)
+	<!-- 아이디찾는 이력 저장 -->
+	<insert id="insertId" parameterType="com.study.model.MemberVO">
+		INSERT INTO Cu_NEWID (MEMBER_NO, MEMBER_ID)
 		 				 VALUES(#{memberNo}, #{memberId})
+		 				 
 	</insert>
 	
+	<!-- 이메일로 아이디, 비밀번호 찾기 -->
+	<select id="findIdByEmail" resultType="com.study.model.MemberVO" parameterType="String">
+		select MEMBER_NO AS memberNo, MEMBER_ID AS memberId from Cu_MEMBER where EMAIL = #{email}
+	</select>
+	
+	<!-- 임시 비밀번호 저장 -->
+	<insert id="insertTempPw" parameterType="com.study.model.NewPwVO">
+		INSERT INTO Cu_NEWPW (MEMBER_NO, NEW_PW)
+		 				 VALUES(#{memberNo}, #{newPw})
+	</insert>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="updatePw">
+		update Cu_MEMBER
+		SET MEMBER_PASSWORD = #{tempPw}
+		WHERE MEMBER_NO = #{memberNo}
+	</update>
 	
   </mapper>
   

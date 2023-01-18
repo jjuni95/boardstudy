@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.study.model.MemberVO;
+import com.study.model.NewPwVO;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -89,12 +90,34 @@ public class MemberDAOImpl implements MemberDAO {
 		return mVO;
 	}
 
-	//이메일 찾기
+	//아이디찾는 이력 저장
 	@Override
-	public void fingId(MemberVO member) throws Exception {
-		template.selectOne("MemberMapper.fingId", member);
+	public void insertId(MemberVO member) throws Exception {
+		template.selectOne("MemberMapper.insertId", member);
 	}
 
+	//이메일로 아이디, 비밀번호 찾기
+	@Override
+	public MemberVO findIdByEmail(String email) {
+		MemberVO mVO = template.selectOne("MemberMapper.findIdByEmail", email);
+		return mVO;
+	}
 
+	//비밀번호 찾는 이력 저장
+	@Override
+	public void insertTempPw(NewPwVO newPwVO) throws Exception {
+		template.selectOne("MemberMapper.insertTempPw", newPwVO);
+	}
+
+	//임시비밀번호로 업데이트
+	@Override
+	public MemberVO updatePw(MemberVO member) {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("memberNo", member.getMemberNo());
+		map.put("tempPw", member.getMemberPassword());
+		MemberVO returnMember = template.update("MemberMapper.updatePw", map);
+		
+		return returnMember;
+	}
 
 }

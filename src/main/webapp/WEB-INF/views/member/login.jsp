@@ -38,11 +38,11 @@
 		</div>	
 		
 		<div class="findid_button_wrap">
-			<input type="button" class="findid_button" value="아이디 찾기">
+			<input type="button" class="findid_button" value="아이디 찾기" onClick="location.href='http://localhost:8080/member/findId'">
 		</div>	
 		
 		<div class="findpw_button_wrap">
-			<input type="button" class="findpw_button" value="비밀번호 찾기">
+			<input type="button" class="findpw_button" value="비밀번호 찾기" onClick="location.href='http://localhost:8080/member/findPw'">
 		</div>			
 		
 		<div class="join_button_wrap">

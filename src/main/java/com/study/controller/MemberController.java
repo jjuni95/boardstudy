@@ -12,10 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.component.AES256Util;
 import com.study.model.MemberVO;
+import com.study.model.NewPwVO;
 import com.study.service.MemberService;
 
 @Controller
@@ -40,15 +40,14 @@ public class MemberController {
 	// 회원가입
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
 	public String joinPOST(HttpServletRequest request, MemberVO member) throws Exception {
-		
-		//유효성 검사
-		if((member.getMemberName() ==null)
-		//	|| (member.getPhone2().length() != 4 || member.getPhone3().length() != 4)
-			|| (member.getMemberPassword() == null)
-			|| (member.getMemberId() == null)) {
-				request.setAttribute("msg", "회원가입에 실패했습니다.");
-				request.setAttribute("url", "/member/login");
-				return "member/alert"; // alert.jsp로 이동
+
+		// 유효성 검사
+		if ((member.getMemberName() == null)
+				// || (member.getPhone2().length() != 4 || member.getPhone3().length() != 4)
+				|| (member.getMemberPassword() == null) || (member.getMemberId() == null)) {
+			request.setAttribute("msg", "회원가입에 실패했습니다.");
+			request.setAttribute("url", "/member/login");
+			return "member/alert"; // alert.jsp로 이동
 		}
 
 		// 회원가입 서비스 실행
@@ -59,7 +58,7 @@ public class MemberController {
 		request.setAttribute("url", "/member/login");
 		return "member/alert"; // alert.jsp로 이동
 
-		//return "redirect:/main";
+		// return "redirect:/main";
 
 	}
 
@@ -149,7 +148,7 @@ public class MemberController {
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		MemberVO mVo = (MemberVO) session.getAttribute("member"); // MemberVO로 형변환 시키고 다시 객체를 담아준다
 
-		//복호화하기
+		// 복호화하기
 		String decName = aesutil.decrypt(mVo.getMemberName());
 		model.addAttribute("decName", decName);
 
@@ -164,7 +163,7 @@ public class MemberController {
 //		MemberVO mVo = (MemberVO) session.getAttribute("member");
 		String flag = memberservice.memberLogin(member);
 
-		//비밀번호 일치 여부 확인
+		// 비밀번호 일치 여부 확인
 		if (flag == "fail") { // 수정 실패했을때
 			int result = 0;
 			model.addAttribute("result", result);
@@ -174,7 +173,6 @@ public class MemberController {
 		} else { // 수정 성공했을때
 			memberservice.memberUpdate(member);
 		}
-
 		return "redirect:/main";
 	}
 
@@ -190,38 +188,50 @@ public class MemberController {
 		if (member == null) {
 			result.put("msg", "success");
 		}
-
 		return result;
 	}
 
-	
 	// 아이디찾기 페이지 이동
 	@RequestMapping(value = "/findId", method = RequestMethod.GET)
 	public String findIdGET() {
-
 		return "/member/findId";
 	}
-	
-	//아이디찾기
+
+	// 아이디찾기
 	@RequestMapping(value = "/findId", method = RequestMethod.POST)
 	public String findIdPOST(String email, HttpServletRequest request) throws Exception {
-		
-		
-		int result = memberservice.fingId(email);
+		MemberVO mVo = memberservice.findIdByEmail(email); // 입력한 이메일을 조회
 
-		System.out.println("결과값 = " + result);
+		if (mVo != null) {
+			memberservice.insertId(mVo);
+			request.setAttribute("msg", "가입하신 아이디를 이메일로 전송했습니다.");
+			request.setAttribute("url", "/member/login");
+			return "member/alert"; // alert.jsp로 이동
+		} else {
+			request.setAttribute("msg", "일치한 이메일이 없습니다.");
+			request.setAttribute("url", "/member/login");
+			return "member/alert"; // alert.jsp로 이동
+		}
+	}
 
-		return result;
-		
-		memberservice.fingId(member);
-
-		//입력한 이메일이 일치했을때
-		request.setAttribute("msg", "가입하신 아이디를 이메일로 전송했습니다.");
-		request.setAttribute("url", "/member/login");
-		return "member/alert"; // alert.jsp로 이동
-
-		//입력한 이메일이 불일치할때 
+	// 비밀번호찾기 페이지 이동
+	@RequestMapping(value = "/findPw", method = RequestMethod.GET)
+	public String findPwGET() {
+		return "/member/findPw";
 	}
 	
-	
+	//임시 비밀번호 
+	@RequestMapping(value="/findPw", method = RequestMethod.POST)
+	public String findPwPost(String email, HttpServletRequest request) throws Exception{
+		MemberVO mVo = memberservice.findIdByEmail(email); // 입력한 이메일을 조회
+		
+		if(mVo != null) {
+			memberservice.insertTempPw(mVo);
+			request.setAttribute("msg", "가입하신 이메일로 임시 비밀번호를 전송했습니다.");
+			request.setAttribute("url", "/member/login");
+			return "member/alert"; // alert.jsp로 이동
+		}
+		return "/member/login";
+		
+	}
 }

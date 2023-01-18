@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.study.component.AES256Util;
 import com.study.dao.MemberDAO;
 import com.study.model.MemberVO;
+import com.study.model.NewPwVO;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -47,9 +48,9 @@ public class MemberServiceImpl implements MemberService {
 		String selectEmail = member.getSelectEmail();
 		System.out.println(member.getSelectEmail());
 		if (selectEmail == "1") {
-			member.setEmail(member.getEmailId() + member.getInputEmail());
+			member.setEmail(member.getEmailId() + "@" + member.getInputEmail());
 		} else {
-			member.setEmail(member.getEmailId() + member.getSelectEmail());
+			member.setEmail(member.getEmailId() + "@" + member.getSelectEmail());
 		}
 		
 		// 회원번호 구하기 ㅠㅠ
@@ -204,13 +205,60 @@ public class MemberServiceImpl implements MemberService {
 		return mVo;
 	}
 
-	//이메일 찾기
+	//이메일로 아이디, 비밀번호 찾기
 	@Override
-	public void fingId(MemberVO member) throws Exception {
-		//메일이 일치하면 fingId로 인서트
-		if(member.getEmail() == input_email)
+	public MemberVO findIdByEmail(String email) throws Exception {
+		
+		String encEmail = aesutil.encrypt(email);			//이메일
+		
+		MemberVO mVo = memberDAO.findIdByEmail(encEmail); 
+	
+		return mVo;
+	}
+	
+	//아이디찾는 이력 저장
+	@Override
+	public void insertId(MemberVO mVo) throws Exception {
+	memberDAO.insertId(mVo);
 	}
 
+	//비밀번호 찾는 이력 저장 -> 이력저장은 임시비밀번호로 
+	@Override
+	public void insertTempPw(MemberVO member) throws Exception {
+		  char pwCollection[] = new char[] {
+                  '1','2','3','4','5','6','7','8','9','0',
+                  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                  'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+                  '!','@','#','$','%','^','&','*','(',')'};//배열에 선언
+		
+		String tempPw = "";
+		
+		for(int i = 0; i <= 8; i++) {
+			int selectRandomPw = (int) (Math.random()*(pwCollection.length));
+			tempPw += pwCollection[selectRandomPw];
+					
+		}
+		
+		NewPwVO newPwVO = new NewPwVO();
+		newPwVO.setMemberNo(member.getMemberNo());
+		newPwVO.setNewPw(tempPw);
+		
+		memberDAO.insertTempPw(newPwVO);
+		
+		
+		//비밀번호 암호화
+		String encTempPw = aesutil.encrypt(tempPw);	
+		
+		System.out.println(member.getMemberNo());
+		
+		memberDAO.updatePw(encTempPw, member.getMemberNo());
+	}
+
+
+
+
+	
+	
 
 
 }
