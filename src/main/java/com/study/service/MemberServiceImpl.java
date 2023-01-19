@@ -236,7 +236,6 @@ public class MemberServiceImpl implements MemberService {
 		for(int i = 0; i <= 8; i++) {
 			int selectRandomPw = (int) (Math.random()*(pwCollection.length));
 			tempPw += pwCollection[selectRandomPw];
-					
 		}
 		
 		NewPwVO newPwVO = new NewPwVO();
@@ -245,13 +244,11 @@ public class MemberServiceImpl implements MemberService {
 		
 		memberDAO.insertTempPw(newPwVO);
 		
-		
 		//비밀번호 암호화
-		String encTempPw = aesutil.encrypt(tempPw);	
+		String encPassword = passwordEncoder.encode(tempPw);
 		
-		System.out.println(member.getMemberNo());
+		memberDAO.updatePw(encPassword, member.getMemberNo());
 		
-		memberDAO.updatePw(encTempPw, member.getMemberNo());
 	}
 
 

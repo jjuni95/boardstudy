@@ -111,13 +111,11 @@ public class MemberDAOImpl implements MemberDAO {
 
 	//임시비밀번호로 업데이트
 	@Override
-	public MemberVO updatePw(MemberVO member) {
+	public void updatePw(String encTempPw, String memberNo) {
 		HashMap<String, String> map = new HashMap<>();
-		map.put("memberNo", member.getMemberNo());
-		map.put("tempPw", member.getMemberPassword());
-		MemberVO returnMember = template.update("MemberMapper.updatePw", map);
-		
-		return returnMember;
+		map.put("memberNo", memberNo);
+		map.put("tempPw", encTempPw);
+		template.update("MemberMapper.updatePw", map);
 	}
 
 }

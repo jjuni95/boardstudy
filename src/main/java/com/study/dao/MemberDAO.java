@@ -45,6 +45,7 @@ public interface MemberDAO {
 	public void insertTempPw(NewPwVO newPwVO) throws Exception;
 	
 	//임시비밀번호로 업데이트
+	//public void updatePw(String encTempPw, String memberNo) throws Exception;
 	public void updatePw(String encTempPw, String memberNo) throws Exception;
 
 }

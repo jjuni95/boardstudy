@@ -36,7 +36,7 @@
 	<select id="memberLogin" resultType="com.study.model.MemberVO" parameterType="String">
 		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName, MEMBER_NO AS memberNo, MEMBER_PASSWORD AS memberPassword
 			FROM Cu_MEMBER 
-			WHERE MEMBER_ID = #{memberId}
+			WHERE MEMBER_ID = #{memberId} 
 			AND ISENABLED = 'N'
 	</select>
 	
@@ -98,7 +98,7 @@
 	</insert>
 	
 	<!-- 비밀번호 변경 -->
-	<update id="updatePw">
+	<update id="updatePw" parameterType="String">
 		update Cu_MEMBER
 		SET MEMBER_PASSWORD = #{tempPw}
 		WHERE MEMBER_NO = #{memberNo}

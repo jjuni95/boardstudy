@@ -230,8 +230,10 @@ public class MemberController {
 			request.setAttribute("msg", "가입하신 이메일로 임시 비밀번호를 전송했습니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
+		}else {
+			request.setAttribute("msg", "일치한 이메일이 없습니다.");
+			request.setAttribute("url", "/member/login");
+			return "member/alert"; // alert.jsp로 이동
 		}
-		return "/member/login";
-		
 	}
 }

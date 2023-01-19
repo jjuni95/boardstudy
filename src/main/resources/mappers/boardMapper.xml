@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+
+
+
+<!-- 게시판 글 작성 -->
+<insert id="insertBoard" parameterType="com.study.model.BoardVO">
+	insert into Bd_BOARD (MEMBER_NO, TITLE, CONTENT)
+			VALUES (#{memberNo}, #{title}, #{content})
+</insert>
+
+<!-- 작성자 가져오기 -->
+<!-- 세션으로 가져오면 바로 이름을 가져올수있지만
+조인을 사용하라고 해서
+게시판을 한번도 안쓴사람이 게시판을 쓰려고하면 이름을 못가져온다 그래서 레프트 조인 씀!! -->
+<select id="selectWriter" resultType="String">
+	select MEMBER_NAME
+	from Cu_MEMBER as a
+		left outer join Bd_BOARD as b on a.MEMBER_NO = b.MEMBER_NO
+	where a.MEMBER_NO = #{memberNo}
+</select>
+
+<!-- 게시판 목록 -->
+<select id="getList" resultType="com.study.model.BoardVO">
+	select * from Bd_BOARD
+</select>
+
+</mapper>
