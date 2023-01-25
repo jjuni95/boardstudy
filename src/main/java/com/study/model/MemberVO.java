@@ -41,6 +41,18 @@ public class MemberVO {
 
 	//ISENABLED 삭제여부
 	private String isenabled;
+	
+	//수정날짜
+	private String updateDate;
+
+	
+	public String getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
 
 	public String getMemberNo() {
 		return memberNo;
@@ -184,8 +196,11 @@ public class MemberVO {
 				+ memberName + ", memberPassword=" + memberPassword + ", email=" + email + ", emailId=" + emailId
 				+ ", inputEmail=" + inputEmail + ", selectEmail=" + selectEmail + ", phone=" + phone + ", phone1="
 				+ phone1 + ", phone2=" + phone2 + ", phone3=" + phone3 + ", zipcode=" + zipcode + ", streeAdr="
-				+ streeAdr + ", detailAdr=" + detailAdr + ", isenabled=" + isenabled + "]";
+				+ streeAdr + ", detailAdr=" + detailAdr + ", isenabled=" + isenabled + ", updateDate=" + updateDate
+				+ "]";
 	}
+
+
 
 
 

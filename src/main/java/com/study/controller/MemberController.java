@@ -179,7 +179,7 @@ public class MemberController {
 	// 회원탈퇴
 	@ResponseBody // 값을 넘겨줘야할때 사용
 	@RequestMapping(value = "/memberDelete", method = RequestMethod.POST)
-	public Map<String, String> memberDelete(String memberNo) throws Exception {
+	public Map<String, String> memberDelete(HttpServletRequest request, String memberNo) throws Exception {
 		memberservice.memberDelete(memberNo);
 
 		// String result = memberservice.memberDelete(memberNo);
@@ -187,7 +187,11 @@ public class MemberController {
 		Map<String, String> result = new HashMap<String, String>();
 		if (member == null) {
 			result.put("msg", "success");
+			HttpSession session = request.getSession();
+			
+			session.invalidate();
 		}
+		
 		return result;
 	}
 

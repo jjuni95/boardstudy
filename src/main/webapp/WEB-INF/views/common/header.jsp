@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,7 +9,13 @@
 <body>
 	<div onClick="location.href='http://localhost:8080/member/memberUpdateView'">
 		${member.memberId}
+	<c:if test="${loginSession != null}">
 	<a href="/member/logout" id="logout">로그아웃</a>
+	</c:if>
+	
+	<c:if test="${loginSession == null}">
+	<a href="/member/login" id="login">로그인</a>
+	</c:if>
 	</div>
 </body>
 

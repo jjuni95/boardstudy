@@ -6,7 +6,7 @@
 
 
 
-<!-- 게시판 글 작성 -->
+<!-- 게시판 글 등록 -->
 <insert id="insertBoard" parameterType="com.study.model.BoardVO">
 	insert into Bd_BOARD (MEMBER_NO, TITLE, CONTENT)
 			VALUES (#{memberNo}, #{title}, #{content})
@@ -24,8 +24,25 @@
 </select>
 
 <!-- 게시판 목록 -->
-<select id="getList" resultType="com.study.model.BoardVO">
-	select * from Bd_BOARD
+<select id="getList" parameterType="hashmap" resultType="hashmap">
+	select	MEMBER_NAME as memberName
+			,BOARD_NO as boardNo
+			,TITLE as title
+			,a.REG_DATE as bregDate
+	from Bd_BOARD as a
+	inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
+	ORDER BY BOARD_NO DESC
+	OFFSET #{offset} ROWS
+	FETCH NEXT #{pageSize} ROWS ONLY
+
+</select>
+
+<!-- 게시판 상세 조회 -->
+<select id="getPage" resultType="com.study.model.BoardVO">
+	select MEMBER_NAME, HIT, a.REG_DATE, a.UPDATE_DATE, TITLE, CONTENT
+	FROM Bd_BOARD as a
+		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
+	where BOARD_NO = #{boardNo}
 </select>
 
 </mapper>

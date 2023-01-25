@@ -36,11 +36,11 @@ public class MemberServiceImpl implements MemberService {
 				|| (member.getPhone3() == "" || member.getPhone3() == null)) {
 			member.setPhone(null);
 		}
-		
-		// 핸드폰번호 합치기
-		phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
-		member.setPhone(phone);
-		
+		else {
+			// 핸드폰번호 합치기
+			phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
+			member.setPhone(phone);
+		}
 		
 		
 
@@ -137,12 +137,12 @@ public class MemberServiceImpl implements MemberService {
 
 		// 이메일 합치기
 		if (selectEmail == "1") {
-			email = emailId + inputEmail;
+			email = emailId + "@" +  inputEmail;
 		} else {
-			email = emailId + selectEmail;
+			email = emailId + "@" +  selectEmail;
 		}
 
-		int result = memberDAO.emailCheck(email);
+		int result = memberDAO.emailCheck(aesutil.encrypt(email));
 		return result;
 	}
 
@@ -174,20 +174,34 @@ public class MemberServiceImpl implements MemberService {
 				|| (member.getPhone3() == "" || member.getPhone3() == null)) {
 			member.setPhone(null);
 		}
-		
-		// 핸드폰번호 합치기
-		phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
-		member.setPhone(phone);
-		
+		else {
+			// 핸드폰번호 합치기
+			phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
+			member.setPhone(phone);
+		}
 
 		// 이메일 합치기
 		String selectEmail = member.getSelectEmail();
 		System.out.println(member.getSelectEmail());
 		if (selectEmail == "1") {
-			member.setEmail(member.getEmailId() + member.getInputEmail());
+			member.setEmail(member.getEmailId() + "@" + member.getInputEmail());
 		} else {
-			member.setEmail(member.getEmailId() + member.getSelectEmail());
+			member.setEmail(member.getEmailId() + "@" + member.getSelectEmail());
 		}
+		System.out.println("member====> " + member);
+		// 개인정보 암호화
+		String encEmail = aesutil.encrypt(member.getEmail());			//이메일
+		String encPhone = aesutil.encrypt(member.getPhone()); 			//핸드폰번호
+		String encZipcode = aesutil.encrypt(member.getZipcode());		//우편번호
+		String encStreetAdr = aesutil.encrypt(member.getStreeAdr());	//주소
+		String encDetailAdr = aesutil.encrypt(member.getDetailAdr());	//상세주소
+		
+		member.setEmail(encEmail);
+		member.setPhone(encPhone);
+		member.setZipcode(encZipcode);
+		member.setStreeAdr(encStreetAdr);
+		member.setDetailAdr(encDetailAdr);
+		
 		
 		memberDAO.memberUpdate(member);
 	}

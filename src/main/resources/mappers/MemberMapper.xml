@@ -56,7 +56,8 @@
 			PHONE = #{phone},
 			ZIPCODE = #{zipcode},
 			STREETADR = #{streeAdr},
-			DETAILADR = #{detailAdr}
+			DETAILADR = #{detailAdr},
+			UPDATE_DATE = GETDATE()
 		WHERE MEMBER_ID = #{memberId}
 	
 	</update>
@@ -65,7 +66,8 @@
 	<!-- 회원 탈퇴 -->
 	<update id="memberDelete" parameterType="String">
 		UPDATE Cu_MEMBER 
-		SET	ISENABLED = 'Y'
+		SET	ISENABLED = 'Y',
+		UPDATE_DATE = GETDATE()
 		WHERE
 			MEMBER_NO = #{memberNo} AND  ISENABLED = 'N'
 	</update>
@@ -88,7 +90,10 @@
 	
 	<!-- 이메일로 아이디, 비밀번호 찾기 -->
 	<select id="findIdByEmail" resultType="com.study.model.MemberVO" parameterType="String">
-		select MEMBER_NO AS memberNo, MEMBER_ID AS memberId from Cu_MEMBER where EMAIL = #{email}
+		select MEMBER_NO AS memberNo, MEMBER_ID AS memberId 
+		from Cu_MEMBER 
+		where EMAIL = #{email}
+			AND ISENABLED = 'N'
 	</select>
 	
 	<!-- 임시 비밀번호 저장 -->

@@ -67,8 +67,8 @@
 							<option value="010" selected>010</option>
 							<option value="011">011</option>
 						</select>  
-				- &nbsp;	<input name="phone2" class="phone_input2" onlyNumber maxlength='4'> - 
-						<input name="phone3" class="phone_input3" onlyNumber maxlength='4'>
+				- &nbsp;	<input name="phone2" class="phone_input2" onlyNumber maxlength='4' placeholder="0000"> - 
+						<input name="phone3" class="phone_input3" onlyNumber maxlength='4' placeholder="0000">
 					</div>
 				</div>
 

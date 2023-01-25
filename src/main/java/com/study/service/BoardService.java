@@ -1,6 +1,7 @@
 package com.study.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.study.model.BoardVO;
 
@@ -13,6 +14,9 @@ public interface BoardService {
 	public String selectWriter(String memberNo) throws Exception;
 	
 	//게시판 목록
-	public List<BoardVO> getList() throws Exception;
+	public List<Map<String,Object>> getList() throws Exception;
+	
+	//게시판 조회
+	public BoardVO getPage(int boardNo) throws Exception;
 
 }

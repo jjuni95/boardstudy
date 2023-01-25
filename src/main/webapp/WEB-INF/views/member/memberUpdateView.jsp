@@ -115,6 +115,20 @@
 
 //이메일 중복검사
 function fn_emailChk(){
+	var emailId = $("#emailId").val();
+	var inputEmail = $("#inputEmail").val();
+	var selectEmail =$("#selectEmail").val();
+	var email_rule =  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i; 
+	var mail1 = "";
+	var mail2 = "";
+	
+	mail1 = emailId + "@" + inputEmail;
+	mail2 = emailId + "@" + selectEmail;
+	
+	if(!email_rule.test(mail1) || !email_rule.test(mail2)){
+		alert("이메일을 형식에 맞게 입력해주세요.");
+		   return false; 
+	}else{
 	$.ajax({
 		url : "/member/memberEmailChk", 
 		type : "post",
@@ -132,6 +146,7 @@ function fn_emailChk(){
 			}
 		})
 	}
+}
 	
 	
 //회원수정: 수정버튼
@@ -201,6 +216,7 @@ function fn_memberUpdate(){
 			console.log("통과"); 
 	    	return true;
 	    }
+		
 
 }
 	

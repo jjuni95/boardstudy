@@ -1,6 +1,7 @@
 package com.study.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,9 +37,29 @@ public class BoardServiceImpl implements BoardService{
 
 	//게시판 목록
 	@Override
-	public List<BoardVO> getList() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Map<String,Object>> getList() throws Exception {
+		List<Map<String,Object>> boardList =  boardDAO.getList();
+		for(int i=0; i<boardList.size(); i++) {
+			String memberName = boardList.get(i).get("memberName").toString();
+			String decMemberName = aesutil.decrypt(memberName);	
+			
+			//마스킹(이름 80%)
+			
+			
+			
+			boardList.get(i).put("memberName", decMemberName);
+			
+		}
+		return boardList;
 	}
+
+	//게시판 조회
+	@Override
+	public BoardVO getPage(int boardNo) throws Exception {
+		BoardVO bVo = boardDAO.getPage(boardNo);
+		return bVo;
+	}
+	
+	
 
 }

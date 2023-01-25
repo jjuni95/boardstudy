@@ -1,5 +1,8 @@
 package com.study.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -32,8 +35,12 @@ public class BoardController {
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 		}
+		//
+		
+		
 		//세션이 있을때 ! 
-		model.addAttribute("list", boardservice.getList());
+		List<Map<String,Object>> boardList = boardservice.getList();
+		model.addAttribute("list", boardList);
 		return "board/list";
 	}
 	
@@ -61,6 +68,7 @@ public class BoardController {
 	 public String boardEnrollPOST(BoardVO board,HttpServletRequest request) throws Exception {
 		 HttpSession session = request.getSession();
 		 MemberVO mVo = (MemberVO) session.getAttribute("member");
+		//  model.addAttribute("loginSession", mVo); 로그인세션 이거 갖다쓰기!!
 		 
 		 if(mVo == null) {
 				request.setAttribute("msg", "로그인 상태로만 접근이 가능합니다.");
@@ -73,6 +81,12 @@ public class BoardController {
 		 boardservice.enroll(board);
 		 
 		 return "redirect:/board/list";
+	 }
+	 
+	 //게시판 조회
+	 @GetMapping("/get")
+	 public void boardGetPageGET(int boardNo, Model model) throws Exception {
+		 model.addAttribute("pageInfo", boardservice.getPage(boardNo));
 	 }
 	 
 }

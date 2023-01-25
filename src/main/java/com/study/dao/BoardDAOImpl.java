@@ -1,6 +1,7 @@
 package com.study.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,15 @@ public class BoardDAOImpl implements BoardDAO {
 
 	//게시판 목록
 	@Override
-	public List<BoardVO> getList() throws Exception {
-		return template.selectList("boardMapper.getList", getList());
+	public List<Map<String,Object>> getList() throws Exception {
+		return template.selectList("boardMapper.getList");
+	}
+
+	//게시판 상세 조회
+	@Override
+	public BoardVO getPage(int boardNo) throws Exception {
+		BoardVO bVO = template.selectOne("boardMapper.getPage", boardNo);
+		return bVO;
 	}
 
 }
