@@ -29,20 +29,6 @@ public class MemberServiceImpl implements MemberService {
 	// 회원가입
 	@Override
 	public void memberJoin(MemberVO member) throws Exception {
-		
-		String phone = "";
-		// phone2,3 이 없으면 phone을 null처리
-		if ((member.getPhone2() == "" || member.getPhone2() == null)
-				|| (member.getPhone3() == "" || member.getPhone3() == null)) {
-			member.setPhone(null);
-		}
-		else {
-			// 핸드폰번호 합치기
-			phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
-			member.setPhone(phone);
-		}
-		
-		
 
 		// 이메일 합치기
 		String selectEmail = member.getSelectEmail();
@@ -95,17 +81,28 @@ public class MemberServiceImpl implements MemberService {
 		String encPassword = passwordEncoder.encode(member.getMemberPassword());
 		member.setMemberPassword(encPassword);
 
-		// 개인정보 암호화
+		String phone = "";
+		// phone2,3 이 없으면 phone을 null처리
+		if ((member.getPhone2() == "" || member.getPhone2() == null)
+				|| (member.getPhone3() == "" || member.getPhone3() == null)) {
+			member.setPhone(null);
+		}
+		else {
+			// 핸드폰번호 합치기
+			phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
+			String encPhone = aesutil.encrypt(phone); 			//핸드폰번호
+			member.setPhone(encPhone);
+		}
+		
+		// 개인정보 암호화		
 		String encName = aesutil.encrypt(member.getMemberName());		//이름
 		String encEmail = aesutil.encrypt(member.getEmail());			//이메일
-		String encPhone = aesutil.encrypt(member.getPhone()); 			//핸드폰번호
 		String encZipcode = aesutil.encrypt(member.getZipcode());		//우편번호
 		String encStreetAdr = aesutil.encrypt(member.getStreeAdr());	//주소
 		String encDetailAdr = aesutil.encrypt(member.getDetailAdr());	//상세주소
 		
 		member.setMemberName(encName);
 		member.setEmail(encEmail);
-		member.setPhone(encPhone);
 		member.setZipcode(encZipcode);
 		member.setStreeAdr(encStreetAdr);
 		member.setDetailAdr(encDetailAdr);
@@ -173,11 +170,14 @@ public class MemberServiceImpl implements MemberService {
 		if ((member.getPhone2() == "" || member.getPhone2() == null)
 				|| (member.getPhone3() == "" || member.getPhone3() == null)) {
 			member.setPhone(null);
+			
 		}
 		else {
 			// 핸드폰번호 합치기
 			phone = member.getPhone1() + member.getPhone2() + member.getPhone3();
 			member.setPhone(phone);
+			String encPhone = aesutil.encrypt(member.getPhone()); 			//핸드폰번호
+			member.setPhone(encPhone);
 		}
 
 		// 이메일 합치기
@@ -191,17 +191,18 @@ public class MemberServiceImpl implements MemberService {
 		System.out.println("member====> " + member);
 		// 개인정보 암호화
 		String encEmail = aesutil.encrypt(member.getEmail());			//이메일
-		String encPhone = aesutil.encrypt(member.getPhone()); 			//핸드폰번호
 		String encZipcode = aesutil.encrypt(member.getZipcode());		//우편번호
 		String encStreetAdr = aesutil.encrypt(member.getStreeAdr());	//주소
 		String encDetailAdr = aesutil.encrypt(member.getDetailAdr());	//상세주소
 		
 		member.setEmail(encEmail);
-		member.setPhone(encPhone);
 		member.setZipcode(encZipcode);
 		member.setStreeAdr(encStreetAdr);
 		member.setDetailAdr(encDetailAdr);
 		
+		
+		String decEmail = aesutil.decrypt(encEmail);	//이메일 복호화
+		System.out.println("decEmail=>>>>>" + decEmail);
 		
 		memberDAO.memberUpdate(member);
 	}

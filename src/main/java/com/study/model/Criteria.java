@@ -1,6 +1,6 @@
 package com.study.model;
 
-public class Paging {
+public class Criteria {
 	
 	//현재 페이지
 	private int pageNum;
@@ -9,11 +9,11 @@ public class Paging {
 	private int amount;
 	
 	//pageNum = 1, amount = 10
-	public Paging() {
+	public Criteria() {
 		this(1,10);
 	}
 
-	public Paging(int pageNum, int amount) {
+	public Criteria(int pageNum, int amount) {
 		this.pageNum = pageNum;
 		this.amount = amount;
 	}

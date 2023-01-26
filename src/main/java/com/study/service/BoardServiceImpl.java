@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.study.component.AES256Util;
 import com.study.dao.BoardDAO;
 import com.study.model.BoardVO;
+import com.study.model.Criteria;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -37,8 +38,8 @@ public class BoardServiceImpl implements BoardService{
 
 	//게시판 목록
 	@Override
-	public List<Map<String,Object>> getList() throws Exception {
-		List<Map<String,Object>> boardList =  boardDAO.getList();
+	public List<Map<String,Object>> getList(Criteria cri) throws Exception {
+		List<Map<String,Object>> boardList =  boardDAO.getList(cri);
 		for(int i=0; i<boardList.size(); i++) {
 			String memberName = boardList.get(i).get("memberName").toString();
 			String decMemberName = aesutil.decrypt(memberName);	
@@ -59,6 +60,14 @@ public class BoardServiceImpl implements BoardService{
 		BoardVO bVo = boardDAO.getPage(boardNo);
 		return bVo;
 	}
+
+	//게시판 총 갯수
+	@Override
+	public int getTotal() {
+		int boardCnt = boardDAO.getTotal();
+		return boardCnt;
+	}
+
 	
 	
 

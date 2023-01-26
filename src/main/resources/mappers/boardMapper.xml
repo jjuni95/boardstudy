@@ -17,14 +17,14 @@
 조인을 사용하라고 해서
 게시판을 한번도 안쓴사람이 게시판을 쓰려고하면 이름을 못가져온다 그래서 레프트 조인 씀!! -->
 <select id="selectWriter" resultType="String">
-	select MEMBER_NAME
+	select top 1 MEMBER_NAME
 	from Cu_MEMBER as a
 		left outer join Bd_BOARD as b on a.MEMBER_NO = b.MEMBER_NO
 	where a.MEMBER_NO = #{memberNo}
 </select>
 
 <!-- 게시판 목록 -->
-<select id="getList" parameterType="hashmap" resultType="hashmap">
+<select id="getList" resultType="hashmap">
 	select	MEMBER_NAME as memberName
 			,BOARD_NO as boardNo
 			,TITLE as title
@@ -32,9 +32,14 @@
 	from Bd_BOARD as a
 	inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
 	ORDER BY BOARD_NO DESC
-	OFFSET #{offset} ROWS
-	FETCH NEXT #{pageSize} ROWS ONLY
+	 OFFSET (#{pageNum}-1)*#{amount}  ROWS
+	FETCH NEXT #{amount} ROWS ONLY 
 
+</select>
+
+<!-- 게시물 총 개수 -->
+<select id="getTotal" resultType="int">
+	select count(*) from Bd_BOARD
 </select>
 
 <!-- 게시판 상세 조회 -->

@@ -147,11 +147,48 @@ public class MemberController {
 
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		MemberVO mVo = (MemberVO) session.getAttribute("member"); // MemberVO로 형변환 시키고 다시 객체를 담아준다
-
+		
+		System.out.println("mVo===> "+ mVo);
 		// 복호화하기
 		String decName = aesutil.decrypt(mVo.getMemberName());
 		model.addAttribute("decName", decName);
+		
+		MemberVO memberInfo = memberservice.getMember(mVo.getMemberNo());
+		
+		String decEmail = aesutil.decrypt(memberInfo.getEmail());
+		String decZipcode = aesutil.decrypt(memberInfo.getZipcode());
+		String decStreetAdr = aesutil.decrypt(memberInfo.getStreeAdr());
+		String decDetailAdr = aesutil.decrypt(memberInfo.getDetailAdr());
+		if(memberInfo.getPhone() != null) {
+			
+			String decPhone = aesutil.decrypt(memberInfo.getPhone());
+			
+			String phone2 = decPhone.substring(3,7);
+			String phone3 = decPhone.substring(7,11);
+			
+			model.addAttribute("phone2", phone2);
+			model.addAttribute("phone3", phone3);
+		}
+		
+		String[] emailSplit = decEmail.split("@");
+		String email1 = emailSplit[0];
+		String email2 = emailSplit[1];
 
+		
+				
+		model.addAttribute("email1", email1);
+		model.addAttribute("email2", email2);
+		model.addAttribute("decZipcode",decZipcode);
+		model.addAttribute("decStreetAdr",decStreetAdr);
+		model.addAttribute("decDetailAdr",decDetailAdr);
+		
+		
+		System.out.println("decEmail===> " + decEmail);
+//		email = mVo.getEmail()
+//
+//		String decEmail = aesutil.decrypt(mVo.getEmail());
+//		model.addAttribute("decEmail", decEmail);
+//		
 		return "member/memberUpdateView";
 	}
 

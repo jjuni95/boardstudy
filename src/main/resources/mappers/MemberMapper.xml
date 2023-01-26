@@ -74,10 +74,17 @@
 	
 		<!-- 회원조회 -->
 	<select id="getMember" resultType="com.study.model.MemberVO" parameterType="String">
-		SELECT MEMBER_ID AS memberId, MEMBER_NAME AS memberName, MEMBER_NO AS memberNo
-			FROM Cu_MEMBER 
-			WHERE MEMBER_NO = #{memberNo}
-			AND ISENABLED = 'N'
+		SELECT MEMBER_ID AS memberId
+		, MEMBER_NAME AS memberName
+		, MEMBER_NO AS memberNo
+		, EMAIL AS email
+		, ZIPCODE AS zipcode
+		, DETAILADR AS detailAdr
+		, STREETADR AS streeAdr
+		, PHONE AS phone
+		FROM Cu_MEMBER 
+		WHERE MEMBER_NO = #{memberNo}
+		AND ISENABLED = 'N'
 	</select>
 	
 	

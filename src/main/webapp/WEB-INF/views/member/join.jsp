@@ -146,7 +146,6 @@ $(document).ready(function(){
 	    }
 		
 		
-		
 		if($("#memberName").val()==""){
 			alert("성명을 입력해주세요.");
 			$("#memberName").focus();

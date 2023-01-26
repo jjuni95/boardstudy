@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div class="wrapper">
-		<form id="join_form" action="/member/memberUpdate" method="post" name="update_form">
+		<form id="join_form" action="/member/memberUpdate" method="post" name="update_form" onsubmit = "return fn_memberUpdate()">
 		<input type="hidden" name="memberId" value="${member.memberId}">
 			<div class="wrap">
 				<div class="subjecet">
@@ -39,9 +39,10 @@
 				<div class="mail_wrap">
 					<div class="mail_name">이메일 <span style="color:red">*</span></div>
 					<div class="mail_input_box">
-						<input class="mail_input" id="emailId" name="emailId" placeholder="이메일 아이디" maxlength='10'>
+					
+						<input class="mail_input" id="emailId" name="emailId" value="${email1}"> 
 						<input type="hidden" id="checkEmail" value="N">
-						 @ <input class="mail_input_1" id="inputEmail" name="inputEmail">
+						 @ <input class="mail_input_1" id="inputEmail" name="inputEmail" value="${email2}">
 							  <select name="selectEmail" id="selectEmail">
 								<option value="1" selected>직접입력</option>
 								<option value="radcns.com">radcns.com</option>
@@ -61,8 +62,8 @@
 						<select name="phone1" id="phone1">
 							<option value="010" selected>010</option>
 							<option value="011">011</option>
-						</select> - &nbsp; <input name="phone2" class="phone_input2" onlyNumber maxlength='4'>
-						- <input name="phone3" class="phone_input3" onlyNumber maxlength='4'>
+						</select> - &nbsp; <input name="phone2" class="phone_input2" onlyNumber maxlength='4' value="${phone2}">
+						- <input name="phone3" class="phone_input3" onlyNumber maxlength='4' value="${phone3}">
 					</div>
 				</div>
 
@@ -72,7 +73,7 @@
 					<div class="zipcode_name">주소 <span style="color:red">*</span></div>
 					<div class="zipcode_input_wrap">
 						<div class="zipcode_input_box">
-							<input class="zipcode_input" id="zipcode" name="zipcode" readonly="readonly" placeholder="우편번호">
+							<input class="zipcode_input" id="zipcode" name="zipcode" readonly="readonly" value="${decZipcode}">
 						</div>
 						<div class="clearfix"></div>
 						<div class="address_button_wrap" onclick="daum_address()">
@@ -82,12 +83,12 @@
 					</div>
 					<div class="streetadr_input_wrap">
 						<div class="streetadr_input_box">
-							<input class="streetadr_input" id="streeAdr" name="streeAdr" readonly="readonly" placeholder="기본주소">
+							<input class="streetadr_input" id="streeAdr" name="streeAdr" readonly="readonly" value="${decStreetAdr}">
 						</div>
 					</div>
 					<div class="detailadr_input_wrap">
 						<div class="detailadr_input_box">
-							<input class="detailadr_input" id="detailAdr" name="detailAdr" placeholder="상세주소">
+							<input class="detailadr_input" id="detailAdr" name="detailAdr" value="${decDetailAdr}">
 						</div>
 					</div>
 				</div>
@@ -192,13 +193,6 @@ function fn_memberUpdate(){
 			   return false; 
 		}
 		
-	
-		
-		if($("#zipcode").val()=="" || $("#streeAdr").val()=="" || $("#detailAdr").val()==""){
-			alert("주소를 입력해주세요.");
-			$("#streeAdr").focus();
-			return false;
-		}
 		
 		//비밀번호(특수문자 포함한 8자리 이상)
 		if(pw.length < 8 || pw.length > 20){

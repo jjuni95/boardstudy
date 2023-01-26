@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.study.model.BoardVO;
+import com.study.model.Criteria;
 import com.study.model.MemberVO;
+import com.study.model.PageMakerDTO;
 import com.study.service.BoardService;
 
 @Controller
@@ -26,21 +28,43 @@ public class BoardController {
 	
 	//게시판 목록 페이지 이동
 	@GetMapping(value = "/list")
-	public String boardListGET(HttpServletRequest request, Model model) throws Exception {
+	public String boardListGET(HttpServletRequest request, Model model, Criteria cri) throws Exception {
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		MemberVO mVo = (MemberVO) session.getAttribute("member"); //"member" =>로그인한 사람
+		
 		
 		if(mVo == null) {
 			request.setAttribute("msg", "로그인 상태로만 접근이 가능합니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 		}
-		//
+	
+//		Criteria cri = new Criteria();
+//		System.out.println("cri====> "+ cri);
+//		
+//		
+//		int paging = pageNum;
+//		pageNum = cri.setPageNum(pageNum);
+
 		
 		
-		//세션이 있을때 ! 
-		List<Map<String,Object>> boardList = boardservice.getList();
+		List<Map<String,Object>> boardList = boardservice.getList(cri);
 		model.addAttribute("list", boardList);
+		
+		int total = boardservice.getTotal();
+		PageMakerDTO pageMake = new PageMakerDTO(cri, total);
+		System.out.println("pageMake====> "+ pageMake);
+		/*
+		 * System.out.println("pageNum====> " + pageNum);
+		 * System.out.println("amount====> " + amount);
+		 * 
+		 * int sPageNum = Integer.parseInt(pageNum); int sAmount =
+		 * Integer.parseInt(amount);
+		 * 
+		 * pageMake.getCri().setPageNum(sPageNum); pageMake.getCri().setAmount(sAmount);
+		 */
+		model.addAttribute("pageMaker", pageMake);
+		
 		return "board/list";
 	}
 	
@@ -56,9 +80,9 @@ public class BoardController {
 			return "member/alert"; // alert.jsp로 이동
 		} 
 		
+		System.out.println("mVo.getMemberNo()=====> " + mVo.getMemberNo());
 		String decWriter = boardservice.selectWriter(mVo.getMemberNo());
 		model.addAttribute("decWriter", decWriter);
-		
 		System.out.println("게시판 등록 페이지 이동");
 		return "board/enroll";
 	}
