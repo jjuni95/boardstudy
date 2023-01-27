@@ -24,6 +24,8 @@ public class GoMainController {
 			 return "/member/login";
 		 }
 	     model.addAttribute("loginSession", loginSession);
+	     
+
 		 return "/main";    // JSP 경로
 	}
 	

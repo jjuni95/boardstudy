@@ -11,7 +11,7 @@
 </head>
 <body>
 
-	<form action="/board/enroll" method="post">
+	<form action="/board/enroll" method="post" enctype="multipart/form-data">
 		
 		<div>작성자
 			<label>${decWriter}</label>
@@ -24,10 +24,9 @@
 			<label>내용</label>
 			<textarea rows="3" name="content"></textarea>
 		</div>
-		     <div class="input_wrap">
-        
-       
-    </div> 
+		<div class="input_wrap">
+        	<input type="file" name="file">
+    	</div> 
 		<button class="btn">등록</button>
 	</form>
 </body>

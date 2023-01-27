@@ -4,50 +4,89 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="boardMapper">
 
+	<!-- 검색 조건문 -->
+	<sql id="criteria">
+		<trim prefix="where (" suffix=")" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like concat('%',#{keyword},'%')
+						</when>
+						<when test="type == 'W'.toString()">
+							b.MEMBER_NAME = #{keyword}
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
 
 
-<!-- 게시판 글 등록 -->
-<insert id="insertBoard" parameterType="com.study.model.BoardVO">
-	insert into Bd_BOARD (MEMBER_NO, TITLE, CONTENT)
-			VALUES (#{memberNo}, #{title}, #{content})
-</insert>
+	<!-- 게시판 글 등록 -->
+	<insert id="insertBoard" parameterType="com.study.model.BoardVO">
+		insert into Bd_BOARD (MEMBER_NO, TITLE, CONTENT)
+		VALUES (#{memberNo}, #{title}, #{content})
+	</insert>
 
-<!-- 작성자 가져오기 -->
-<!-- 세션으로 가져오면 바로 이름을 가져올수있지만
-조인을 사용하라고 해서
-게시판을 한번도 안쓴사람이 게시판을 쓰려고하면 이름을 못가져온다 그래서 레프트 조인 씀!! -->
-<select id="selectWriter" resultType="String">
-	select top 1 MEMBER_NAME
-	from Cu_MEMBER as a
-		left outer join Bd_BOARD as b on a.MEMBER_NO = b.MEMBER_NO
-	where a.MEMBER_NO = #{memberNo}
-</select>
+	<!-- 작성자 가져오기 -->
+	<!-- 세션으로 가져오면 바로 이름을 가져올수있지만 조인을 사용하라고 해서 게시판을 한번도 안쓴사람이 게시판을 쓰려고하면 이름을 
+		못가져온다 그래서 레프트 조인 씀!! -->
+	<select id="selectWriter" resultType="String">
+		select top 1 MEMBER_NAME
+		from Cu_MEMBER as a
+		left outer join Bd_BOARD as b 
+			on a.MEMBER_NO = b.MEMBER_NO
+		where a.MEMBER_NO = #{memberNo}
+	</select>
 
-<!-- 게시판 목록 -->
-<select id="getList" resultType="hashmap">
-	select	MEMBER_NAME as memberName
-			,BOARD_NO as boardNo
-			,TITLE as title
-			,a.REG_DATE as bregDate
-	from Bd_BOARD as a
-	inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
-	ORDER BY BOARD_NO DESC
-	 OFFSET (#{pageNum}-1)*#{amount}  ROWS
-	FETCH NEXT #{amount} ROWS ONLY 
+	<!-- 게시판 목록 -->
+	<select id="getList" resultType="hashmap">
+		select b.MEMBER_NAME as memberName
+		,a.BOARD_NO as boardNo
+		,a.TITLE as title
+		,a.REG_DATE as bregDate
+		from Bd_BOARD as a
+			inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
+		<if test="keyword != null">
+			<include refid="criteria"></include>
+		</if>
+		ORDER BY BOARD_NO DESC
+		OFFSET (#{pageNum}-1)*#{amount} ROWS
+		FETCH NEXT #{amount} ROWS ONLY
 
-</select>
+	</select>
 
-<!-- 게시물 총 개수 -->
-<select id="getTotal" resultType="int">
-	select count(*) from Bd_BOARD
-</select>
+	<!-- 게시물 총 개수 -->
+	<select id="getTotal" resultType="int">
+		select count(*) 
+		from Bd_BOARD as a
+			inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
+		<if test="keyword != null">
+			<include refid="criteria"></include>
+		</if>
+	</select>
 
-<!-- 게시판 상세 조회 -->
-<select id="getPage" resultType="com.study.model.BoardVO">
-	select MEMBER_NAME, HIT, a.REG_DATE, a.UPDATE_DATE, TITLE, CONTENT
-	FROM Bd_BOARD as a
+	<!-- 게시판 상세 조회 -->
+	<select id="getPage" resultType="com.study.model.BoardVO">
+		select MEMBER_NAME, HIT, a.REG_DATE, a.UPDATE_DATE, TITLE, CONTENT
+		FROM Bd_BOARD as a
 		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
-	where BOARD_NO = #{boardNo}
-</select>
+		where BOARD_NO = #{boardNo}
+	</select>
+
+	<!-- 첨부파일 업로드 -->
+	    <insert id="insertFile" parameterType="hashMap">
+		INSERT INTO Bd_FILE(
+			BOARD_NO,
+			ORIGINFILE_NAME,
+			SAVEDFILE_NAME
+		)VALUES(
+			#{BoardNo},
+			#{originfileName},
+			#{savedfileName}
+		)
+    </insert>
+	
 
 </mapper>

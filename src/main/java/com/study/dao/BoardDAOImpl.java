@@ -46,8 +46,14 @@ public class BoardDAOImpl implements BoardDAO {
 	
 	//게시판 총 갯수
 	@Override
-	public int getTotal() {
-		return template.selectOne("boardMapper.getTotal");
+	public int getTotal(Criteria cri) {
+		return template.selectOne("boardMapper.getTotal", cri);
+	}
+
+	//첨부파일 업로드
+	@Override
+	public void insertFile(Map<String, Object> map) throws Exception {
+		template.insert("boardMapper.insertFile", map);
 	}
 
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:p="http://www.springframework.org/schema/p"
@@ -17,49 +17,56 @@
 
 	<mvc:annotation-driven/>
 	<context:component-scan base-package="com.study"/>
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
 
-	<bean id="viewResolver"
+	<beans:bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/views/" />
-		<property name="suffix" value=".jsp" />
-	</bean>
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<bean
+	<beans:bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
-			<list>
-				<value>classpath:config/db.properties</value>
-			</list>
-		</property>
-	</bean>
+		<beans:property name="locations">
+			<beans:list>
+				<beans:value>classpath:config/db.properties</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.user}" />
-		<property name="password" value="${jdbc.password}" />
-	</bean>
+	<beans:bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<beans:property name="driverClassName" value="${jdbc.driverClassName}" />
+		<beans:property name="url" value="${jdbc.url}" />
+		<beans:property name="username" value="${jdbc.user}" />
+		<beans:property name="password" value="${jdbc.password}" />
+	</beans:bean>
 
 	<!-- mybatis (sqlSessionFactory) -->
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"></property>
-		<property name="configLocation" value="classpath:mybatis-config.xml"/>
-	</bean>
+	<beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSource"></beans:property>
+		<beans:property name="configLocation" value="classpath:mybatis-config.xml"/>
+	</beans:bean>
 	
 	<!-- mybatis (sqlSessionTemplate) -->
-	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg ref="sqlSessionFactory" />
-	</bean>
+	<beans:bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<beans:constructor-arg ref="sqlSessionFactory" />
+	</beans:bean>
 	
-	<bean id="AES256Util" class="com.study.component.AES256Util">
-		<constructor-arg>
-			<value>1111111111111111</value> <!-- 16자리로 제한 -->
-		</constructor-arg>
-	</bean>
+	<beans:bean id="AES256Util" class="com.study.component.AES256Util">
+		<beans:constructor-arg>
+			<beans:value>1111111111111111</beans:value> <!-- 16자리로 제한 -->
+		</beans:constructor-arg>
+	</beans:bean>
 	
+		<!-- MultipartResolver 설정 --> 
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
+		<beans:property name="maxUploadSize" value="100000000" /> 
+		<beans:property name="maxInMemorySize" value="100000000" /> 
+	</beans:bean> 
+</beans:beans>
 
-</beans>
 
 
 

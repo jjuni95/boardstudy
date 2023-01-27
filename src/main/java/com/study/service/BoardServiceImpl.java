@@ -1,12 +1,17 @@
 package com.study.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.component.AES256Util;
+import com.study.component.FileUtils;
 import com.study.dao.BoardDAO;
 import com.study.model.BoardVO;
 import com.study.model.Criteria;
@@ -20,10 +25,23 @@ public class BoardServiceImpl implements BoardService{
 	@Autowired
 	private AES256Util aesutil;
 	
+	@Resource(name="fileUtils")
+	private FileUtils fileUtils;
 	//게시물 등록
 	@Override
-	public void enroll(BoardVO board) throws Exception {
+	public void enroll(BoardVO board, MultipartHttpServletRequest mpRequest) throws Exception {
 		boardDAO.insertBoard(board);
+		
+		List<Map<String,Object>> list = fileUtils.parseInsertFileInfo(board, mpRequest);
+		Map<String, Object> map = new HashMap<String, Object>();
+		int size = list.size();
+		for(int i=0; i<size; i++) {
+			
+			//첨부파일
+			boardDAO.insertFile(map);
+			boardDAO.insertFile(map.put("originfileName", originfileName));
+			boardDAO.insertFile(map.put("savedfileName", savedfileName));
+		}
 	}
 
 	//작성자 가져오기
@@ -63,8 +81,8 @@ public class BoardServiceImpl implements BoardService{
 
 	//게시판 총 갯수
 	@Override
-	public int getTotal() {
-		int boardCnt = boardDAO.getTotal();
+	public int getTotal(Criteria cri) {
+		int boardCnt = boardDAO.getTotal(cri);
 		return boardCnt;
 	}
 

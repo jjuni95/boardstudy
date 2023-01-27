@@ -21,6 +21,9 @@ public interface BoardDAO {
 	public BoardVO getPage(int boardNo) throws Exception;
 	
 	//게시판 총 갯수
-	public int getTotal();
+	public int getTotal(Criteria cri);
+	
+	//첨부파일 업로드
+	public void insertFile(Map<String, Object> map) throws Exception;
 	
 }
