@@ -39,6 +39,10 @@ a:hover {
 .active {
 	background-color: #cdd5ec;
 }
+
+.move {
+	text-decoration : line-through;
+}
 </style>
 
 <meta charset="UTF-8">
@@ -74,12 +78,15 @@ a:hover {
 				<c:choose>
 					<c:when test="${fn:length(list) > 0}">
 						<c:forEach items="${list }" var="list">
+						
 							<tr>
 								<td>${list.boardNo}</td>
-								<td>${list.title}</td>
+								
+								
+							 	<td><a class="<c:if test="${list.isEnabled=='Y'}">move</c:if>"  href='/board/get?boardNo=<c:out value="${list.boardNo}"/>'>
+                       				${list.title}</a></td>
 								<td>${list.memberName}</td>
-								<td><fmt:formatDate pattern="yyyy.MM.dd HH:mm:ss"
-										value="${list.bregDate}" /></td>
+								<td><fmt:formatDate pattern="yyyy.MM.dd HH:mm:ss" value="${list.bregDate}" /></td>
 							</tr>
 						</c:forEach>
 					</c:when>
@@ -91,6 +98,10 @@ a:hover {
 				</c:choose>
 			</tbody>
 		</table>
+		
+		<form id="moveForm" method="get">    
+ 	   	</form>
+		
 		<div class="pageInfo_wrap">
 			<div class="pageInfo_area">
 				<ul id="pageInfo" class="pageInfo">
@@ -104,8 +115,8 @@ a:hover {
 					<!-- 각 번호 페이지 버튼 -->
 					<c:forEach var="num" begin="${pageMaker.startPage}"
 						end="${pageMaker.endPage}">
-						<li class="pageInfo_btn ${pageMaker.cri.pageNum == num ? "active":"" }"><a
-							href="${num}">${num}</a></li>
+						<li class="pageInfo_btn ${pageMaker.cri.pageNum == num ? "active":"" }">
+						<a href="${num}">${num}</a></li>
 					</c:forEach>
 
 
@@ -171,6 +182,18 @@ $(".search_area button").on("click", function(e){
     $("#moveForm").find("input[name='pageNum']").val(1);
     $("#moveForm").submit();
 });
+
+
+/* let moveForm = $("#moveForm");
+
+$(".move").on("click", function(e){
+    e.preventDefault();
+    
+    moveForm.append("<input type='hidden' name='boardNo' value='"+ $(this).attr("href")+ "'>");
+    moveForm.attr("action", "/board/get");
+    moveForm.submit();
+}); */
+
 
 </script>
 </html>

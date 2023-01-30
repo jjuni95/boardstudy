@@ -38,9 +38,9 @@ public class BoardServiceImpl implements BoardService{
 		for(int i=0; i<size; i++) {
 			
 			//첨부파일
-			boardDAO.insertFile(map);
-			boardDAO.insertFile(map.put("originfileName", originfileName));
-			boardDAO.insertFile(map.put("savedfileName", savedfileName));
+//			boardDAO.insertFile(map);
+//			boardDAO.insertFile(map.put("originfileName", originfileName));
+//			boardDAO.insertFile(map.put("savedfileName", savedfileName));
 		}
 	}
 
@@ -72,11 +72,13 @@ public class BoardServiceImpl implements BoardService{
 		return boardList;
 	}
 
-	//게시판 조회
+	//게시판 상세조회
 	@Override
-	public BoardVO getPage(int boardNo) throws Exception {
-		BoardVO bVo = boardDAO.getPage(boardNo);
-		return bVo;
+	public Map<String,Object> getPage(int boardNo) throws Exception {
+		Map<String,Object> map = boardDAO.getPage(boardNo);
+		String decWriter = aesutil.decrypt(map.get("memberName").toString());
+		map.put("memberName", decWriter);
+		return map;
 	}
 
 	//게시판 총 갯수
@@ -84,6 +86,33 @@ public class BoardServiceImpl implements BoardService{
 	public int getTotal(Criteria cri) {
 		int boardCnt = boardDAO.getTotal(cri);
 		return boardCnt;
+	}
+
+	//조회수 업데이트
+	@Override
+	public int getHitByBoardNo(int boardNo) {
+		int bVO = boardDAO.getHitByBoardNo(boardNo);
+		return bVO;
+	}
+
+	//게시판 수정
+	@Override
+	public void modify(BoardVO board) {
+		boardDAO.modify(board);
+	}
+
+	//게시판 삭제
+	@Override
+	public int delete(int boardNo) {
+		int bVO = boardDAO.delete(boardNo);
+		return bVO;
+	}
+
+	//게시판 삭제여부 확인
+	@Override
+	public int deleteChk(int boardNo) {
+		int bVO = boardDAO.deleteChk(boardNo);
+		return bVO;
 	}
 
 	

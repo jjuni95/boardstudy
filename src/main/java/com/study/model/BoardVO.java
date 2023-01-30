@@ -1,6 +1,8 @@
 package com.study.model;
 
 public class BoardVO {
+
+	
 	//게시판번호
 	private int boardNo;
 	//회원번호

@@ -19,10 +19,22 @@ public interface BoardService {
 	//게시판 목록
 	public List<Map<String,Object>> getList(Criteria cri) throws Exception;
 	
-	//게시판 조회
-	public BoardVO getPage(int boardNo) throws Exception;
+	//게시판 상세조회
+	public Map<String,Object> getPage(int boardNo) throws Exception;
 	
 	//게시판 총 갯수
 	public int getTotal(Criteria cri);
 
+	//조회수 업데이트
+	public int getHitByBoardNo(int boardNo);
+	
+	//게시판 수정
+	public void modify(BoardVO board);
+	
+	//게시판 삭제
+	public int delete(int boardNo);
+	
+	//게시글 삭제여부 확인
+	public int deleteChk(int boardNo);
+	
 }

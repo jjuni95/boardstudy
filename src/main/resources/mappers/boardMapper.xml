@@ -46,6 +46,8 @@
 		,a.BOARD_NO as boardNo
 		,a.TITLE as title
 		,a.REG_DATE as bregDate
+		,a.ISENABLED as isEnabled
+		,b.MEMBER_NO as memberNo
 		from Bd_BOARD as a
 			inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
 		<if test="keyword != null">
@@ -68,8 +70,15 @@
 	</select>
 
 	<!-- 게시판 상세 조회 -->
-	<select id="getPage" resultType="com.study.model.BoardVO">
-		select MEMBER_NAME, HIT, a.REG_DATE, a.UPDATE_DATE, TITLE, CONTENT
+	<select id="getPage" resultType="hashMap">
+		select MEMBER_NAME as memberName
+			, HIT as hit
+			, a.REG_DATE as regDate
+			, a.UPDATE_DATE as updateDate
+			, TITLE as title
+			, CONTENT as content
+			, b.MEMBER_NO as memberNo
+			, a.BOARD_NO as boardNo
 		FROM Bd_BOARD as a
 		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
 		where BOARD_NO = #{boardNo}
@@ -88,5 +97,38 @@
 		)
     </insert>
 	
-
+	<!-- 조회수 증가 -->
+	<update id="updateHit" parameterType="int">
+		UPDATE Bd_BOARD
+		SET 
+			hit = hit + 1
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<!-- 게시판 수정 -->
+	<update id="modify" parameterType="com.study.model.BoardVO">
+		UPDATE Bd_BOARD
+		SET	
+			TITLE = #{title},
+			CONTENT = #{content},
+			UPDATE_DATE = GETDATE()
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<!-- 게시판 삭제 -->
+	<update id="delete" parameterType="int">
+	UPDATE Bd_BOARD
+	SET	
+		ISENABLED = 'Y',
+		UPDATE_DATE = GETDATE()
+	WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<!-- 게시물 삭제여부 확인 -->
+	<select id="deleteChk" resultType="int" parameterType="int">
+		SELECT COUNT(*) FROM Bd_BOARD
+			WHERE ISENABLED = 'Y'
+			AND BOARD_NO = #{boardNo}
+	</select>
+	
 </mapper>

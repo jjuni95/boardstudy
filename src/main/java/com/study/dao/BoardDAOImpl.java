@@ -38,9 +38,9 @@ public class BoardDAOImpl implements BoardDAO {
 
 	//게시판 상세 조회
 	@Override
-	public BoardVO getPage(int boardNo) throws Exception {
-		BoardVO bVO = template.selectOne("boardMapper.getPage", boardNo);
-		return bVO;
+	public Map<String,Object> getPage(int boardNo) throws Exception {
+		Map<String,Object> map = template.selectOne("boardMapper.getPage", boardNo);
+		return map;
 	}
 
 	
@@ -54,6 +54,30 @@ public class BoardDAOImpl implements BoardDAO {
 	@Override
 	public void insertFile(Map<String, Object> map) throws Exception {
 		template.insert("boardMapper.insertFile", map);
+	}
+
+	//조회수 업데이트
+	@Override
+	public int getHitByBoardNo(int boardNo) {
+		return template.update("boardMapper.updateHit", boardNo);
+	}
+
+	//게시판 수정
+	@Override
+	public void modify(BoardVO board) {
+		template.update("boardMapper.modify",  board);
+	}
+
+	//게시판 삭제
+	@Override
+	public int delete(int boardNo) {
+		return template.update("boardMapper.delete", boardNo);
+	}
+
+	//게시판 삭제여부 확인
+	@Override
+	public int deleteChk(int boardNo) {
+		return template.selectOne("boardMapper.deleteChk", boardNo);
 	}
 
 
