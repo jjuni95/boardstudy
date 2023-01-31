@@ -82,9 +82,9 @@ a:hover {
 							<tr>
 								<td>${list.boardNo}</td>
 								
-								
-							 	<td><a class="<c:if test="${list.isEnabled=='Y'}">move</c:if>"  href='/board/get?boardNo=<c:out value="${list.boardNo}"/>'>
-                       				${list.title}</a></td>
+							 	<td class="<c:if test="${list.isEnabled eq 'Y'}">move</c:if>">
+							 		<a href='/board/get?boardNo=<c:out value="${list.boardNo}"/>'>
+                       					${list.title}</a></td>
 								<td>${list.memberName}</td>
 								<td><fmt:formatDate pattern="yyyy.MM.dd HH:mm:ss" value="${list.bregDate}" /></td>
 							</tr>

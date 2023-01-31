@@ -24,6 +24,21 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     
+	<error-page>
+	    <exception-type>java.lang.Throwable</exception-type>
+	    <location>/WEB-INF/views/common/error.jsp</location>
+	</error-page>
+	
+	<error-page>
+	    <error-code>404</error-code>
+	    <location>/WEB-INF/views/common/error404.jsp</location>
+	</error-page>
+	
+	<error-page>
+	    <error-code>500</error-code>
+	    <location>/WEB-INF/views/common/error500.jsp</location>
+	</error-page>
+    
  <!-- 한글설정 -->
    <filter>
     <filter-name>SetCharEncoding</filter-name>

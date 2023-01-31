@@ -1,10 +1,12 @@
 package com.study.service;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,18 +31,37 @@ public class BoardServiceImpl implements BoardService{
 	private FileUtils fileUtils;
 	//게시물 등록
 	@Override
-	public void enroll(BoardVO board, MultipartHttpServletRequest mpRequest) throws Exception {
-		boardDAO.insertBoard(board);
+	public void enroll(BoardVO board, MultipartHttpServletRequest mpRequest,HttpServletResponse response) throws Exception {
 		
-		List<Map<String,Object>> list = fileUtils.parseInsertFileInfo(board, mpRequest);
+		
+		List<Map<String,Object>> fileList = fileUtils.parseInsertFileInfo(board, mpRequest);
 		Map<String, Object> map = new HashMap<String, Object>();
-		int size = list.size();
+		int size = fileList.size();
 		for(int i=0; i<size; i++) {
 			
-			//첨부파일
-//			boardDAO.insertFile(map);
-//			boardDAO.insertFile(map.put("originfileName", originfileName));
-//			boardDAO.insertFile(map.put("savedfileName", savedfileName));
+//			if(fileList.get(i).get("FILE_SIZE") > 50000 )
+			System.out.println("fileList.get(i).get(\"FILE_SIZE\")===> " + fileList.get(i).get("FILE_SIZE"));
+	
+			long fileSize = (long) fileList.get(i).get("FILE_SIZE");
+			long megaByte = 5242880;
+			
+			if(fileSize < megaByte) {
+				int SboardNo = boardDAO.insertBoard(board);
+				
+				map.put("boardNo", SboardNo);
+				map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
+				map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
+				map.put("fileSize", fileList.get(i).get("FILE_SIZE"));
+				
+				boardDAO.insertFile(map);
+			}else {
+				response.setContentType("text/html; charset=UTF-8");
+				 
+				PrintWriter out = response.getWriter();
+				out.println("<script>alert('크기가 큽니다 ㅠ'); location.href='enroll';</script>");
+				out.flush();
+
+			}
 		}
 	}
 
@@ -97,8 +118,23 @@ public class BoardServiceImpl implements BoardService{
 
 	//게시판 수정
 	@Override
-	public void modify(BoardVO board) {
+	public void modify(BoardVO board
+					, String[] files
+					, String[] fileNames
+					, MultipartHttpServletRequest mpRequest) throws Exception {
 		boardDAO.modify(board);
+		
+		List<Map<String, Object>> list = fileUtils.parseUpdateFileInfo(board, files, fileNames, mpRequest);
+		Map<String, Object> tempMap = null;
+		int size = list.size();
+		for(int i = 0; i<size; i++) {
+			tempMap = list.get(i);
+			if(tempMap.get("IS_NEW").equals("Y")) {
+				boardDAO.insertFile(tempMap);
+			}else {
+				boardDAO.updateFile(tempMap);
+			}
+		}
 	}
 
 	//게시판 삭제
@@ -113,6 +149,13 @@ public class BoardServiceImpl implements BoardService{
 	public int deleteChk(int boardNo) {
 		int bVO = boardDAO.deleteChk(boardNo);
 		return bVO;
+	}
+
+	
+	//첨부파일 조회
+	@Override
+	public List<Map<String, Object>> selectFileList(int boardNo) {
+		return boardDAO.selectFileList(boardNo);
 	}
 
 	

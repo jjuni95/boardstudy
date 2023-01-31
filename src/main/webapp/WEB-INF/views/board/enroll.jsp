@@ -24,18 +24,36 @@
 			<label>내용</label>
 			<textarea rows="3" name="content"></textarea>
 		</div>
-		<div class="input_wrap">
+		<div id="fileIndex" class="input_wrap">
         	<input type="file" name="file">
+        	<input type="button" id="addFile" value="추가">
     	</div> 
 		<button class="btn">등록</button>
 	</form>
 </body>
 <script>
 
-    $(document).ready(function(){
-    
- 
-    });
+//파일추가
+$("#addFile").on("click", function(){
+			var fileIndex = 1;
+			var html = "";
+			html+="<div>";
+			html+="<input type='file' style='float:left;' name='file_" + (fileIndex++) + "'>";
+			html+="<input type='button' id='fileDelBtn' value='삭제'>"; 
+			html+="</div>";
+			
+			$("#fileIndex").append(html);
+			if(fileIndex != 1){
+				let disabled = document.querySelector('#addFile');
+				disabled.setAttribute('disabled' , true);
+			}
+			
+			$(document).on("click","#fileDelBtn", function(){
+				$(this).parent().remove();
+				
+			});
+		});
+   
  
 </script>
 

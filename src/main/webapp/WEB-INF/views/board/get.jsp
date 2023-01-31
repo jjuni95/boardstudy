@@ -40,7 +40,15 @@
 		<label>게시판 내용</label>
 		<textarea name="content" <c:if test="${showModifyBtn != 'Y'}">disabled </c:if>>${pageInfo.content}</textarea>
 	</div>
+		<span>파일 목록</span>
+	<div class="form-group">
+		<c:forEach var="file" items="${file}">
+			<a href="#" onclick="fn_fileDown('${file.FILE_NO}'); return false;">${file.ORG_FILE_NAME}</a>(${file.FILE_SIZE})<br>
+		</c:forEach>
+	</div>
 	
+	
+		<button class="fileAdd_btn" type="button">파일추가</button>
 	
 		<c:if test="${showModifyBtn == 'Y'}">
 		<button type="submit" class="modify_btn" id="modifyBtn">수정하기</button>
@@ -70,6 +78,19 @@ $("#deleteBtn").on("click", function(){
 		}
 	})
 })
+
+//파일추가
+function fn_addFile(){
+			var fileIndex = 1;
+			//$("#fileIndex").append("<div><input type='file' style='float:left;' name='file_"+(fileIndex++)+"'>"+"<button type='button' style='float:right;' id='fileAddBtn'>"+"추가"+"</button></div>");
+			$(".fileAdd_btn").on("click", function(){
+				$("#fileIndex").append("<div><input type='file' style='float:left;' name='file_"+(fileIndex++)+"'>"+"</button>"+"<button type='button' style='float:right;' id='fileDelBtn'>"+"삭제"+"</button></div>");
+			});
+			$(document).on("click","#fileDelBtn", function(){
+				$(this).parent().remove();
+				
+			});
+		}
 
 </script>
 

@@ -9,7 +9,7 @@ import com.study.model.Criteria;
 public interface BoardDAO {
 	
 	// 게시물 등록
-	public void insertBoard(BoardVO board) throws Exception;
+	public int insertBoard(BoardVO board) throws Exception;
 
 	//작성자 가져오기
 	public String selectWriter(String memberNo) throws Exception;
@@ -37,4 +37,10 @@ public interface BoardDAO {
 	
 	//게시판 삭제여부 확인
 	public int deleteChk(int boardNo);
+	
+	//첨부파일 조회
+	public List<Map<String, Object>> selectFileList(int boardNo);
+	
+	//첨부파일 수정(삭제)
+	public void updateFile(Map<String, Object> map);
 }

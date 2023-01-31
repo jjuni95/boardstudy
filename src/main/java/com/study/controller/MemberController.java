@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.study.component.AES256Util;
 import com.study.model.MemberVO;
-import com.study.model.NewPwVO;
 import com.study.service.MemberService;
 
 @Controller
@@ -28,6 +29,8 @@ public class MemberController {
 	@Autowired
 	private AES256Util aesutil;
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	// 회원가입 페이지 이동
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String joinGET() {
@@ -102,11 +105,15 @@ public class MemberController {
 	// 로그인
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String loginPOST(HttpServletRequest request, MemberVO member, Model model) throws Exception {
-
+		
+		
+		
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		// 로그인 여부 체크: id랑 pw를 보낸다(memberLogin여기서)
 		String flag = memberservice.memberLogin(member);
-
+		logger.debug("Debug", flag);
+        logger.info("Info", flag);
+		logger.error("Error", flag);
 		// 로그인 실패했을 경우
 		if (flag == "fail") { // 일치하지 않는 아이디, 비밀번호 입력 경우
 
@@ -125,8 +132,10 @@ public class MemberController {
 			MemberVO mVo = memberservice.memberCheck(member.getMemberId()); // id를 넘겨서 mVo에 저장을 한다
 
 			session.setAttribute("member", mVo); // 일치하는 아이디, 비밀번호 경우 (로그인 성공) : 세션에 id랑, 이름이랑 memberNo 들어가있음
+			
 			return "redirect:/main";
 		}
+		
 	}
 
 	// 로그아웃

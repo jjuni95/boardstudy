@@ -1,18 +1,21 @@
 package com.study.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -33,6 +36,8 @@ public class BoardController {
 	@Autowired
 	private AES256Util aesutil;
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	// 게시판 목록 페이지 이동
 	@GetMapping(value = "/list")
 	public String boardListGET(HttpServletRequest request, Model model, Criteria cri) throws Exception {
@@ -70,13 +75,8 @@ public class BoardController {
 				// 3.화면에 원래 작성했던 검색키워드 저장
 				cri.setKeyword(keyword);
 
+				
 			}
-		}
-		//작성자가 아니면 못들어가게하기 
-		if (mVo.getMemberNo().equals(boardList.get(memberNo))) { //메퍼 getList에 b.MEMBER_NO as memberNo 추가했는데 맞는지?
-			request.setAttribute("msg", "작성한 본인만 접근이 가능합니다. ");
-			request.setAttribute("url", "/board/list");
-			return "member/alert"; // alert.jsp로 이동
 		}
 		
 		model.addAttribute("pageMaker", pageMake);
@@ -105,7 +105,10 @@ public class BoardController {
 
 	// 게시물 등록
 	@PostMapping("/enroll")
-	public String boardEnrollPOST(BoardVO board, HttpServletRequest request, MultipartHttpServletRequest mpRequest)
+	public String boardEnrollPOST(BoardVO board
+								, HttpServletRequest request
+								, MultipartHttpServletRequest mpRequest
+								,HttpServletResponse response)
 			throws Exception {
 		HttpSession session = request.getSession();
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
@@ -119,8 +122,10 @@ public class BoardController {
 		System.out.println("mVo = " + mVo);
 		board.setMemberNo(mVo.getMemberNo()); // 세션에서 회원번호 가져오기
 
-		boardservice.enroll(board, mpRequest);
-
+		boardservice.enroll(board, mpRequest, response);
+		
+		logger.info("게시글 등록");
+		logger.debug("게시글 등록");
 		return "redirect:/board/list";
 	}
 
@@ -142,15 +147,31 @@ public class BoardController {
 			model.addAttribute("showModifyBtn", "Y");
 		}
 
+		int deleteChk = boardservice.deleteChk(boardNo);
+		//작성자가 아니면 못들어가게하기 
+		if(!mVo.getMemberNo().equals(board.get("memberNo")) && deleteChk == 1) {
+			request.setAttribute("msg", "작성한 본인만 접근이 가능합니다. ");
+			request.setAttribute("url", "/board/list");
+			return "member/alert"; // alert.jsp로 이동
+		}
+			
+		List<Map<String, Object>> fileList = boardservice.selectFileList(boardNo);
+		model.addAttribute("file", fileList);	
+		
 		System.out.println("pageInfo====> " + boardservice.getPage(boardNo));
 
+		
 		return "board/get";
 	}
 
 	// 게시판 수정
 	@PostMapping("/modify")
-	public String boardModifyPost(BoardVO board) {
-		boardservice.modify(board);
+	public String boardModifyPost(BoardVO board
+								, @RequestParam(value="fileNoDel[]") String[] files
+								, @RequestParam(value="fileNameDel[]") String[] fileNames
+								, MultipartHttpServletRequest mpRequest) throws Exception {
+		
+		boardservice.modify(board, files, fileNames, mpRequest);
 
 		return "redirect:/board/get?boardNo=" + board.getBoardNo();
 	}

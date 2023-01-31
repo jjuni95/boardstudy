@@ -24,10 +24,12 @@
 
 
 	<!-- 게시판 글 등록 -->
-	<insert id="insertBoard" parameterType="com.study.model.BoardVO">
+	<select id="insertBoard" parameterType="com.study.model.BoardVO" resultType="int">
 		insert into Bd_BOARD (MEMBER_NO, TITLE, CONTENT)
 		VALUES (#{memberNo}, #{title}, #{content})
-	</insert>
+		SELECT @@IDENTITY AS boardNo
+		
+	</select>
 
 	<!-- 작성자 가져오기 -->
 	<!-- 세션으로 가져오면 바로 이름을 가져올수있지만 조인을 사용하라고 해서 게시판을 한번도 안쓴사람이 게시판을 쓰려고하면 이름을 
@@ -89,11 +91,13 @@
 		INSERT INTO Bd_FILE(
 			BOARD_NO,
 			ORIGINFILE_NAME,
-			SAVEDFILE_NAME
+			SAVEDFILE_NAME,
+			FILE_SIZE
 		)VALUES(
-			#{BoardNo},
+			#{boardNo},
 			#{originfileName},
-			#{savedfileName}
+			#{savedfileName},
+			#{fileSize}
 		)
     </insert>
 	
@@ -131,4 +135,23 @@
 			AND BOARD_NO = #{boardNo}
 	</select>
 	
+	
+	<!-- 첨부파일 조회 -->
+	<select id="selectFileList" parameterType="int" resultType="hashMap">
+		SELECT FILE_NO,
+			   ORIGINFILE_NAME,
+			   ROUND(FILE_SIZE/1024,1) AS FILE_SIZE
+		  FROM Bd_FILE
+		 WHERE BOARD_NO = #{boardNo}
+		   AND ISENABLED = 'N'
+		   ORDER BY FILE_NO ASC
+	</select>
+	
+	<!-- 첨부파일 수정(삭제) -->
+	<update id="updateFile" parameterType="hashMap">
+		UPDATE Bd_FILE
+		SET
+			ISENABLED = 'Y'
+		WHERE FILE_NO = #{FILE_NO}
+	</update>
 </mapper>

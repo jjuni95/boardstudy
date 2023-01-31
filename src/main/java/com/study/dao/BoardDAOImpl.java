@@ -19,8 +19,8 @@ public class BoardDAOImpl implements BoardDAO {
 
 	// 게시물 등록
 	@Override
-	public void insertBoard(BoardVO board) throws Exception {
-		template.insert("boardMapper.insertBoard", board);
+	public int insertBoard(BoardVO board) throws Exception {
+		return template.selectOne("boardMapper.insertBoard", board);
 	}
 
 	//작성자 가져오기
@@ -78,6 +78,18 @@ public class BoardDAOImpl implements BoardDAO {
 	@Override
 	public int deleteChk(int boardNo) {
 		return template.selectOne("boardMapper.deleteChk", boardNo);
+	}
+
+	//첨부파일 조회
+	@Override
+	public List<Map<String, Object>> selectFileList(int boardNo) {
+		return template.selectList("boardMapper.selectFileList", boardNo);
+	}
+
+	//첨부파일 수정(삭제)
+	@Override
+	public void updateFile(Map<String, Object> map) {
+		template.update("boardMapper.updateFile", map);
 	}
 
 
