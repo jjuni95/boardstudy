@@ -1,8 +1,11 @@
 package com.study.controller;
 
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.component.AES256Util;
+import com.study.component.FileUtils;
 import com.study.model.BoardVO;
 import com.study.model.Criteria;
 import com.study.model.MemberVO;
@@ -36,8 +40,11 @@ public class BoardController {
 	@Autowired
 	private AES256Util aesutil;
 
+	@Resource(name = "fileUtils")
+	private FileUtils fileUtils;
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	// 게시판 목록 페이지 이동
 	@GetMapping(value = "/list")
 	public String boardListGET(HttpServletRequest request, Model model, Criteria cri) throws Exception {
@@ -75,10 +82,9 @@ public class BoardController {
 				// 3.화면에 원래 작성했던 검색키워드 저장
 				cri.setKeyword(keyword);
 
-				
 			}
 		}
-		
+
 		model.addAttribute("pageMaker", pageMake);
 		model.addAttribute("list", boardList);
 		return "board/list";
@@ -105,11 +111,8 @@ public class BoardController {
 
 	// 게시물 등록
 	@PostMapping("/enroll")
-	public String boardEnrollPOST(BoardVO board
-								, HttpServletRequest request
-								, MultipartHttpServletRequest mpRequest
-								,HttpServletResponse response)
-			throws Exception {
+	public String boardEnrollPOST(BoardVO board, HttpServletRequest request, MultipartHttpServletRequest mpRequest,
+			HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession();
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
 		// model.addAttribute("loginSession", mVo); 로그인세션 이거 갖다쓰기!!
@@ -123,7 +126,7 @@ public class BoardController {
 		board.setMemberNo(mVo.getMemberNo()); // 세션에서 회원번호 가져오기
 
 		boardservice.enroll(board, mpRequest, response);
-		
+
 		logger.info("게시글 등록");
 		logger.debug("게시글 등록");
 		return "redirect:/board/list";
@@ -148,32 +151,59 @@ public class BoardController {
 		}
 
 		int deleteChk = boardservice.deleteChk(boardNo);
-		//작성자가 아니면 못들어가게하기 
-		if(!mVo.getMemberNo().equals(board.get("memberNo")) && deleteChk == 1) {
+		// 작성자가 아니면 못들어가게하기
+		if (!mVo.getMemberNo().equals(board.get("memberNo")) && deleteChk == 1) {
 			request.setAttribute("msg", "작성한 본인만 접근이 가능합니다. ");
 			request.setAttribute("url", "/board/list");
 			return "member/alert"; // alert.jsp로 이동
 		}
-			
+
 		List<Map<String, Object>> fileList = boardservice.selectFileList(boardNo);
-		model.addAttribute("file", fileList);	
-		
+		model.addAttribute("file", fileList);
+		model.addAttribute("fileSize", fileList.size());
+
 		System.out.println("pageInfo====> " + boardservice.getPage(boardNo));
 
-		
 		return "board/get";
 	}
 
 	// 게시판 수정
 	@PostMapping("/modify")
-	public String boardModifyPost(BoardVO board
-								, @RequestParam(value="fileNoDel[]") String[] files
-								, @RequestParam(value="fileNameDel[]") String[] fileNames
-								, MultipartHttpServletRequest mpRequest) throws Exception {
-		
-		boardservice.modify(board, files, fileNames, mpRequest);
+	public String boardModifyPost(BoardVO board, @RequestParam(value = "fileNoDel[]") String[] files,
+			@RequestParam(value = "fileNameDel[]") String[] fileNames, MultipartHttpServletRequest mpRequest,
+			HttpServletResponse response) throws Exception {
 
-		return "redirect:/board/get?boardNo=" + board.getBoardNo();
+		List<Map<String, Object>> fileList = fileUtils.parseInsertFileInfo(board, mpRequest);
+		Map<String, Object> map = new HashMap<String, Object>();
+		int size = fileList.size();
+		// 파일을 추가하면 파일 인서트
+		if (size > 0) {
+			for (int i = 0; i < size; i++) {
+				long fileSize = (long) fileList.get(i).get("FILE_SIZE");
+				long megaByte = 5242880;
+
+				if (fileSize < megaByte) {
+					map.put("boardNo", board.getBoardNo());
+					map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
+					map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
+					map.put("fileSize", fileList.get(i).get("FILE_SIZE"));
+
+					boardservice.insertFile(map);
+				} else {
+					response.setContentType("text/html; charset=UTF-8");
+
+					PrintWriter out = response.getWriter();
+					out.println("<script>alert('크기가 큽니다 ㅠ'); location.href='enroll';</script>");
+					out.flush();
+				}
+			}
+		// 파일이 있는상태에서의 수정 => 업데이트
+		} else {
+			boardservice.modify(board, files, fileNames, mpRequest);
+		}
+
+		return "redirect:/board/list";
+//		return "redirect:/board/get?boardNo=" + board.getBoardNo();
 	}
 
 	// 게시글 삭제

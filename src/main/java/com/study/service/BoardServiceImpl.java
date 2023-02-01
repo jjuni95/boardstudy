@@ -31,40 +31,45 @@ public class BoardServiceImpl implements BoardService{
 	private FileUtils fileUtils;
 	//게시물 등록
 	@Override
-	public void enroll(BoardVO board, MultipartHttpServletRequest mpRequest,HttpServletResponse response) throws Exception {
-		
+	public void enroll(BoardVO board
+					, MultipartHttpServletRequest mpRequest
+					, HttpServletResponse response) throws Exception {
 		
 		List<Map<String,Object>> fileList = fileUtils.parseInsertFileInfo(board, mpRequest);
 		Map<String, Object> map = new HashMap<String, Object>();
 		int size = fileList.size();
-		for(int i=0; i<size; i++) {
-			
-//			if(fileList.get(i).get("FILE_SIZE") > 50000 )
-			System.out.println("fileList.get(i).get(\"FILE_SIZE\")===> " + fileList.get(i).get("FILE_SIZE"));
-	
-			long fileSize = (long) fileList.get(i).get("FILE_SIZE");
-			long megaByte = 5242880;
-			
-			if(fileSize < megaByte) {
-				int SboardNo = boardDAO.insertBoard(board);
+		if(size > 0) {
+			int SboardNo = boardDAO.insertBoard(board);
+			for(int i=0; i<size; i++) {
 				
-				map.put("boardNo", SboardNo);
-				map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
-				map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
-				map.put("fileSize", fileList.get(i).get("FILE_SIZE"));
-				
-				boardDAO.insertFile(map);
-			}else {
-				response.setContentType("text/html; charset=UTF-8");
-				 
-				PrintWriter out = response.getWriter();
-				out.println("<script>alert('크기가 큽니다 ㅠ'); location.href='enroll';</script>");
-				out.flush();
+				System.out.println("fileList.get(i).get(\"FILE_SIZE\")===> " + fileList.get(i).get("FILE_SIZE"));
 
+				long fileSize = (long) fileList.get(i).get("FILE_SIZE");
+				long megaByte = 5242880;
+				
+				if(fileSize < megaByte) {
+					
+					
+					map.put("boardNo", SboardNo);
+					map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
+					map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
+					map.put("fileSize", fileList.get(i).get("FILE_SIZE"));
+					
+					boardDAO.insertFile(map);
+				}else {
+					response.setContentType("text/html; charset=UTF-8");
+					 
+					PrintWriter out = response.getWriter();
+					out.println("<script>alert('크기가 큽니다 ㅠ'); location.href='enroll';</script>");
+					out.flush();
+
+				}
 			}
+		}else {
+			boardDAO.insertBoard(board);
 		}
+	
 	}
-
 	//작성자 가져오기
 	@Override
 	public String selectWriter(String memberNo) throws Exception {
@@ -156,6 +161,13 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public List<Map<String, Object>> selectFileList(int boardNo) {
 		return boardDAO.selectFileList(boardNo);
+	}
+	
+	//첨부파일 업로드
+	@Override
+	public void insertFile(Map<String, Object> map) throws Exception {
+		boardDAO.insertFile(map);
+		
 	}
 
 	

@@ -45,6 +45,9 @@ public interface BoardService {
 	//첨부파일 조회
 	public List<Map<String, Object>> selectFileList(int boardNo);
 	
+	//첨부파일 업로드
+	public void insertFile(Map<String, Object> map) throws Exception;
+	
 	
 	
 }

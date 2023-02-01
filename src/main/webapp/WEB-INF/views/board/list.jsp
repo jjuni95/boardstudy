@@ -82,10 +82,10 @@ a:hover {
 							<tr>
 								<td>${list.boardNo}</td>
 								
-							 	<td class="<c:if test="${list.isEnabled eq 'Y'}">move</c:if>">
-							 		<a href='/board/get?boardNo=<c:out value="${list.boardNo}"/>'>
-                       					${list.title}</a></td>
-								<td>${list.memberName}</td>
+							 	<td class="<c:if test="${list.isEnabled eq 'Y'}">move</c:if>" >
+							 		<a href='/board/get?boardNo=<c:out value="${list.boardNo}"/>' >
+                       					<span class="titleList">${list.title}</span></a></td>
+								<td><span class="maskingName">${list.memberName}</span></td>
 								<td><fmt:formatDate pattern="yyyy.MM.dd HH:mm:ss" value="${list.bregDate}" /></td>
 							</tr>
 						</c:forEach>
@@ -99,9 +99,7 @@ a:hover {
 			</tbody>
 		</table>
 		
-		<form id="moveForm" method="get">    
- 	   	</form>
-		
+
 		<div class="pageInfo_wrap">
 			<div class="pageInfo_area">
 				<ul id="pageInfo" class="pageInfo">
@@ -142,6 +140,27 @@ a:hover {
 </body>
 
 <script type="text/javascript">
+
+//마스킹처리
+function checkNull(str){
+	if(typeof str == "undefined" || str == null || str == ""){
+		return true;
+	}
+	else{
+		return false;
+	}
+};
+
+//마스킹처리
+$( document ).ready(function() {
+ $(".maskingName").each(function(){
+	 var str = $(this).text();
+	
+	let maskingStr  = masking(str);
+	 $(this).text(maskingStr);
+    });
+});
+
 
 $(".pageInfo a").on("click", function(e){
 	 e.preventDefault();
@@ -193,6 +212,39 @@ $(".move").on("click", function(e){
     moveForm.attr("action", "/board/get");
     moveForm.submit();
 }); */
+
+//글 제목이 20자 이상이면 ...처리
+$(".titleList").each(function(){
+    var length = 10; //표시할 글자수 정하기
+    $(this).each(function(){
+        if( $(this).text().length >= length ){
+            $(this).text( $(this).text().substr(0,length)+'...') 
+            //지정할 글자수 이후 표시할 텍스트
+        }
+    });
+});
+
+//이름 마스킹 처리
+function masking(str){
+	let originStr = str;
+	let maskingStr;
+	let strLength;
+	
+	if(this.checkNull(originStr) == true){
+		return originStr;
+	}
+	
+	strLength = originStr.length;
+	
+	if(strLength < 4){
+		maskingStr = originStr.replace(/(?<=.{1})./gi, "*");
+	}else {
+		maskingStr = originStr.replace(/(?<=.{2})./gi, "*");
+	}
+	
+	return maskingStr;
+}
+
 
 
 </script>
