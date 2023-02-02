@@ -105,8 +105,8 @@
 	
 	<!-- 임시 비밀번호 저장 -->
 	<insert id="insertTempPw" parameterType="com.study.model.NewPwVO">
-		INSERT INTO Cu_NEWPW (MEMBER_NO, NEW_PW)
-		 				 VALUES(#{memberNo}, #{newPw})
+		INSERT INTO Cu_NEWPW (MEMBER_NO, NEW_PW, ENC_PW)
+		 				 VALUES(#{memberNo}, #{newPw}, #{encPw})
 	</insert>
 	
 	<!-- 비밀번호 변경 -->

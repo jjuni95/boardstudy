@@ -6,10 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.4.1.js"
-	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-	crossorigin="anonymous"></script>
-	
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -33,7 +30,6 @@
 			<input name="updateDate" readonly="readonly" value='<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${pageInfo.updateDate}"/>' >
 		</div>	
 			
-	
 		<div class="input_wrap">
 			<label>게시판 제목</label>
 			<input name="title" value='<c:out value="${pageInfo.title}"/>' <c:if test="${showModifyBtn != 'Y'}">disabled </c:if>>
@@ -42,7 +38,6 @@
 			<label>게시판 내용</label>
 			<textarea name="content" <c:if test="${showModifyBtn != 'Y'}">disabled </c:if>>${pageInfo.content}</textarea>
 		</div>
-	
 	
 		<span>파일 목록</span>
 	
@@ -53,31 +48,25 @@
 						<input type="hidden" id="FILE_NO" name="FILE_NO_${var.index}" value="${file.FILE_NO }">
 						<input type="hidden" id="FILE_NAME" name="FILE_NAME" value="FILE_NO_${var.index}">
 					
-						<a href="#" id="fileName" onclick="return false;">${file.ORIGINFILE_NAME}</a>
-						<button id="fileDel" onclick="fn_del('${file.FILE_NO}','FILE_NO_${var.index}', '${var.index}');" type="button">삭제</button>
-						<c:if test="${var.index == 0}">
-						<div id="fileIndex" class="input_wrap">
-					       	<input type="button" id="addFile" value="추가">
-					   	</div> 
+						<a href="#" id="fileName_${var.index}" onclick="return false;">${file.ORIGINFILE_NAME}</a>
+						
+						<c:if test="${var.index == 0 }">
+					       	<input type="button" id="addFile" value="추가" <c:if test="${fileSize == 2}"> disabled="true"</c:if>>
+					   	</c:if>
+					   	<c:if test="${var.index == 1}">
+							<button id="fileDelBtn" type="button">삭제</button>
 					   	</c:if>
 					</div>
 				</c:forEach>
 			</div> 
 		</c:if>
 		
-		<c:if test="${fileSize == 1}">
+		<c:if test="${fileSize == 0}">
 			<div id="fileIndex" class="input_wrap">
 		       	<input type="file" name="file">
 		       	<input type="button" id="addFile" value="추가">
 		   	</div> 
 	   	</c:if>
-	
-<%-- 		<c:if test="${fileSize == 0}">
-			<div id="fileIndex" class="input_wrap">
-		       	<input type="button" id="addFile" value="추가">
-		   	</div> 
-	   	</c:if> --%>
-		
 	
 		<c:if test="${showModifyBtn == 'Y'}">
 		<button type="submit" class="modify_btn" id="modifyBtn">수정하기</button>
@@ -85,7 +74,28 @@
 		</c:if>
 		<button type="button" class="cancel_btn" id="cancelBtn" onClick="location.href='http://localhost:8080/board/list'">목록</button>
 
+		<!-- 댓글 -->
+		<div id="reply">
+		  <ol class="replyList">
+		    <c:forEach items="${replyList}" var="reply">
+		      <li>
+		        <p>
+		        작성자 : ${reply.memberName}<br />
+		         작성 날짜 :  ${reply.regDate} <br/>
+		        </p>
+		
+		        <p>${reply.content}</p>
+		        <%-- <p>${reply.regDate}</p> --%>
+		      </li>
+		    </c:forEach>   
+ <%-- 작성 날짜 :  <fmt:formatDate value="${reply.regDate}" pattern="yyyy-MM-dd HH:mm:ss" />  --%>
+		  </ol>
+		</div>
+
+
 	</form>
+	
+	
 </body>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -117,34 +127,6 @@ $("#deleteBtn").on("click", function(){
 	fn_del(value, name)
 }) */
 
-var fileNoArray = new Array();
-var fileNameArray = new Array();
-
-function fn_del(value, name, fileIndex){
-
-	
-	var html = "";
-	html+="<div>";
-	html+="<input type='file' style='float:left;' name='file_" + (fileIndex--) + "'>";
-	html+="<input type='button' id='addFile' value='추가'>"; 
-	html+="</div>";
-
-	/* if(fileIndex != 1){ */
-	/* 	let disabled = document.querySelector('#addFile');
-		disabled.setAttribute('disabled' , false); */
-	/* } */
-	$("#fileIndex").append(html);
-	
-	$("#fileName").remove();
-	$("#fileDel").remove(); 
-	
-	fileNoArray.push(value);
-	fileNameArray.push(name);
-	$("#fileNoDel").attr("value", fileNoArray);
-	$("#fileNameDel").attr("value", fileNameArray);
-}
-
-
 
 //파일추가
 $("#addFile").on("click", function(){
@@ -160,16 +142,14 @@ $("#addFile").on("click", function(){
 		let disabled = document.querySelector('#addFile');
 		disabled.setAttribute('disabled' , true);
 	}
-	$(document).on("click","#fileDelBtn", function(){
-		$(this).parent().remove();
-		let abled = document.querySelector('#addFile');
-		abled.disabled = false;
-		
-	});
-	
 });
 
-
+$(document).on("click","#fileDelBtn", function(){
+	$(this).parent().remove();
+	let abled = document.querySelector('#addFile');
+	abled.disabled = false;
+	
+});
 
 </script>
 

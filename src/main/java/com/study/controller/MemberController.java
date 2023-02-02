@@ -111,9 +111,9 @@ public class MemberController {
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		// 로그인 여부 체크: id랑 pw를 보낸다(memberLogin여기서)
 		String flag = memberservice.memberLogin(member);
-		logger.debug("Debug", flag);
-        logger.info("Info", flag);
-		logger.error("Error", flag);
+		logger.debug("Debug");
+        logger.info("Info");
+		logger.error("Error");
 		// 로그인 실패했을 경우
 		if (flag == "fail") { // 일치하지 않는 아이디, 비밀번호 입력 경우
 

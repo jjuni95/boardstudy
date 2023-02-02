@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.component.AES256Util;
@@ -18,6 +19,7 @@ import com.study.dao.BoardDAO;
 import com.study.model.BoardVO;
 import com.study.model.Criteria;
 
+@Transactional
 @Service
 public class BoardServiceImpl implements BoardService{
 
@@ -39,6 +41,7 @@ public class BoardServiceImpl implements BoardService{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int size = fileList.size();
 		if(size > 0) {
+		//if(size = 0) {
 			int SboardNo = boardDAO.insertBoard(board);
 			for(int i=0; i<size; i++) {
 				
@@ -88,10 +91,7 @@ public class BoardServiceImpl implements BoardService{
 			String memberName = boardList.get(i).get("memberName").toString();
 			String decMemberName = aesutil.decrypt(memberName);	
 			
-			//마스킹(이름 80%)
-			
-			
-			
+
 			boardList.get(i).put("memberName", decMemberName);
 			
 		}

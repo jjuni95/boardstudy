@@ -28,7 +28,9 @@ import com.study.model.BoardVO;
 import com.study.model.Criteria;
 import com.study.model.MemberVO;
 import com.study.model.PageMakerDTO;
+import com.study.model.ReplyVO;
 import com.study.service.BoardService;
+import com.study.service.ReplyService;
 
 @Controller
 @RequestMapping(value = "/board/*")
@@ -36,6 +38,9 @@ public class BoardController {
 
 	@Autowired
 	private BoardService boardservice;
+	
+	@Autowired
+	private ReplyService replyService;
 
 	@Autowired
 	private AES256Util aesutil;
@@ -127,9 +132,10 @@ public class BoardController {
 
 		boardservice.enroll(board, mpRequest, response);
 
-		logger.info("게시글 등록");
-		logger.debug("게시글 등록");
-		return "redirect:/board/list";
+		request.setAttribute("msg", "게시글이 등록되었습니다.");
+		request.setAttribute("url", "/board/list");
+		return "member/alert"; // alert.jsp로 이동
+//		return "redirect:/board/list";
 	}
 
 	// 게시판 상세 조회
@@ -162,8 +168,13 @@ public class BoardController {
 		model.addAttribute("file", fileList);
 		model.addAttribute("fileSize", fileList.size());
 
-		System.out.println("pageInfo====> " + boardservice.getPage(boardNo));
 
+		//댓글조회
+		List<ReplyVO> replyList = replyService.readReply(boardNo);
+		model.addAttribute("replyList", replyList);
+		System.out.println("replyList ===> "+ replyList);
+		
+		
 		return "board/get";
 	}
 
@@ -216,4 +227,7 @@ public class BoardController {
 
 		return result;
 	}
+	
+	//댓글작성
+	
 }

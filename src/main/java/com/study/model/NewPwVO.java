@@ -11,6 +11,9 @@ public class NewPwVO {
 	//현재날짜
 	private String regDate;
 
+	//암호화된 비밀번호
+	private String encPw;
+
 	public String getMemberNo() {
 		return memberNo;
 	}
@@ -35,10 +38,20 @@ public class NewPwVO {
 		this.regDate = regDate;
 	}
 
+	public String getEncPw() {
+		return encPw;
+	}
+
+	public void setEncPw(String encPw) {
+		this.encPw = encPw;
+	}
+
 	@Override
 	public String toString() {
-		return "newPwVO [memberNo=" + memberNo + ", newPw=" + newPw + ", regDate=" + regDate + "]";
+		return "NewPwVO [memberNo=" + memberNo + ", newPw=" + newPw + ", regDate=" + regDate + ", encPw=" + encPw + "]";
 	}
+	
+	
 	
 	
 }

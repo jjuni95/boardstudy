@@ -5,7 +5,7 @@
     <property name="LOG_PATTERN_FILE" value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n" />
 
     <!-- log file path -->
-    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_PATH" value="D:\study-workspace\boardstudy\logs" />
     <!-- log file name -->
     <property name="LOG_FILE_NAME" value="log" />
     <!-- err log file name -->
@@ -23,7 +23,7 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
         <!-- 파일경로 설정 -->
-        <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+        <file>${LOG_PATH}</file>
 
         <!-- 출력패턴 설정 -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

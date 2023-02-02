@@ -253,15 +253,16 @@ public class MemberServiceImpl implements MemberService {
 			tempPw += pwCollection[selectRandomPw];
 		}
 		
-		NewPwVO newPwVO = new NewPwVO();
-		newPwVO.setMemberNo(member.getMemberNo());
-		newPwVO.setNewPw(tempPw);
-		
-		memberDAO.insertTempPw(newPwVO);
-		
 		//비밀번호 암호화
 		String encPassword = passwordEncoder.encode(tempPw);
 		
+		NewPwVO newPwVO = new NewPwVO();
+		newPwVO.setMemberNo(member.getMemberNo());
+		newPwVO.setNewPw(tempPw);
+		newPwVO.setEncPw(encPassword);
+
+		memberDAO.insertTempPw(newPwVO);
+	
 		memberDAO.updatePw(encPassword, member.getMemberNo());
 		
 	}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="replyMapper">
+
+	<!-- 댓글조회 -->
+	<select id="readReply" resultType="com.study.model.ReplyVO">
+		select 
+			b.MEMBER_NAME as memberName
+			, a.COMMENT_NO as commentNo
+			, a.MEMBER_NO as memberNo
+			, a.CONTENT as content 
+			, a.REG_DATE as regDate
+			, a.MODIFIED_DATE as modifiedDate
+			, a.ISENABLED as isEnabled
+		from Bd_COMMENT as a
+		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
+		where BOARD_NO = #{boardNo}
+	</select>
+
+
+	<!-- 댓글작성 -->
+	<insert id="writeReply" parameterType="com.study.model.replyVO">
+		insert into Bd_COMMENT(BOARD_NO, MEMBER_NO, CONTENT)
+		values(#{boardNo}, #{memberNo}, #{content}')
+	</insert>
+	
+</mapper>
+

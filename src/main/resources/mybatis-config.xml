@@ -16,6 +16,7 @@
 	<mappers>
    		 <mapper resource="mappers/MemberMapper.xml"/>
    		 <mapper resource="mappers/boardMapper.xml"/>
+   		 <mapper resource="mappers/replyMapper.xml"/>
 	</mappers>
 	
 	
