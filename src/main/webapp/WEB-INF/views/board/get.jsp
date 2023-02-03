@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 <body>
 
@@ -74,26 +74,50 @@
 		</c:if>
 		<button type="button" class="cancel_btn" id="cancelBtn" onClick="location.href='http://localhost:8080/board/list'">목록</button>
 
-		<!-- 댓글 -->
-		<div id="reply">
-		  <ol class="replyList">
-		    <c:forEach items="${replyList}" var="reply">
-		      <li>
-		        <p>
-		        작성자 : ${reply.memberName}<br />
-		         작성 날짜 :  ${reply.regDate} <br/>
-		        </p>
-		
-		        <p>${reply.content}</p>
-		        <%-- <p>${reply.regDate}</p> --%>
-		      </li>
-		    </c:forEach>   
- <%-- 작성 날짜 :  <fmt:formatDate value="${reply.regDate}" pattern="yyyy-MM-dd HH:mm:ss" />  --%>
-		  </ol>
-		</div>
+</form>
 
-
+ <p>댓글목록</p>
+ 
+ 	<!-- 댓글 -->
+	<div id="reply">
+	  <ol class="replyList">
+	    <c:forEach items="${replyList}" var="reply">
+	      <li>
+	        <p>
+	        작성자 : ${reply.memberName}<br />
+	        작성 날짜 :  ${reply.regDate} <br/>
+	        </p>
+	
+	        <p>${reply.content}</p>
+	      </li>
+	    </c:forEach>   
+	  </ol>
+	</div>
+ 
+	<!-- 댓글작성 -->
+	<form name="replyForm" method="post">
+		<div>
+		    <div>작성자
+				<label>${decWriter}</label>
+			</div>
+				
+		    <br/>
+		   	 	<label for="content">댓글 내용</label>
+		   	 	<input type="text" id="content" name="content" />
+		   	 	<input type="hidden" name="boardNo" id="boardNo" value="${pageInfo.boardNo}">
+		   	 	<input type="hidden" name="memberNo" id="memberNo" value="${memberNo}">
+		 </div>
+		 <div>
+		 	 <button type="button" class="replyWriteBtn">등록</button>
+  		</div>
 	</form>
+
+
+
+		
+
+
+	
 	
 	
 </body>
@@ -150,6 +174,13 @@ $(document).on("click","#fileDelBtn", function(){
 	abled.disabled = false;
 	
 });
+
+//댓글등록
+$(".replyWriteBtn").on("click", function(){
+	  var formObj = $("form[name='replyForm']");
+	  formObj.attr("action", "/board/replyWrite");
+	  formObj.submit();
+	});
 
 </script>
 

@@ -37,6 +37,10 @@ public interface MemberService {
 
 	// 비밀번호 찾는 이력 저장
 	public void insertTempPw(MemberVO member) throws Exception;
+	
+	//작성자 가져오기(회원번호로 이름 조회하기)
+	public String selectWriter(String memberNo) throws Exception;
+
 
 
 }

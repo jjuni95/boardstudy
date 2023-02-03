@@ -21,10 +21,39 @@
 
 
 	<!-- 댓글작성 -->
-	<insert id="writeReply" parameterType="com.study.model.replyVO">
+	<insert id="writeReply" parameterType="com.study.model.ReplyVO">
 		insert into Bd_COMMENT(BOARD_NO, MEMBER_NO, CONTENT)
-		values(#{boardNo}, #{memberNo}, #{content}')
+		values(#{boardNo}, #{memberNo}, #{content})
 	</insert>
 	
+	<!-- 댓글수정 -->
+	<update id="updateReply" parameterType="com.study.model.ReplyVO">
+	UPDATE Bd_COMMENT
+	SET	
+		CONTENT = #{content},
+		MODIFIED_DATE = GETDATE()
+	WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<!-- 댓글삭제 -->
+	<update id="deleteReply" parameterType="com.study.model.ReplyVO">
+	UPDATE Bd_COMMENT
+	SET	
+		ISENABLED = 'Y',
+		MODIFIED_DATE = GETDATE()
+	WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<!-- 선택된 댓글 조회 -->
+	<select id="selectReply" resultType="com.study.model.ReplyVO">
+	SELECT BOARD_NO
+		, COMMENT_NO
+		, MEMBER_NO
+		, REG_DATE
+		, ISENABLED
+		, MODIFIED_DATE
+	FROM Bd_COMMENT
+	WHERE COMMENT_NO = #{commentNo}
+	</select>
 </mapper>
 

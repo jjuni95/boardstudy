@@ -47,9 +47,7 @@ a:hover {
 
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.4.1.js"
-	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 <body>
 	<div class="table_wrap">
@@ -99,34 +97,30 @@ a:hover {
 			</tbody>
 		</table>
 		
-
+		<%-- 페이징 Start --%>
 		<div class="pageInfo_wrap">
 			<div class="pageInfo_area">
 				<ul id="pageInfo" class="pageInfo">
-
-					<!-- 이전페이지 버튼 -->
 					<c:if test="${pageMaker.prev}">
-						<li class="pageInfo_btn previous"><a
-							href="${pageMaker.startPage-1}">Previous</a></li>
+						<li class="pageInfo_btn previous">
+							<a href="${pageMaker.startPage-1}">Previous</a>
+						</li>
 					</c:if>
-
-					<!-- 각 번호 페이지 버튼 -->
+					
 					<c:forEach var="num" begin="${pageMaker.startPage}"
 						end="${pageMaker.endPage}">
 						<li class="pageInfo_btn ${pageMaker.cri.pageNum == num ? "active":"" }">
 						<a href="${num}">${num}</a></li>
 					</c:forEach>
-
-
-					<!-- 다음페이지 버튼 -->
+					
 					<c:if test="${pageMaker.next}">
-						<li class="pageInfo_btn next"><a
-							href="${pageMaker.endPage + 1 }">Next</a></li>
+						<li class="pageInfo_btn next"><a href="${pageMaker.endPage + 1 }">Next</a></li>
 					</c:if>
-
 				</ul>
 			</div>
 		</div>
+		<%-- 페이징 End --%>
+		
 		<a href="/board/enroll" class="top_btn">작성하기</a>
 
 		<form id="moveForm" method="get">

@@ -30,6 +30,7 @@ import com.study.model.MemberVO;
 import com.study.model.PageMakerDTO;
 import com.study.model.ReplyVO;
 import com.study.service.BoardService;
+import com.study.service.MemberService;
 import com.study.service.ReplyService;
 
 @Controller
@@ -38,6 +39,9 @@ public class BoardController {
 
 	@Autowired
 	private BoardService boardservice;
+	
+	@Autowired
+	private MemberService memberservice;
 	
 	@Autowired
 	private ReplyService replyService;
@@ -142,6 +146,7 @@ public class BoardController {
 	@GetMapping("/get")
 	public String boardGetPageGET(int boardNo, Model model, HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
+		
 		boardservice.getHitByBoardNo(boardNo);
 		Map<String, Object> board = boardservice.getPage(boardNo);
 		model.addAttribute("pageInfo", board);
@@ -164,6 +169,10 @@ public class BoardController {
 			return "member/alert"; // alert.jsp로 이동
 		}
 
+		String decWriter = memberservice.selectWriter(mVo.getMemberNo());
+		model.addAttribute("decWriter", decWriter);
+		model.addAttribute("memberNo", mVo.getMemberNo());
+		
 		List<Map<String, Object>> fileList = boardservice.selectFileList(boardNo);
 		model.addAttribute("file", fileList);
 		model.addAttribute("fileSize", fileList.size());
@@ -209,9 +218,10 @@ public class BoardController {
 				}
 			}
 		// 파일이 있는상태에서의 수정 => 업데이트
-		} else {
-			boardservice.modify(board, files, fileNames, mpRequest);
-		}
+		} 
+		
+		boardservice.modify(board, files, fileNames, mpRequest);
+		
 
 		return "redirect:/board/list";
 //		return "redirect:/board/get?boardNo=" + board.getBoardNo();
@@ -229,5 +239,13 @@ public class BoardController {
 	}
 	
 	//댓글작성
-	
+	@PostMapping("/replyWrite")
+	public String replyWrite(ReplyVO reply) throws Exception {
+		
+		
+		replyService.writeReply(reply);
+		
+		return "redirect:/board/get?boardNo="+ reply.getBoardNo(); 
+				
+	}
 }

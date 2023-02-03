@@ -118,4 +118,10 @@ public class MemberDAOImpl implements MemberDAO {
 		template.update("MemberMapper.updatePw", map);
 	}
 
+	//작성자 가져오기(회원번호로 이름 조회)
+	@Override
+	public String selectWriter(String memberNo) throws Exception {
+		return template.selectOne("MemberMapper.selectWriter", memberNo);
+	}
+
 }

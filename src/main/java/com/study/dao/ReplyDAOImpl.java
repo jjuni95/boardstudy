@@ -17,14 +17,32 @@ public class ReplyDAOImpl implements ReplyDAO{
 
 	//댓글 조회
 	@Override
-	public List<ReplyVO> readReply(int boardNo) {
+	public List<ReplyVO> readReply(int boardNo) throws Exception {
 		return template.selectList("replyMapper.readReply", boardNo);
 	}
 
 	//댓글 작성
 	@Override
-	public int writeReply(ReplyVO reply) {
+	public int writeReply(ReplyVO reply) throws Exception {
 		return template.insert("replyMapper.writeReply", reply);
+	}
+
+	//댓글 수정
+	@Override
+	public void updateReply(ReplyVO reply) throws Exception {
+		template.update("replyMapper.updateReply", reply);
+	}
+
+	//댓글 삭제
+	@Override
+	public void deleteReply(ReplyVO reply) throws Exception {
+		template.update("replyMapper.deleteReply", reply);
+	}
+
+	//선택된 댓글 조회
+	@Override
+	public ReplyVO selectReply(int commentNo) throws Exception {
+		return template.selectOne("replyMapper.selectReply", commentNo);
 	}
 
 }

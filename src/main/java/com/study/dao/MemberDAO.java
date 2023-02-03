@@ -47,5 +47,8 @@ public interface MemberDAO {
 	//임시비밀번호로 업데이트
 	//public void updatePw(String encTempPw, String memberNo) throws Exception;
 	public void updatePw(String encTempPw, String memberNo) throws Exception;
+	
+	//작성자 가져오기(회원번호로 이름 조회하기)
+	public String selectWriter(String memberNo) throws Exception;
 
 }

@@ -116,6 +116,13 @@
 		WHERE MEMBER_NO = #{memberNo}
 	</update>
 	
+	<!-- 작성자 가져오기(회원번호로 이름 조회하기) -->
+	<select id="selectWriter" resultType="String">
+		select top 1 MEMBER_NAME
+			from Cu_MEMBER
+		where MEMBER_NO = #{memberNo}
+	</select>
+	
   </mapper>
   
   

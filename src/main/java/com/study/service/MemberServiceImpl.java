@@ -267,6 +267,17 @@ public class MemberServiceImpl implements MemberService {
 		
 	}
 
+	//작성자 가져오기(회원번호로 이름 조회하기)
+	@Override
+	public String selectWriter(String memberNo) throws Exception {
+		
+		String encName = memberDAO.selectWriter(memberNo); //번호를 보내서 암호화된 이름을 가져오고
+		//복호화
+		String decWriter = aesutil.decrypt(encName);
+		
+		return decWriter;
+	}
+
 
 
 
