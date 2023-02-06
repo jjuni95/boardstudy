@@ -23,11 +23,11 @@
 		</div>
 		<div class="input_wrap">
 			<label>작성일</label>
-			<input name="regdater" readonly="readonly" value='<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${pageInfo.regDate}"/>' >
+			<input disabled name="regdater" readonly="readonly" value='<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${pageInfo.regDate}"/>' >
 		</div>
 		<div class="input_wrap">
 			<label>마지막 수정일</label>
-			<input name="updateDate" readonly="readonly" value='<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${pageInfo.updateDate}"/>' >
+			<input disabled name="updateDate" readonly="readonly" value='<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${pageInfo.updateDate}"/>' >
 		</div>	
 			
 		<div class="input_wrap">
@@ -79,6 +79,7 @@
  <p>댓글목록</p>
  
  	<!-- 댓글 -->
+ <form name="replyUpdate" method="post">
 	<div id="reply">
 	  <ol class="replyList">
 	    <c:forEach items="${replyList}" var="reply">
@@ -88,37 +89,37 @@
 	        작성 날짜 :  ${reply.regDate} <br/>
 	        </p>
 	
-	        <p>${reply.content}</p>
+	        <%-- <p>${reply.content} </p> --%>
+	        <input name="content" id="content_${reply.commentNo}" value='<c:out value="${reply.content}"/>' <c:if test="${reply.memberNo ne memberNo}">disabled </c:if>>
+	      <c:if test="${reply.memberNo eq memberNo}">
+	      	<button type="button" class="replyUpdateBtn" name="commentNo" data-rno="${reply.commentNo}" onClick="fn_modifyBtn('${reply.commentNo}')">수정</button>
+ 			<button type="button" class="replyDeleteBtn" name="commentNo" data-rno="${reply.commentNo}" onClick="fn_deleteBtn('${reply.commentNo}')">삭제</button>
+ 			</c:if>
 	      </li>
+	      
 	    </c:forEach>   
 	  </ol>
 	</div>
+</form>
  
-	<!-- 댓글작성 -->
-	<form name="replyForm" method="post">
-		<div>
-		    <div>작성자
-				<label>${decWriter}</label>
-			</div>
-				
-		    <br/>
-		   	 	<label for="content">댓글 내용</label>
-		   	 	<input type="text" id="content" name="content" />
-		   	 	<input type="hidden" name="boardNo" id="boardNo" value="${pageInfo.boardNo}">
-		   	 	<input type="hidden" name="memberNo" id="memberNo" value="${memberNo}">
-		 </div>
-		 <div>
-		 	 <button type="button" class="replyWriteBtn">등록</button>
-  		</div>
-	</form>
+<!-- 댓글작성 -->
+<form name="replyForm" method="post">
+	<div>
+	    <div>작성자
+			<label>${decWriter}</label>
+		</div>
+			
+	    <br/>
+	   	 	<label for="content">댓글 내용</label>
+	   	 	<input type="text" id="content" name="content" />
+	   	 	<input type="hidden" name="memberNo" id="memberNo" value="${memberNo}">
+	   	 	<input type="hidden" name="boardNo" value="${pageInfo.boardNo}">
+	 </div>
+	 <div>
+	 	 <button type="button" class="replyWriteBtn">등록</button>
 
-
-
-		
-
-
-	
-	
+  	</div>
+</form>
 	
 </body>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -142,16 +143,6 @@ $("#deleteBtn").on("click", function(){
 	})
 })
 
-
-
-/* $("#fileDel").on("click", function(){
-	var value = $("#fileNoDel").val();
-	var name = $("#fileNameDel").val();
-	
-	fn_del(value, name)
-}) */
-
-
 //파일추가
 $("#addFile").on("click", function(){
 	var fileIndex = 1;
@@ -168,6 +159,7 @@ $("#addFile").on("click", function(){
 	}
 });
 
+//파일삭제
 $(document).on("click","#fileDelBtn", function(){
 	$(this).parent().remove();
 	let abled = document.querySelector('#addFile');
@@ -180,8 +172,41 @@ $(".replyWriteBtn").on("click", function(){
 	  var formObj = $("form[name='replyForm']");
 	  formObj.attr("action", "/board/replyWrite");
 	  formObj.submit();
-	});
+});
 
+//댓글수정
+function fn_modifyBtn(commentNo){
+	//var contentID = "#content_" + commentNo;
+	$.ajax({
+		url : "/board/replyUpdate", 
+		type : "post",
+		dataType : "json",
+		data : {"commentNo" : commentNo,
+				"content" : $("#content_" + commentNo).val(),
+				"boardNo" : $("#boardNo").val()
+				},
+		success : function(data){
+				alert("수정되었습니다.");
+				location.href = "/board/get?boardNo=" + $("#boardNo").val();
+		}
+	})
+}
+
+//댓글 삭제 
+function fn_deleteBtn(commentNo){
+	//var contentID = "#content_" + commentNo;
+	$.ajax({
+		url : "/board/replyDelete", 
+		type : "post",
+		dataType : "json",
+		data : {"commentNo" : commentNo,
+			"boardNo" : $("#boardNo").val()},
+		success : function(data){
+				alert("삭제되었습니다.");
+				location.href = "/board/get?boardNo=" + $("#boardNo").val();
+		}
+	})
+}
 </script>
 
 </html>

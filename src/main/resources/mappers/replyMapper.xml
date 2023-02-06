@@ -17,6 +17,7 @@
 		from Bd_COMMENT as a
 		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
 		where BOARD_NO = #{boardNo}
+			and a.ISENABLED = 'N'
 	</select>
 
 
@@ -32,7 +33,9 @@
 	SET	
 		CONTENT = #{content},
 		MODIFIED_DATE = GETDATE()
-	WHERE BOARD_NO = #{boardNo}
+		
+	WHERE BOARD_NO = #{boardNo} 
+		and COMMENT_NO = #{commentNo}
 	</update>
 	
 	<!-- 댓글삭제 -->
@@ -42,6 +45,7 @@
 		ISENABLED = 'Y',
 		MODIFIED_DATE = GETDATE()
 	WHERE BOARD_NO = #{boardNo}
+		and COMMENT_NO = #{commentNo}
 	</update>
 	
 	<!-- 선택된 댓글 조회 -->

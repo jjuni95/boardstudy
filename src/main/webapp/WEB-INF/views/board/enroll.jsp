@@ -15,7 +15,7 @@
 		</div>
 		
 		<div class="input_wrap">
-			<label>제목</label> <input name="title">
+			<label>제목</label> <input name="title" maxlength='25'>
 		</div>
 		<div class="input_wrap">
 			<label>내용</label>

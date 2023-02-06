@@ -162,9 +162,9 @@ public class BoardController {
 		}
 
 		int deleteChk = boardservice.deleteChk(boardNo);
-		// 작성자가 아니면 못들어가게하기
-		if (!mVo.getMemberNo().equals(board.get("memberNo")) && deleteChk == 1) {
-			request.setAttribute("msg", "작성한 본인만 접근이 가능합니다. ");
+		// 게시글 삭제되면 접근불가
+		if (deleteChk == 1) {
+			request.setAttribute("msg", "접근이 불가능합니다. ");
 			request.setAttribute("url", "/board/list");
 			return "member/alert"; // alert.jsp로 이동
 		}
@@ -183,6 +183,18 @@ public class BoardController {
 		model.addAttribute("replyList", replyList);
 		System.out.println("replyList ===> "+ replyList);
 		
+		
+		//댓글작성자 여부 확인
+		/*
+		 * for(int i = 0; i < replyList.size(); i++) {
+		 * System.out.println(" replyList.get(i).getCommentNo(); ===>  " +
+		 * replyList.get(i).getCommentNo());
+		 * 
+		 * }
+		 */
+		 
+		
+
 		
 		return "board/get";
 	}
@@ -247,5 +259,40 @@ public class BoardController {
 		
 		return "redirect:/board/get?boardNo="+ reply.getBoardNo(); 
 				
+	}
+	
+	//댓글수정
+	@ResponseBody
+	@PostMapping("/replyUpdate")
+	public Map<String, String> replyUpdate(int commentNo, String content, int boardNo) throws Exception{
+		
+	
+		ReplyVO replyVo = new  ReplyVO();
+		replyVo.setBoardNo(boardNo);
+		replyVo.setCommentNo(commentNo);
+		replyVo.setContent(content);
+
+		replyService.updateReply(replyVo);
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("msg", "success");
+		
+		return result;
+		//return "/board/get?boardNo="+ replyVo.getBoardNo(); 
+		
+	}
+	
+	//댓글 삭제
+	@PostMapping("/replyDelete")
+	public Map<String, String> replyDelete(int commentNo, int boardNo) throws Exception{
+		ReplyVO replyVo = new  ReplyVO();
+		replyVo.setBoardNo(boardNo);
+		replyVo.setCommentNo(commentNo);
+		replyService.deleteReply(replyVo);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("msg", "success");
+		
+		return result;
+		//return "redirect:/board/get?boardNo="+ reply.getBoardNo(); 
 	}
 }

@@ -52,7 +52,6 @@ public class BoardServiceImpl implements BoardService{
 				
 				if(fileSize < megaByte) {
 					
-					
 					map.put("boardNo", SboardNo);
 					map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
 					map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
@@ -65,7 +64,6 @@ public class BoardServiceImpl implements BoardService{
 					PrintWriter out = response.getWriter();
 					out.println("<script>alert('크기가 큽니다 ㅠ'); location.href='enroll';</script>");
 					out.flush();
-
 				}
 			}
 		}else {

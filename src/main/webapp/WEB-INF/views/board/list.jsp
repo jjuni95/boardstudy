@@ -103,7 +103,7 @@ a:hover {
 				<ul id="pageInfo" class="pageInfo">
 					<c:if test="${pageMaker.prev}">
 						<li class="pageInfo_btn previous">
-							<a href="${pageMaker.startPage-1}">Previous</a>
+							<a href="${pageMaker.startPage-1}"><<</a>
 						</li>
 					</c:if>
 					
@@ -114,7 +114,7 @@ a:hover {
 					</c:forEach>
 					
 					<c:if test="${pageMaker.next}">
-						<li class="pageInfo_btn next"><a href="${pageMaker.endPage + 1 }">Next</a></li>
+						<li class="pageInfo_btn next"><a href="${pageMaker.endPage + 1 }">>></a></li>
 					</c:if>
 				</ul>
 			</div>
@@ -209,7 +209,7 @@ $(".move").on("click", function(e){
 
 //글 제목이 20자 이상이면 ...처리
 $(".titleList").each(function(){
-    var length = 10; //표시할 글자수 정하기
+    var length = 20; //표시할 글자수 정하기
     $(this).each(function(){
         if( $(this).text().length >= length ){
             $(this).text( $(this).text().substr(0,length)+'...') 
@@ -229,8 +229,8 @@ function masking(str){
 	}
 	
 	strLength = originStr.length;
-	
-	if(strLength < 4){
+	maskingName = strLength*0.8;
+	if(strLength > maskingName){
 		maskingStr = originStr.replace(/(?<=.{1})./gi, "*");
 	}else {
 		maskingStr = originStr.replace(/(?<=.{2})./gi, "*");
