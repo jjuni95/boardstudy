@@ -17,7 +17,7 @@ import com.study.component.AES256Util;
 import com.study.component.FileUtils;
 import com.study.dao.BoardDAO;
 import com.study.model.BoardVO;
-import com.study.model.Criteria;
+import com.study.model.CriteriaVO;
 
 @Transactional
 @Service
@@ -83,7 +83,7 @@ public class BoardServiceImpl implements BoardService{
 
 	//게시판 목록
 	@Override
-	public List<Map<String,Object>> getList(Criteria cri) throws Exception {
+	public List<Map<String,Object>> getList(CriteriaVO cri) throws Exception {
 		List<Map<String,Object>> boardList =  boardDAO.getList(cri);
 		for(int i=0; i<boardList.size(); i++) {
 			String memberName = boardList.get(i).get("memberName").toString();
@@ -107,7 +107,7 @@ public class BoardServiceImpl implements BoardService{
 
 	//게시판 총 갯수
 	@Override
-	public int getTotal(Criteria cri) {
+	public int getTotal(CriteriaVO cri) {
 		int boardCnt = boardDAO.getTotal(cri);
 		return boardCnt;
 	}
@@ -169,6 +169,4 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	
-	
-
 }

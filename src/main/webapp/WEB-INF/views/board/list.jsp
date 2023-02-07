@@ -106,12 +106,19 @@ a:hover {
 							<a href="${pageMaker.startPage-1}"><<</a>
 						</li>
 					</c:if>
-					
+					<c:if test="${pageMaker.cri.pageNum != 1}">
+						<li class="pageInfo_btn previous">
+							<a href="${pageMaker.cri.pageNum - 1 }"><</a>
+						</li>
+					</c:if>
 					<c:forEach var="num" begin="${pageMaker.startPage}"
 						end="${pageMaker.endPage}">
 						<li class="pageInfo_btn ${pageMaker.cri.pageNum == num ? "active":"" }">
 						<a href="${num}">${num}</a></li>
 					</c:forEach>
+					<c:if test="${pageMaker.endPage != pageMaker.cri.pageNum}">
+						<li class="pageInfo_btn next"><a href="${pageMaker.cri.pageNum + 1 }">></a></li>
+					</c:if>
 					
 					<c:if test="${pageMaker.next}">
 						<li class="pageInfo_btn next"><a href="${pageMaker.endPage + 1 }">>></a></li>
@@ -134,17 +141,6 @@ a:hover {
 </body>
 
 <script type="text/javascript">
-
-//마스킹처리
-function checkNull(str){
-	if(typeof str == "undefined" || str == null || str == ""){
-		return true;
-	}
-	else{
-		return false;
-	}
-};
-
 //마스킹처리
 $( document ).ready(function() {
  $(".maskingName").each(function(){
@@ -196,17 +192,6 @@ $(".search_area button").on("click", function(e){
     $("#moveForm").submit();
 });
 
-
-/* let moveForm = $("#moveForm");
-
-$(".move").on("click", function(e){
-    e.preventDefault();
-    
-    moveForm.append("<input type='hidden' name='boardNo' value='"+ $(this).attr("href")+ "'>");
-    moveForm.attr("action", "/board/get");
-    moveForm.submit();
-}); */
-
 //글 제목이 20자 이상이면 ...처리
 $(".titleList").each(function(){
     var length = 20; //표시할 글자수 정하기
@@ -217,6 +202,16 @@ $(".titleList").each(function(){
         }
     });
 });
+
+//마스킹처리
+function checkNull(str){
+	if(typeof str == "undefined" || str == null || str == ""){
+		return true;
+	}
+	else{
+		return false;
+	}
+};
 
 //이름 마스킹 처리
 function masking(str){
@@ -238,8 +233,6 @@ function masking(str){
 	
 	return maskingStr;
 }
-
-
 
 </script>
 </html>

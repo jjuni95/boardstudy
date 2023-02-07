@@ -2,7 +2,6 @@ package com.study.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.study.component.AES256Util;
 import com.study.dao.ReplyDAO;
+import com.study.model.CriteriaVO;
 import com.study.model.ReplyVO;
 
 @Service
@@ -24,9 +24,9 @@ public class ReplyServiceImpl implements ReplyService{
 	
 	//댓글 조회
 	@Override
-	public List<ReplyVO> readReply(int boardNo) throws Exception{
+	public List<ReplyVO> readReply(int boardNo, CriteriaVO cri) throws Exception{
 		
-		List<ReplyVO> replyList = replyDAO.readReply(boardNo);
+		List<ReplyVO> replyList = replyDAO.readReply(boardNo, cri);
 		
 		
 		for(int i = 0; i< replyList.size(); i++) {
@@ -61,16 +61,29 @@ public class ReplyServiceImpl implements ReplyService{
 		replyDAO.updateReply(reply);
 	}
 
-	
 	//댓글 삭제
 	@Override
 	public void deleteReply(ReplyVO reply) throws Exception {
 		replyDAO.deleteReply(reply);
 	}
 
+	//선택된 댓글 조회
 	@Override
 	public ReplyVO selectReply(int commentNo) throws Exception {
 		return replyDAO.selectReply(commentNo);
+	}
+
+	//댓글 일괄삭제
+	@Override
+	public void allDelete(int boardNo) throws Exception {
+		replyDAO.allDelete(boardNo);
+	}
+
+	//댓글 총 갯수
+	@Override
+	public int getTotal(int boardNo) {
+		int boardCnt = replyDAO.getTotal(boardNo);
+		return boardCnt;
 	}
 	
 	

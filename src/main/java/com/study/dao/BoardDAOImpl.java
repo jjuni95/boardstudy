@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.study.model.BoardVO;
-import com.study.model.Criteria;
+import com.study.model.CriteriaVO;
 
 @Repository
 public class BoardDAOImpl implements BoardDAO {
@@ -32,7 +32,7 @@ public class BoardDAOImpl implements BoardDAO {
 
 	//게시판 목록
 	@Override
-	public List<Map<String,Object>> getList(Criteria cri) throws Exception {
+	public List<Map<String,Object>> getList(CriteriaVO cri) throws Exception {
 		return template.selectList("boardMapper.getList", cri);
 	}
 
@@ -46,7 +46,7 @@ public class BoardDAOImpl implements BoardDAO {
 	
 	//게시판 총 갯수
 	@Override
-	public int getTotal(Criteria cri) {
+	public int getTotal(CriteriaVO cri) {
 		return template.selectOne("boardMapper.getTotal", cri);
 	}
 

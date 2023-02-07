@@ -25,9 +25,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.study.component.AES256Util;
 import com.study.component.FileUtils;
 import com.study.model.BoardVO;
-import com.study.model.Criteria;
+import com.study.model.CriteriaVO;
 import com.study.model.MemberVO;
-import com.study.model.PageMakerDTO;
+import com.study.model.PageMakerVO;
 import com.study.model.ReplyVO;
 import com.study.service.BoardService;
 import com.study.service.MemberService;
@@ -56,7 +56,7 @@ public class BoardController {
 
 	// 게시판 목록 페이지 이동
 	@GetMapping(value = "/list")
-	public String boardListGET(HttpServletRequest request, Model model, Criteria cri) throws Exception {
+	public String boardListGET(HttpServletRequest request, Model model, CriteriaVO cri) throws Exception {
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		MemberVO mVo = (MemberVO) session.getAttribute("member"); // "member" =>로그인한 사람
 
@@ -66,16 +66,21 @@ public class BoardController {
 			return "member/alert"; // alert.jsp로 이동
 		}
 
-		List<Map<String, Object>> boardList = boardservice.getList(cri);
-//		model.addAttribute("list", boardList);
-
 		int total = boardservice.getTotal(cri);
-		PageMakerDTO pageMake = new PageMakerDTO(cri, total);
-		System.out.println("pageMake====> " + pageMake);
+		PageMakerVO pageMake = new PageMakerVO(cri, total);
+		
+		//현재페이지가 전체마지막페이지보다 크면 1페이지로 이동
+		int realEnd = (int) (Math.ceil(total * 1.0 / cri.getAmount()));
+		if(cri.getPageNum() > realEnd) {
+			cri.setPageNum(1);
+			pageMake.setStartPage(1);
+			pageMake.setEndPage(10);
+			pageMake.getCri().setPageNum(1);
+		}
+		List<Map<String, Object>> boardList = boardservice.getList(cri);
 
+		System.out.println("pageMake.getCri().getPageNum() ==> "+ pageMake.getCri().getPageNum());
 		if (pageMake.getCri().getType() != null) {
-			System.out.println("pageMake.getCri()====> " + pageMake.getCri());
-			System.out.println("pageMake.getCri().getType()====> " + pageMake.getCri().getType());
 
 			// 작성자로 검색할 경우
 			if (pageMake.getCri().getType().equals("W")) {
@@ -90,10 +95,8 @@ public class BoardController {
 
 				// 3.화면에 원래 작성했던 검색키워드 저장
 				cri.setKeyword(keyword);
-
 			}
 		}
-
 		model.addAttribute("pageMaker", pageMake);
 		model.addAttribute("list", boardList);
 		return "board/list";
@@ -111,7 +114,6 @@ public class BoardController {
 			return "member/alert"; // alert.jsp로 이동
 		}
 
-		System.out.println("mVo.getMemberNo()=====> " + mVo.getMemberNo());
 		String decWriter = boardservice.selectWriter(mVo.getMemberNo());
 		model.addAttribute("decWriter", decWriter);
 		System.out.println("게시판 등록 페이지 이동");
@@ -139,22 +141,17 @@ public class BoardController {
 		request.setAttribute("msg", "게시글이 등록되었습니다.");
 		request.setAttribute("url", "/board/list");
 		return "member/alert"; // alert.jsp로 이동
-//		return "redirect:/board/list";
 	}
 
 	// 게시판 상세 조회
 	@GetMapping("/get")
-	public String boardGetPageGET(int boardNo, Model model, HttpServletRequest request) throws Exception {
+	public String boardGetPageGET(int boardNo, Model model, HttpServletRequest request, CriteriaVO cri) throws Exception {
 		HttpSession session = request.getSession();
 		
 		boardservice.getHitByBoardNo(boardNo);
 		Map<String, Object> board = boardservice.getPage(boardNo);
 		model.addAttribute("pageInfo", board);
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
-
-		System.out.println("mVo.getMemberNo() ===> " + mVo.getMemberNo());
-		System.out.println("board.get(\"memberNo\") ===> " + board.get("memberNo"));
-		System.out.println("board ===> " + board);
 
 		model.addAttribute("showModifyBtn", "N");
 		if (mVo.getMemberNo().equals(board.get("memberNo"))) {
@@ -164,8 +161,10 @@ public class BoardController {
 		int deleteChk = boardservice.deleteChk(boardNo);
 		// 게시글 삭제되면 접근불가
 		if (deleteChk == 1) {
+			replyService.allDelete(boardNo);
 			request.setAttribute("msg", "접근이 불가능합니다. ");
 			request.setAttribute("url", "/board/list");
+			
 			return "member/alert"; // alert.jsp로 이동
 		}
 
@@ -177,25 +176,25 @@ public class BoardController {
 		model.addAttribute("file", fileList);
 		model.addAttribute("fileSize", fileList.size());
 
-
+		//댓글 페이징처리
+		
+		int total = replyService.getTotal(boardNo);
+		System.out.println("total-====> " + total);
+		PageMakerVO pageMake = new PageMakerVO(cri, total);
+		
+		//현재페이지가 전체마지막페이지보다 크면 1페이지로 이동
+		int realEnd = (int) (Math.ceil(total * 1.0 / cri.getAmount()));
+		if(cri.getPageNum() > realEnd) {
+			cri.setPageNum(1);
+			pageMake.setStartPage(1);
+			pageMake.setEndPage(10);
+			pageMake.getCri().setPageNum(1);
+		}
+		
 		//댓글조회
-		List<ReplyVO> replyList = replyService.readReply(boardNo);
+		List<ReplyVO> replyList = replyService.readReply(boardNo, cri);
+		model.addAttribute("pageMaker", pageMake);
 		model.addAttribute("replyList", replyList);
-		System.out.println("replyList ===> "+ replyList);
-		
-		
-		//댓글작성자 여부 확인
-		/*
-		 * for(int i = 0; i < replyList.size(); i++) {
-		 * System.out.println(" replyList.get(i).getCommentNo(); ===>  " +
-		 * replyList.get(i).getCommentNo());
-		 * 
-		 * }
-		 */
-		 
-		
-
-		
 		return "board/get";
 	}
 
@@ -282,6 +281,7 @@ public class BoardController {
 	}
 	
 	//댓글 삭제
+	@ResponseBody
 	@PostMapping("/replyDelete")
 	public Map<String, String> replyDelete(int commentNo, int boardNo) throws Exception{
 		ReplyVO replyVo = new  ReplyVO();

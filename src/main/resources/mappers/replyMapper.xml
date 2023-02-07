@@ -18,8 +18,10 @@
 		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
 		where BOARD_NO = #{boardNo}
 			and a.ISENABLED = 'N'
+		ORDER BY COMMENT_NO DESC
+		OFFSET (#{cri.pageNum}-1)*#{cri.amount} ROWS
+		FETCH NEXT #{cri.amount} ROWS ONLY
 	</select>
-
 
 	<!-- 댓글작성 -->
 	<insert id="writeReply" parameterType="com.study.model.ReplyVO">
@@ -58,6 +60,21 @@
 		, MODIFIED_DATE
 	FROM Bd_COMMENT
 	WHERE COMMENT_NO = #{commentNo}
+	</select>
+	
+	<!-- 댓글 일괄삭제 -->
+	<update id="allDelete" parameterType="int">
+	UPDATE Bd_COMMENT
+		SET
+			ISENABLED = 'Y'
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<!-- 댓글 총 갯수 -->
+	<select id="getTotal" resultType="int">
+	select count(*) 
+	from Bd_COMMENT 
+	where BOARD_NO = #{boardNo}
 	</select>
 </mapper>
 

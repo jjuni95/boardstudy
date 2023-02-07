@@ -1,11 +1,13 @@
 package com.study.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.study.model.CriteriaVO;
 import com.study.model.ReplyVO;
 
 @Repository
@@ -17,8 +19,12 @@ public class ReplyDAOImpl implements ReplyDAO{
 
 	//댓글 조회
 	@Override
-	public List<ReplyVO> readReply(int boardNo) throws Exception {
-		return template.selectList("replyMapper.readReply", boardNo);
+	public List<ReplyVO> readReply(int boardNo, CriteriaVO cri) throws Exception {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("boardNo", boardNo);
+		map.put("cri", cri);
+		
+		return template.selectList("replyMapper.readReply", map);
 	}
 
 	//댓글 작성
@@ -43,6 +49,19 @@ public class ReplyDAOImpl implements ReplyDAO{
 	@Override
 	public ReplyVO selectReply(int commentNo) throws Exception {
 		return template.selectOne("replyMapper.selectReply", commentNo);
+	}
+
+	
+	//댓글 일괄삭제
+	@Override
+	public void allDelete(int boardNo) throws Exception {
+		template.update("replyMapper.allDelete", boardNo);
+	}
+	
+	//게시판 총 갯수
+	@Override
+	public int getTotal(int boardNo) {
+		return template.selectOne("replyMapper.getTotal", boardNo);
 	}
 
 }

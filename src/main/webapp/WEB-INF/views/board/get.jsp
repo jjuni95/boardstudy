@@ -4,6 +4,41 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style type="text/css">
+.pageInfo {
+	list-style: none;
+	display: inline-block;
+	margin: 50px 0 0 100px;
+}
+
+.pageInfo li {
+	float: left;
+	font-size: 20px;
+	margin-left: 18px;
+	padding: 7px;
+	font-weight: 500;
+}
+
+a:link {
+	color: black;
+	text-decoration: none;
+}
+
+a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+a:hover {
+	color: black;
+	text-decoration: underline;
+}
+
+.active {
+	background-color: #cdd5ec;
+}
+
+</style>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
@@ -76,27 +111,31 @@
 
 </form>
 
- <p>댓글목록</p>
- 
- 	<!-- 댓글 -->
+
+ <!-- 댓글 -->
  <form name="replyUpdate" method="post">
 	<div id="reply">
 	  <ol class="replyList">
 	    <c:forEach items="${replyList}" var="reply">
 	      <li>
 	        <p>
-	        작성자 : ${reply.memberName}<br />
-	        작성 날짜 :  ${reply.regDate} <br/>
+	        <!-- 세션회원번호와 댓글등록한 회원번호가 일치하지 않을때 -->
+	        <c:if test="${reply.memberNo ne memberNo}">
+	        	 작성자 :<span class="maskingName">${reply.memberName}<br/></span>
+	        </c:if>
+	        <!-- 세션회원번호와 댓글등록한 회원번호가 일치할때 -->
+	        <c:if test="${reply.memberNo eq memberNo}">
+	        	<span> 작성자 : ${reply.memberName}<br/></span>
+	        </c:if>
 	        </p>
+	        <p> 작성일 :  ${reply.regDate} <br/></p>
 	
-	        <%-- <p>${reply.content} </p> --%>
 	        <input name="content" id="content_${reply.commentNo}" value='<c:out value="${reply.content}"/>' <c:if test="${reply.memberNo ne memberNo}">disabled </c:if>>
-	      <c:if test="${reply.memberNo eq memberNo}">
-	      	<button type="button" class="replyUpdateBtn" name="commentNo" data-rno="${reply.commentNo}" onClick="fn_modifyBtn('${reply.commentNo}')">수정</button>
- 			<button type="button" class="replyDeleteBtn" name="commentNo" data-rno="${reply.commentNo}" onClick="fn_deleteBtn('${reply.commentNo}')">삭제</button>
- 			</c:if>
+	      		<c:if test="${reply.memberNo eq memberNo}">
+	      			<button type="button" class="replyUpdateBtn" name="commentNo" data-rno="${reply.commentNo}" onClick="fn_modifyBtn('${reply.commentNo}')">수정</button>
+ 					<button type="button" class="replyDeleteBtn" name="commentNo" data-rno="${reply.commentNo}" onClick="fn_deleteBtn('${reply.commentNo}')">삭제</button>
+ 				</c:if>
 	      </li>
-	      
 	    </c:forEach>   
 	  </ol>
 	</div>
@@ -108,7 +147,6 @@
 	    <div>작성자
 			<label>${decWriter}</label>
 		</div>
-			
 	    <br/>
 	   	 	<label for="content">댓글 내용</label>
 	   	 	<input type="text" id="content" name="content" />
@@ -117,30 +155,71 @@
 	 </div>
 	 <div>
 	 	 <button type="button" class="replyWriteBtn">등록</button>
-
   	</div>
 </form>
+
+<%-- 페이징 Start --%>
+<div class="pageInfo_wrap">
+	<div class="pageInfo_area">
+		<ul id="pageInfo" class="pageInfo">
+			<c:if test="${pageMaker.prev}">
+				<li class="pageInfo_btn previous">
+					<a href="${pageMaker.startPage-1}"><<</a>
+				</li>
+			</c:if>
+			<c:if test="${pageMaker.cri.pageNum != 1}">
+				<li class="pageInfo_btn previous">
+					<a href="${pageMaker.cri.pageNum - 1 }"><</a>
+				</li>
+			</c:if>
+			<c:forEach var="num" begin="${pageMaker.startPage}"
+				end="${pageMaker.endPage}">
+				<li class="pageInfo_btn ${pageMaker.cri.pageNum == num ? "active":"" }">
+				<a href="${num}">${num}</a></li>
+			</c:forEach>
+			<c:if test="${pageMaker.endPage != pageMaker.cri.pageNum}">
+				<li class="pageInfo_btn next"><a href="${pageMaker.cri.pageNum + 1 }">></a></li>
+			</c:if>
+			
+			<c:if test="${pageMaker.next}">
+				<li class="pageInfo_btn next"><a href="${pageMaker.endPage + 1 }">>></a></li>
+			</c:if>
+		</ul>
+	</div>
+</div>
+<%-- 페이징 End --%>
 	
+<form id="moveForm" method="get">
+	<input type="hidden" name="pageNum" id="pageNum" value="${pageMaker.cri.pageNum }">
+	<input type="hidden" name="amount" id="amount" value="${pageMaker.cri.amount }">
+	<input type="hidden" name="boardNo" id="boardNo" value="${pageInfo.boardNo}">
+</form>	
+
 </body>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
-//삭제하기
+//게시글 삭제하기
 $("#deleteBtn").on("click", function(){
-	$.ajax({
-		url : "/board/delete", 
-		type : "post",
-		dataType : "json",
-		data : {"boardNo" : $("#boardNo").val()},
-		success : function(data){
-			if(data == 1){
-			alert("삭제되었습니다.");
-			window.location = '/board/list';
-			}else{
-				alert("삭제가 불가능합니다.");
-			}
-		}
-	})
+	
+    if (!confirm("확인을 누르면 댓글까지 삭제됩니다.")) {
+        alert("취소를 누르셨습니다.");
+    } else {
+    	$.ajax({
+    		url : "/board/delete", 
+    		type : "post",
+    		dataType : "json",
+    		data : {"boardNo" : $("#boardNo").val()},
+    		success : function(data){
+    			if(data == 1){
+    			alert("삭제되었습니다.");
+    			window.location = '/board/list';
+    			}else{
+    				alert("삭제가 불가능합니다.");
+    			}
+    		}
+    	})
+    }
 })
 
 //파일추가
@@ -207,6 +286,56 @@ function fn_deleteBtn(commentNo){
 		}
 	})
 }
+
+//마스킹처리
+$( document ).ready(function() {
+ $(".maskingName").each(function(){
+	 var str = $(this).text();
+	
+	let maskingStr  = masking(str);
+	 $(this).text(maskingStr);
+    });
+});
+
+//이름 마스킹 처리
+function masking(str){
+	let originStr = str;
+	let maskingStr;
+	let strLength;
+	
+	if(this.checkNull(originStr) == true){
+		return originStr;
+	}
+	
+	strLength = originStr.length;
+	maskingName = strLength > 4;
+	if(strLength > maskingName){
+		maskingStr = originStr.replace(/(?<=.{1})./gi, "*");
+	}else {
+		maskingStr = originStr.replace(/(?<=.{2})./gi, "*");
+	}
+	
+	return maskingStr;
+}
+
+//마스킹처리
+function checkNull(str){
+	if(typeof str == "undefined" || str == null || str == ""){
+		return true;
+	}
+	else{
+		return false;
+	}
+};
+
+//페이징
+$(".pageInfo a").on("click", function(e){
+	 e.preventDefault();
+    $("input[name='pageNum']").val($(this).attr("href")); 
+    $("#moveForm").attr("action", "/board/get");
+    $("#moveForm").submit();
+   
+});
 </script>
 
 </html>

@@ -2,7 +2,7 @@ package com.study.model;
 
 import java.util.Arrays;
 
-public class Criteria {
+public class CriteriaVO {
 	
 	//현재 페이지
 	private int pageNum;
@@ -20,11 +20,11 @@ public class Criteria {
 	private String[] typeArr;
 	
 	//pageNum = 1, amount = 10
-	public Criteria() {
+	public CriteriaVO() {
 		this(1,10);
 	}
 
-	public Criteria(int pageNum, int amount) {
+	public CriteriaVO(int pageNum, int amount) {
 		this.pageNum = pageNum;
 		this.amount = amount;
 	}

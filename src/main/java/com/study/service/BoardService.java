@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.model.BoardVO;
-import com.study.model.Criteria;
+import com.study.model.CriteriaVO;
 
 public interface BoardService {
 
@@ -19,13 +19,13 @@ public interface BoardService {
 	public String selectWriter(String memberNo) throws Exception;
 	
 	//게시판 목록
-	public List<Map<String,Object>> getList(Criteria cri) throws Exception;
+	public List<Map<String,Object>> getList(CriteriaVO cri) throws Exception;
 	
 	//게시판 상세조회
 	public Map<String,Object> getPage(int boardNo) throws Exception;
 	
 	//게시판 총 갯수
-	public int getTotal(Criteria cri);
+	public int getTotal(CriteriaVO cri);
 
 	//조회수 업데이트
 	public int getHitByBoardNo(int boardNo);

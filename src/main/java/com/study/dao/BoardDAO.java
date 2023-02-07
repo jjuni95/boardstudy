@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.study.model.BoardVO;
-import com.study.model.Criteria;
+import com.study.model.CriteriaVO;
 
 public interface BoardDAO {
 	
@@ -15,13 +15,13 @@ public interface BoardDAO {
 	public String selectWriter(String memberNo) throws Exception;
 	
 	//게시판 목록
-	public List<Map<String,Object>> getList(Criteria cri) throws Exception;
+	public List<Map<String,Object>> getList(CriteriaVO cri) throws Exception;
 	
 	//게시판 상세조회
 	public Map<String,Object> getPage(int boardNo) throws Exception;
 	
 	//게시판 총 갯수
-	public int getTotal(Criteria cri);
+	public int getTotal(CriteriaVO cri);
 	
 	//첨부파일 업로드
 	public void insertFile(Map<String, Object> map) throws Exception;
