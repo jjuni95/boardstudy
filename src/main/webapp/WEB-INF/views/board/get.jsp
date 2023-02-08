@@ -86,11 +86,10 @@ a:hover {
 						<a href="#" id="fileName_${var.index}" onclick="return false;">${file.ORIGINFILE_NAME}</a>
 						
 						<c:if test="${var.index == 0 }">
-					       	<input type="button" id="addFile" value="추가" <c:if test="${fileSize == 2}"> disabled="true"</c:if>>
+					       	<input type="button" id="addFile" value="추가"  onClick="fn_addFile();" <c:if test="${fileSize == 2}"> disabled="true"</c:if>>
+					       	<button id="fileDelBtn" type="button">삭제</button>
 					   	</c:if>
-					   	<c:if test="${var.index == 1}">
-							<button id="fileDelBtn" type="button">삭제</button>
-					   	</c:if>
+					  
 					</div>
 				</c:forEach>
 			</div> 
@@ -99,7 +98,7 @@ a:hover {
 		<c:if test="${fileSize == 0}">
 			<div id="fileIndex" class="input_wrap">
 		       	<input type="file" name="file">
-		       	<input type="button" id="addFile" value="추가">
+		       	<input type="button" id="addFile" onClick="fn_addFile();" value="추가">
 		   	</div> 
 	   	</c:if>
 	
@@ -222,8 +221,32 @@ $("#deleteBtn").on("click", function(){
     }
 })
 
+
+
+//파일삭제
+$(document).on("click","#fileDelBtn", function(){
+	$(this).parent().remove();
+	
+	var fileIndex = 1;
+	var html = "";
+	html+="<div>";
+	html+="<input type='file' style='float:left;' name='file_" + (fileIndex++) + "'>";
+	html+="<input type='button' id='addFile' onClick='fn_addFile();' value='추가'>"; 
+	html+="</div>";
+	
+	$("#fileIndex").append(html);
+	if(fileIndex != 1){
+		let disabled = document.querySelector('#addFile');
+		disabled.setAttribute('disabled' , true);
+	}
+	
+	let abled = document.querySelector('#addFile');
+	abled.disabled = false;
+});
+
 //파일추가
-$("#addFile").on("click", function(){
+//$("#addFile").on("click", function(){
+function fn_addFile(){
 	var fileIndex = 1;
 	var html = "";
 	html+="<div>";
@@ -236,15 +259,7 @@ $("#addFile").on("click", function(){
 		let disabled = document.querySelector('#addFile');
 		disabled.setAttribute('disabled' , true);
 	}
-});
-
-//파일삭제
-$(document).on("click","#fileDelBtn", function(){
-	$(this).parent().remove();
-	let abled = document.querySelector('#addFile');
-	abled.disabled = false;
-	
-});
+}
 
 //댓글등록
 $(".replyWriteBtn").on("click", function(){

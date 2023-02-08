@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gboardMapper">
+
+<!-- 자유갤러리 등록 -->
+<insert id="insertGelleryFile" parameterType="hashMap">
+insert into Bd_GALLERY(
+	MEMBER_NO,
+	ORIGINFILE_NAME,
+	SAVEDFILE_NAME,
+	FILE_SIZE
+)
+values (
+	#{memberNo}
+	, #{originfileName}
+	, #{savedfileName}
+	, #{fileSize}
+)
+</insert>
+
+<!-- 자유갤러리 조회 -->
+<select id="selectGelleryList" parameterType="int" resultType="hashMap">
+SELECT 
+	GALLERY_NO,
+	MEMBER_NO,
+	ORIGINFILE_NAME,
+	SAVEDFILE_NAME,
+	ROUND(FILE_SIZE/1024,1) AS FILE_SIZE,
+	REG_DATE,
+	ISENABLED
+ FROM Bd_GALLERY
+ WHERE GALLERY_NO = #{galleryNo}
+ AND ISENABLED = 'N'
+</select>
+
+</mapper>

@@ -122,8 +122,10 @@ public class BoardController {
 
 	// 게시물 등록
 	@PostMapping("/enroll")
-	public String boardEnrollPOST(BoardVO board, HttpServletRequest request, MultipartHttpServletRequest mpRequest,
-			HttpServletResponse response) throws Exception {
+	public String boardEnrollPOST(BoardVO board
+								, HttpServletRequest request
+								, MultipartHttpServletRequest mpRequest
+								, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession();
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
 		// model.addAttribute("loginSession", mVo); 로그인세션 이거 갖다쓰기!!
