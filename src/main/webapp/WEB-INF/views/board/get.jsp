@@ -49,6 +49,8 @@ a:hover {
 	<input type="hidden" name="boardNo" id="boardNo" value="${pageInfo.boardNo}">
 	<input type="hidden" id="fileNoDel" name="fileNoDel[]" value=""> 
 	<input type="hidden" id="fileNameDel" name="fileNameDel[]" value=""> 
+	<input type="hidden" id="file0Chg" name="file0Chg" value="N">
+	<input type="hidden" id="file1Chg" name="file1Chg" value="N">
 		
 		<div>작성자
 			<label>${pageInfo.memberName}</label>
@@ -79,17 +81,15 @@ a:hover {
 		<c:if test="${fileSize != 0}">
 			<div id="fileIndex" class="input_wrap">
 				<c:forEach var="file" items="${file}" varStatus="var">
-					<div>
-						<input type="hidden" id="FILE_NO" name="FILE_NO_${var.index}" value="${file.FILE_NO }">
-						<input type="hidden" id="FILE_NAME" name="FILE_NAME" value="FILE_NO_${var.index}">
-					
-						<a href="#" id="fileName_${var.index}" onclick="return false;">${file.ORIGINFILE_NAME}</a>
-						
-						<c:if test="${var.index == 0 }">
-					       	<input type="button" id="addFile" value="추가"  onClick="fn_addFile();" <c:if test="${fileSize == 2}"> disabled="true"</c:if>>
-					       	<button id="fileDelBtn" type="button">삭제</button>
-					   	</c:if>
-					  
+					<input type="hidden" id="file${var.index}No" value="${file.FILE_NO}" name="jspfile${var.index}No">
+					<div id = "file${var.index}Div">
+						<input type="text" id="file${var.index}Name" readonly value="${file.ORIGINFILE_NAME}">
+						<label for="file${var.index}">찾기</label>
+				       	<input type="file" name="file${var.index}" id="file${var.index}" style="display: none" onchange="fn_chgFile${var.index}()">
+				       	<c:if test="${var.index == 0}">
+				       		<input type="button" id="addFile" onClick="fn_addFile();" value="추가">
+				       	</c:if>
+				       	<input type="button" id="delFile" onClick="fn_delFile${var.index}();" value="삭제">
 					</div>
 				</c:forEach>
 			</div> 
@@ -97,8 +97,14 @@ a:hover {
 		
 		<c:if test="${fileSize == 0}">
 			<div id="fileIndex" class="input_wrap">
-		       	<input type="file" name="file">
-		       	<input type="button" id="addFile" onClick="fn_addFile();" value="추가">
+				<input type="hidden" id="file0No" name="file0No" value="">
+				<div id = "file0Div">
+					<input type="text" id="file0Name" readonly>
+					<label for="file0">찾기</label>
+			       	<input type="file" name="file0" id="file0" style="display: none" onchange="fn_chgFile0()">
+			       	<input type="button" id="addFile" onClick="fn_addFile();" value="추가">
+			       	<input type="button" id="delFile" onClick="fn_delFile0();" value="삭제">
+		       	</div>
 		   	</div> 
 	   	</c:if>
 	
@@ -160,6 +166,7 @@ a:hover {
 <%-- 페이징 Start --%>
 <div class="pageInfo_wrap">
 	<div class="pageInfo_area">
+<c:if test="${noPaging ne 'Y'}">
 		<ul id="pageInfo" class="pageInfo">
 			<c:if test="${pageMaker.prev}">
 				<li class="pageInfo_btn previous">
@@ -184,6 +191,7 @@ a:hover {
 				<li class="pageInfo_btn next"><a href="${pageMaker.endPage + 1 }">>></a></li>
 			</c:if>
 		</ul>
+</c:if>
 	</div>
 </div>
 <%-- 페이징 End --%>
@@ -198,6 +206,61 @@ a:hover {
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
+
+function fn_chgFile0(){
+	var fileVal = $("#file0").val().split("\\");
+	
+	var fileName = fileVal[fileVal.length-1];
+	
+	$("#file0Name").val(fileName);
+	
+	$("#file0Chg").val("Y");
+}
+
+function fn_chgFile1(){
+	var fileVal = $("#file1").val().split("\\");
+	
+	var fileName = fileVal[fileVal.length-1];
+	
+	$("#file1Name").val(fileName);
+	
+	$("#file1Chg").val("Y");
+}
+
+
+function fn_delFile0(){
+	$("#file0").val("");
+	$("#file0Name").val("");
+	$("#file0Chg").val("Y");
+}
+
+function fn_delFile1(){
+	$("#file1Div").remove();
+	
+	let abled = document.querySelector('#addFile');
+	abled.disabled = false;
+	
+	$("#file1Chg").val("Y");
+}
+
+function fn_addFile(){
+
+	var html = "";
+	html+="<input type='hidden' id='file1No' name='file1No' value=''>";
+	html+="<div id='file1Div'>";
+	html+="<input type='text' id='file1Name' readonly>";
+	html+="<label for='file1'>찾기</label>";
+	html+="<input type='file' name='file1' id='file1' style='display: none' onchange='fn_chgFile1()'>";
+	html+="<input type='button' id='delFile1' onClick='fn_delFile1()' value='삭제'>"; 
+	html+="</div>";
+	
+	$("#fileIndex").append(html);
+	
+	let disabled = document.querySelector('#addFile');
+	disabled.setAttribute('disabled' , true);
+
+}
+
 //게시글 삭제하기
 $("#deleteBtn").on("click", function(){
 	
@@ -220,46 +283,6 @@ $("#deleteBtn").on("click", function(){
     	})
     }
 })
-
-
-
-//파일삭제
-$(document).on("click","#fileDelBtn", function(){
-	$(this).parent().remove();
-	
-	var fileIndex = 1;
-	var html = "";
-	html+="<div>";
-	html+="<input type='file' style='float:left;' name='file_" + (fileIndex++) + "'>";
-	html+="<input type='button' id='addFile' onClick='fn_addFile();' value='추가'>"; 
-	html+="</div>";
-	
-	$("#fileIndex").append(html);
-	if(fileIndex != 1){
-		let disabled = document.querySelector('#addFile');
-		disabled.setAttribute('disabled' , true);
-	}
-	
-	let abled = document.querySelector('#addFile');
-	abled.disabled = false;
-});
-
-//파일추가
-//$("#addFile").on("click", function(){
-function fn_addFile(){
-	var fileIndex = 1;
-	var html = "";
-	html+="<div>";
-	html+="<input type='file' style='float:left;' name='file_" + (fileIndex++) + "'>";
-	html+="<input type='button' id='fileDelBtn' value='삭제'>"; 
-	html+="</div>";
-	
-	$("#fileIndex").append(html);
-	if(fileIndex != 1){
-		let disabled = document.querySelector('#addFile');
-		disabled.setAttribute('disabled' , true);
-	}
-}
 
 //댓글등록
 $(".replyWriteBtn").on("click", function(){

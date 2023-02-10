@@ -48,6 +48,9 @@ public interface BoardService {
 	//첨부파일 업로드
 	public void insertFile(Map<String, Object> map) throws Exception;
 	
+	//첨부파일 삭제
+	public void updateFile(int fileNo) throws Exception;
+	
 	
 	
 }

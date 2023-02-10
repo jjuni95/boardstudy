@@ -155,6 +155,7 @@ $( document ).ready(function() {
 $(".pageInfo a").on("click", function(e){
 	 e.preventDefault();
      $("input[name='pageNum']").val($(this).attr("href"));
+     console.log($("input[name='pageNum']").val());
      $("#moveForm").attr("action", "/board/list");
      $("#moveForm").submit();
     

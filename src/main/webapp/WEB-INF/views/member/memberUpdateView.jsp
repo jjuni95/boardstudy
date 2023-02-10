@@ -4,10 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
 </head>
 <body>
 	<div class="wrapper">
-		<form id="join_form" action="/member/memberUpdate" method="post" name="update_form" onsubmit = "return fn_memberUpdate()">
+		<form id="join_form" action="/member/memberUpdate" method="post" name="update_form">
 		<input type="hidden" name="memberId" value="${member.memberId}">
 			<div class="wrap">
 				<div class="subjecet">
@@ -93,7 +94,7 @@
 				</div>
 				
 				<div class="update_button_wrap">
-					<input type="submit" onClick="fn_memberUpdate()" class="update_button" value="수정">
+					<input type="submit" onClick="return fn_memberUpdate();" class="update_button" value="수정">
 				</div>
 				<div class="joinCancel_button_wrap">
 					<input  type="button" class="joinCancel_button" value="취소" 
@@ -150,8 +151,9 @@ function fn_emailChk(){
 	
 	
 //회원수정: 수정버튼
+//window.onload = function(){
 function fn_memberUpdate(){
-
+//	$('')
 		if($("#memberPassword").val()==""){
 			alert("비밀번호를 입력해주세요.");
 			$("#memberPassword").focus();
@@ -209,8 +211,6 @@ function fn_memberUpdate(){
 			console.log("통과"); 
 	    	return true;
 	    }
-		
-
 }
 	
 //이메일 값이 변경되면 중복체크 풀림

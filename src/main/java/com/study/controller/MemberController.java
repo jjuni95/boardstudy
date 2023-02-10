@@ -106,8 +106,6 @@ public class MemberController {
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String loginPOST(HttpServletRequest request, MemberVO member, Model model) throws Exception {
 		
-		
-		
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		// 로그인 여부 체크: id랑 pw를 보낸다(memberLogin여기서)
 		String flag = memberservice.memberLogin(member);

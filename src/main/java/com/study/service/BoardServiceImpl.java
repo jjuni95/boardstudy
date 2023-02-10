@@ -167,6 +167,15 @@ public class BoardServiceImpl implements BoardService{
 		boardDAO.insertFile(map);
 		
 	}
+	
+	//첨부파일 삭제
+	@Override
+	public void updateFile(int fileNo) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("FILE_NO", fileNo);
+		boardDAO.updateFile(map);
+		
+	}
 
 	
 }

@@ -64,6 +64,15 @@ public class BoardController {
 			request.setAttribute("msg", "로그인 상태로만 접근이 가능합니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
+		} 
+		
+		String keyword = cri.getKeyword();
+		
+		
+		if (cri.getType() != null && cri.getType().equals("W")) {
+			// 1.작성자 이름을 암호화
+			String aesName = aesutil.encrypt(keyword);
+			cri.setKeyword(aesName);
 		}
 
 		int total = boardservice.getTotal(cri);
@@ -80,23 +89,10 @@ public class BoardController {
 		List<Map<String, Object>> boardList = boardservice.getList(cri);
 
 		System.out.println("pageMake.getCri().getPageNum() ==> "+ pageMake.getCri().getPageNum());
-		if (pageMake.getCri().getType() != null) {
-
-			// 작성자로 검색할 경우
-			if (pageMake.getCri().getType().equals("W")) {
-				String keyword = cri.getKeyword();
-
-				// 1.작성자 이름을 암호화
-				String aesName = aesutil.encrypt(keyword);
-				cri.setKeyword(aesName);
-
-				// 2.암호화한걸로 게시판 목록 조회
-				boardList = boardservice.getList(cri);
-
-				// 3.화면에 원래 작성했던 검색키워드 저장
-				cri.setKeyword(keyword);
-			}
-		}
+		
+		// 3.화면에 원래 작성했던 검색키워드 저장
+		cri.setKeyword(keyword);
+			
 		model.addAttribute("pageMaker", pageMake);
 		model.addAttribute("list", boardList);
 		return "board/list";
@@ -174,12 +170,13 @@ public class BoardController {
 		model.addAttribute("decWriter", decWriter);
 		model.addAttribute("memberNo", mVo.getMemberNo());
 		
+		//파일조회
 		List<Map<String, Object>> fileList = boardservice.selectFileList(boardNo);
 		model.addAttribute("file", fileList);
 		model.addAttribute("fileSize", fileList.size());
+		
 
 		//댓글 페이징처리
-		
 		int total = replyService.getTotal(boardNo);
 		System.out.println("total-====> " + total);
 		PageMakerVO pageMake = new PageMakerVO(cri, total);
@@ -192,7 +189,9 @@ public class BoardController {
 			pageMake.setEndPage(10);
 			pageMake.getCri().setPageNum(1);
 		}
-		
+		if(total == 0) {
+			model.addAttribute("noPaging", "Y");
+		}
 		//댓글조회
 		List<ReplyVO> replyList = replyService.readReply(boardNo, cri);
 		model.addAttribute("pageMaker", pageMake);
@@ -202,10 +201,43 @@ public class BoardController {
 
 	// 게시판 수정
 	@PostMapping("/modify")
-	public String boardModifyPost(BoardVO board, @RequestParam(value = "fileNoDel[]") String[] files,
-			@RequestParam(value = "fileNameDel[]") String[] fileNames, MultipartHttpServletRequest mpRequest,
-			HttpServletResponse response) throws Exception {
-
+	public String boardModifyPost(BoardVO board
+								, @RequestParam(value = "fileNoDel[]") String[] files
+								, @RequestParam(value = "fileNameDel[]") String[] fileNames
+								, MultipartHttpServletRequest mpRequest
+								, HttpServletResponse response
+								, String file0Chg
+								, String file1Chg
+								, String file0No
+								, String file1No
+								, String jspfile0No
+								, String jspfile1No) throws Exception {
+		
+		// 0.  File0Chg,File1Chg가 Y이면 File0No,File1No 값체크(null or "") 후 삭제여부 Y 업데이트
+		if(file0Chg.equals("Y")) {
+			//첫번째꺼 삭제했을때
+			if(file0No == null || file0No.equals("")) {
+				if(jspfile0No != null) {
+					int fileNo0 = Integer.parseInt(jspfile0No);
+					boardservice.updateFile(fileNo0); 
+				}
+			}
+			//첫번째꺼 추가했을때			
+		}
+		if(file1Chg.equals("Y")) {
+			//두번째꺼 삭제했을때
+			if(file1No == null || file1No == "" ) {
+				if(jspfile1No != null) {
+					int fileNo1 = Integer.parseInt(jspfile1No);
+					boardservice.updateFile(fileNo1);
+				}
+			}
+			
+			//두번째꺼 추가했을때
+		}
+		
+		
+		// 1. 게시판 등록 할때 처럼 Insert
 		List<Map<String, Object>> fileList = fileUtils.parseInsertFileInfo(board, mpRequest);
 		Map<String, Object> map = new HashMap<String, Object>();
 		int size = fileList.size();
@@ -230,12 +262,10 @@ public class BoardController {
 					out.flush();
 				}
 			}
-		// 파일이 있는상태에서의 수정 => 업데이트
 		} 
 		
-		boardservice.modify(board, files, fileNames, mpRequest);
+		//boardservice.modify(board, files, fileNames, mpRequest);
 		
-
 		return "redirect:/board/list";
 //		return "redirect:/board/get?boardNo=" + board.getBoardNo();
 	}

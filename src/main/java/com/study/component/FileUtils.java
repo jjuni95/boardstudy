@@ -19,7 +19,7 @@ import com.study.model.GBoardVO;
 public class FileUtils {
 	private static final String filePath = "C:\\mp\\file\\"; // 파일이 저장될 위치
 
-	// 게시판에서 사용하는 첨부파일
+	// 게시판에서 사용하는 첨부파일(등록)
 	public List<Map<String, Object>> parseInsertFileInfo(BoardVO boardVO, MultipartHttpServletRequest mpRequest)
 			throws Exception {
 
@@ -60,7 +60,7 @@ public class FileUtils {
 		return list;
 	}
 
-	// 게시판에서 사용하는 첨부파일
+	// 게시판에서 사용하는 첨부파일(수정)
 	public List<Map<String, Object>> parseUpdateFileInfo(BoardVO boardVO, String[] files, String[] fileNames,
 			MultipartHttpServletRequest mpRequest) throws Exception {
 		Iterator<String> iterator = mpRequest.getFileNames();

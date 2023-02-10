@@ -138,7 +138,7 @@
 	
 	<!-- 첨부파일 조회 -->
 	<select id="selectFileList" parameterType="int" resultType="hashMap">
-		SELECT FILE_NO,
+		SELECT FILE_NO, 
 			   ORIGINFILE_NAME,
 			   ROUND(FILE_SIZE/1024,1) AS FILE_SIZE
 		  FROM Bd_FILE

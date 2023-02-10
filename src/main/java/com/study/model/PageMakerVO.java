@@ -36,7 +36,9 @@ public class PageMakerVO {
 		if (realEnd < this.endPage) {
 			this.endPage = realEnd;
 		}
-
+		/*
+		 * if(realEnd == 0) { this.endPage = 0; }
+		 */
 		/* 시작 페이지(startPage)값이 1보다 큰 경우 true */
 		this.prev = this.startPage > 1;
 
