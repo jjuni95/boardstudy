@@ -43,6 +43,7 @@ public class BoardServiceImpl implements BoardService{
 		if(size > 0) {
 		//if(size = 0) {
 			int SboardNo = boardDAO.insertBoard(board);
+			//throw new Exception("exception 발생");
 			for(int i=0; i<size; i++) {
 				
 				System.out.println("fileList.get(i).get(\"FILE_SIZE\")===> " + fileList.get(i).get("FILE_SIZE"));
@@ -175,6 +176,12 @@ public class BoardServiceImpl implements BoardService{
 		map.put("FILE_NO", fileNo);
 		boardDAO.updateFile(map);
 		
+	}
+	
+	//메인 게시판 4개 가져오기
+	@Override
+	public List<Map<String,Object>> fourMain() throws Exception {
+		return boardDAO.fourMain();
 	}
 
 	

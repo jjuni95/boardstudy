@@ -51,6 +51,7 @@ public interface BoardService {
 	//첨부파일 삭제
 	public void updateFile(int fileNo) throws Exception;
 	
-	
+	//메인에 있는 4개 게시글 보여주기
+	public List<Map<String,Object>> fourMain() throws Exception;
 	
 }

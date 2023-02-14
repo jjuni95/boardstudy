@@ -154,4 +154,13 @@
 			ISENABLED = 'Y'
 		WHERE FILE_NO = #{FILE_NO}
 	</update>
+	
+	<!-- 메인 게시판 4개 가져오기 -->
+	<select id="fourMain" resultType="hashMap">
+		select TOP 4 TITLE as title
+					, REG_DATE as bregDate
+		FROM Bd_BOARD 
+		WHERE ISENABLED = 'N' 
+		ORDER BY REG_DATE DESC
+	</select>
 </mapper>

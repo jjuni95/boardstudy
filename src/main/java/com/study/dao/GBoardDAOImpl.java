@@ -1,6 +1,7 @@
 package com.study.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -20,10 +21,27 @@ public class GBoardDAOImpl implements GBoardDAO {
 	private SqlSessionTemplate template;
 
 	// 자유갤러리 작성
-
 	@Override
 	public void insertGalleryFile(Map<String, Object> map) throws Exception {
 		template.insert("gboardMapper.insertGelleryFile", map);
+	}
+
+	//자유갤러리 목록
+	@Override
+	public List<Map<String, Object>> selectGelleryList() throws Exception {
+		return template.selectList("gboardMapper.selectGelleryList");
+	}
+
+	//자유갤러리 삭제
+	@Override
+	public void delete(int galleryNo) {
+		template.selectOne("gboardMapper.delete", galleryNo);
+	}
+
+	//메인 자유갤러리 6개 가져오기
+	@Override
+	public List<Map<String, Object>> sixMain() throws Exception {
+		return template.selectList("gboardMapper.sixMain");
 	}
 
 

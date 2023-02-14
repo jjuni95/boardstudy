@@ -58,4 +58,23 @@ public class GBoardServiceImpl implements GBoardService {
 
 	}
 
+	//자유갤러리 목록
+	@Override
+	public List<Map<String, Object>> selectGelleryList() throws Exception {
+		return gboardDAO.selectGelleryList();
+	}
+
+	//자유갤러리 삭제
+	@Override
+	public void delete(int galleryNo) {
+		gboardDAO.delete(galleryNo);
+		
+	}
+
+	//메인 자유갤러리 6개 가져오기
+	@Override
+	public List<Map<String, Object>> sixMain() throws Exception {
+		return gboardDAO.sixMain();
+	}
+
 }

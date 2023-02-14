@@ -43,4 +43,7 @@ public interface BoardDAO {
 	
 	//첨부파일 수정(삭제)
 	public void updateFile(Map<String, Object> map);
+	
+	//메인 게시판 4개 가져오기
+	public List<Map<String,Object>> fourMain() throws Exception;
 }

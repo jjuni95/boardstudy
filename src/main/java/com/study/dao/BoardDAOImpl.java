@@ -92,5 +92,11 @@ public class BoardDAOImpl implements BoardDAO {
 		template.update("boardMapper.updateFile", map);
 	}
 
+	//메인 게시판 4개 가져오기
+	@Override
+	public List<Map<String,Object>> fourMain() throws Exception {
+		return template.selectList("boardMapper.fourMain");
+	}
+
 
 }

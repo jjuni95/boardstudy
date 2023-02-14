@@ -76,10 +76,8 @@ a:hover {
 				<c:choose>
 					<c:when test="${fn:length(list) > 0}">
 						<c:forEach items="${list }" var="list">
-						
 							<tr>
 								<td>${list.boardNo}</td>
-								
 							 	<td class="<c:if test="${list.isEnabled eq 'Y'}">move</c:if>" >
 							 		<a href='/board/get?boardNo=<c:out value="${list.boardNo}"/>' >
                        					<span class="titleList">${list.title}</span></a></td>

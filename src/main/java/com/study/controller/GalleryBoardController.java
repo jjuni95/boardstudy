@@ -1,8 +1,6 @@
 package com.study.controller;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -16,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.component.FileUtils;
@@ -62,9 +62,30 @@ public class GalleryBoardController {
 		gboardservice.insertGalleryFile(gboard, mpRequest, response);
 
 		request.setAttribute("msg", "게시글이 등록되었습니다.");
-		request.setAttribute("url", "/gboard/gwrite");
+		request.setAttribute("url", "/gboard/glist");
 		return "member/alert"; // alert.jsp로 이동
 	}
 
+	//자유갤러리 목록 조회
+	@GetMapping(value="/glist")
+	public String gboardList(Model model) throws Exception{
+		
+		model.addAttribute("list", gboardservice.selectGelleryList());
+		return "gboard/glist";
+	}
 
+	
+	//자유갤러리 삭제
+	@ResponseBody
+	@PostMapping("/delete")
+	public Map<String, String> gboardDelete(int galleryNo) throws Exception {
+		
+		gboardservice.delete(galleryNo);
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("msg", "success");
+		
+		return result;
+		
+	}
+	
 }

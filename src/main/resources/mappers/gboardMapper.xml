@@ -21,21 +21,42 @@ values (
 </insert>
 
 <!-- 자유갤러리 조회 -->
-<select id="selectGelleryList" parameterType="int" resultType="hashMap">
+<select id="selectGelleryList" resultType="hashMap">
 SELECT 
-	GALLERY_NO,
+	GALLERY_NO as galleryNo,
 	MEMBER_NO,
 	ORIGINFILE_NAME,
-	SAVEDFILE_NAME,
+	SAVEDFILE_NAME as savedfileName,
 	ROUND(FILE_SIZE/1024,1) AS FILE_SIZE,
 	REG_DATE,
 	ISENABLED
  FROM Bd_GALLERY
- WHERE GALLERY_NO = #{galleryNo}
- AND ISENABLED = 'N'
- ORDER BY GALLERY_NO DESC, REG_DATE DESC
- OFFSET 1 ROWS
- FETCH NEXT 8 ROWS ONLY
+ WHERE ISENABLED = 'N'
+ ORDER BY REG_DATE DESC
 </select>
 
+<!-- 자유갤러리 삭제 -->
+<update id="delete" parameterType="int">
+UPDATE Bd_GALLERY
+SET	
+	ISENABLED = 'Y',
+	DELETE_DATE = GETDATE()
+WHERE GALLERY_NO = #{galleryNo}
+</update>
+	
+<!-- 메인 자유갤러리 6개 가져오기 -->
+<select id="sixMain" resultType="hashMap">
+SELECT TOP 6
+	GALLERY_NO as galleryNo,
+	MEMBER_NO,
+	ORIGINFILE_NAME,
+	SAVEDFILE_NAME as savedfileName,
+	ROUND(FILE_SIZE/1024,1) AS FILE_SIZE,
+	REG_DATE,
+	ISENABLED
+FROM Bd_GALLERY
+WHERE ISENABLED = 'N'
+ORDER BY REG_DATE DESC;
+
+</select>
 </mapper>
