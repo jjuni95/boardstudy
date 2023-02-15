@@ -3,8 +3,11 @@ package com.study.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import com.study.model.BoardVO;
 import com.study.model.CriteriaVO;
+import com.study.model.EhcacheVO;
 
 public interface BoardDAO {
 	
@@ -15,7 +18,7 @@ public interface BoardDAO {
 	public String selectWriter(String memberNo) throws Exception;
 	
 	//게시판 목록
-	public List<Map<String,Object>> getList(CriteriaVO cri) throws Exception;
+	public List<EhcacheVO> getList(CriteriaVO cri) throws Exception;
 	
 	//게시판 상세조회
 	public Map<String,Object> getPage(int boardNo) throws Exception;

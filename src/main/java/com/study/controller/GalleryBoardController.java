@@ -40,7 +40,7 @@ public class GalleryBoardController {
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
 
 		if (mVo == null) {
-			request.setAttribute("msg", "로그인 상태로만 접근이 가능합니다.");
+			request.setAttribute("msg", "자유갤러리작성은 로그인 상태로만 접근이 가능합니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 		}

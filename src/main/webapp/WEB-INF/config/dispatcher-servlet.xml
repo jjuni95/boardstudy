@@ -70,6 +70,13 @@
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
     
+<!-- 캐시애노테이션 자동스캔설정 -->
+	
+	<!-- 캐시매니저 선언 -->
+	<beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehcache"/>
+	<!-- 캐시설정을위한별도설정파일 선언 -->
+	<beans:bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:config-location="classpath:ehcache.xml"/>
+    
 </beans:beans>
 
 

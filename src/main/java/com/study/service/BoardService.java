@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.model.BoardVO;
 import com.study.model.CriteriaVO;
+import com.study.model.EhcacheVO;
 
 public interface BoardService {
 
@@ -19,7 +20,7 @@ public interface BoardService {
 	public String selectWriter(String memberNo) throws Exception;
 	
 	//게시판 목록
-	public List<Map<String,Object>> getList(CriteriaVO cri) throws Exception;
+	public List<EhcacheVO> getList(CriteriaVO cri) throws Exception;
 	
 	//게시판 상세조회
 	public Map<String,Object> getPage(int boardNo) throws Exception;

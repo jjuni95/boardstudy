@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.study.model.MemberVO;
@@ -42,7 +43,6 @@ public class MemberDAOImpl implements MemberDAO {
 		HashMap<String, String> map = new HashMap<>();
 		map.put("memberId", member.getMemberId());
 		map.put("memberPassword", member.getMemberPassword());
-		
 		
 		MemberVO returnMember = template.selectOne("MemberMapper.memberLogin", map);
 		

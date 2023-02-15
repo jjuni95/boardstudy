@@ -43,7 +43,7 @@
 	</select>
 
 	<!-- 게시판 목록 -->
-	<select id="getList" resultType="hashmap">
+	<select id="getList" resultType="com.study.model.EhcacheVO">
 		select b.MEMBER_NAME as memberName
 		,a.BOARD_NO as boardNo
 		,a.TITLE as title

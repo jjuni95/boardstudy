@@ -26,6 +26,7 @@ import com.study.component.AES256Util;
 import com.study.component.FileUtils;
 import com.study.model.BoardVO;
 import com.study.model.CriteriaVO;
+import com.study.model.EhcacheVO;
 import com.study.model.MemberVO;
 import com.study.model.PageMakerVO;
 import com.study.model.ReplyVO;
@@ -56,18 +57,18 @@ public class BoardController {
 
 	// 게시판 목록 페이지 이동
 	@GetMapping(value = "/list")
-	public String boardListGET(HttpServletRequest request, Model model, CriteriaVO cri) throws Exception {
+	public String boardListGET(HttpServletRequest request, Model model, CriteriaVO cri
+			) throws Exception {
+
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		MemberVO mVo = (MemberVO) session.getAttribute("member"); // "member" =>로그인한 사람
 
 		if (mVo == null) {
-			request.setAttribute("msg", "로그인 상태로만 접근이 가능합니다.");
+			request.setAttribute("msg", "게시판 목록은 로그인 상태로만 접근이 가능합니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 		} 
-		
 		String keyword = cri.getKeyword();
-		
 		
 		if (cri.getType() != null && cri.getType().equals("W")) {
 			// 1.작성자 이름을 암호화
@@ -86,7 +87,7 @@ public class BoardController {
 			pageMake.setEndPage(10);
 			pageMake.getCri().setPageNum(1);
 		}
-		List<Map<String, Object>> boardList = boardservice.getList(cri);
+		List<EhcacheVO> boardList = boardservice.getList(cri);
 
 		System.out.println("pageMake.getCri().getPageNum() ==> "+ pageMake.getCri().getPageNum());
 		
@@ -105,7 +106,7 @@ public class BoardController {
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
 
 		if (mVo == null) {
-			request.setAttribute("msg", "로그인 상태로만 접근이 가능합니다.");
+			request.setAttribute("msg", "게시판 등록페이지는 로그인 상태로만 접근이 가능합니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 		}
@@ -127,7 +128,7 @@ public class BoardController {
 		// model.addAttribute("loginSession", mVo); 로그인세션 이거 갖다쓰기!!
 
 		if (mVo == null) {
-			request.setAttribute("msg", "로그인 상태로만 접근이 가능합니다.");
+			request.setAttribute("msg", "게시판 진짜 등록은 로그인 상태로만 접근이 가능합니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 		}

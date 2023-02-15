@@ -5,10 +5,12 @@ import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.study.model.BoardVO;
 import com.study.model.CriteriaVO;
+import com.study.model.EhcacheVO;
 
 @Repository
 public class BoardDAOImpl implements BoardDAO {
@@ -32,7 +34,8 @@ public class BoardDAOImpl implements BoardDAO {
 
 	//게시판 목록
 	@Override
-	public List<Map<String,Object>> getList(CriteriaVO cri) throws Exception {
+	@Cacheable(value="getList")
+	public List<EhcacheVO> getList(CriteriaVO cri) throws Exception {
 		return template.selectList("boardMapper.getList", cri);
 	}
 

@@ -1,6 +1,10 @@
 package com.study.model;
 
-public class MemberVO {
+import java.io.Serializable;
+
+public class MemberVO implements Serializable {
+
+	private static final long serialVersionUID = 2502401861067069965L;
 
 	// MEMBER_NO 회원번호
 	private String memberNo;

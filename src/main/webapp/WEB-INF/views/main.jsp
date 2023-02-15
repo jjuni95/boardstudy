@@ -12,15 +12,12 @@
 </head>
 <style type="text/css">
 #main{
- 		/* width: 100%; */
-	    height : 800px;
-	    border: 1px solid black;
-	    margin-top: 5px;
-
+	/* width: 100%; */
+    height : 800px;
+    border: 1px solid black;
+    margin-top: 5px;
     margin-right: 15px;
-
     margin-bottom: 5px;
-
     margin-left: 15px;
 	}
 #slideShow{
@@ -63,7 +60,6 @@ hr{
         float: right;
         box-sizing: border-box;
         border: 1px solid black;
-        background: #0ff;
         padding: 40px;
 }
 
@@ -88,7 +84,6 @@ hr{
 .glistImg{
 	width: 800px;
     height: 250px;
-    background-color: bisque;
     margin-top: 20px;
     margin-left: 30px;
 }
@@ -121,7 +116,9 @@ hr{
 		<div id="board">
 			<div>
 				<span>게시 글</span>
-				<button id="btn" type="button" onClick="location.href='http://localhost:8080/board/list'">더보기</button>
+				<a href="http://localhost:8080/board/list">
+					<button id="btn" type="button">더보기</button>
+				</a>
 			</div>
 		<hr />
 			<c:forEach items="${list }" var="list">
@@ -137,7 +134,9 @@ hr{
 		<div id="gallery">
 			<div>
 				<span>자유 갤러리</span>
-				<button id="btn" type="button" onClick="location.href='http://localhost:8080/gboard/glist'">더보기</button>
+				<a href="http://localhost:8080/gboard/glist">
+					<button id="btn" type="button">더보기</button>
+				</a>
 			</div>
 		<hr />
 			<ul class="glistImg">
