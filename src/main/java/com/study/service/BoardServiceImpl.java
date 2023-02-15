@@ -87,7 +87,9 @@ public class BoardServiceImpl implements BoardService{
 	//게시판 목록
 	@Override
 	public List<EhcacheVO> getList(CriteriaVO cri) throws Exception {
-		List<EhcacheVO> boardList =  boardDAO.getList(cri);
+		List<EhcacheVO> boardList =  boardDAO.getList(cri.getKeyword()
+									,cri.getPageNum(), cri.getAmount()
+									, cri.getType(), cri.getTypeArr());
 		for(int i=0; i<boardList.size(); i++) {
 			String memberName = boardList.get(i).getMemberName();
 			String decMemberName = aesutil.decrypt(memberName);	

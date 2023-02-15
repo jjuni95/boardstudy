@@ -1,5 +1,6 @@
 package com.study.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +35,17 @@ public class BoardDAOImpl implements BoardDAO {
 
 	//게시판 목록
 	@Override
-	@Cacheable(value="getList")
-	public List<EhcacheVO> getList(CriteriaVO cri) throws Exception {
-		return template.selectList("boardMapper.getList", cri);
+	@Cacheable("getList")
+	public List<EhcacheVO> getList(String keyword, int pageNum, int amount,
+			String type, String[] typeArr) throws Exception {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("keyword", keyword);
+		map.put("pageNum", pageNum);
+		map.put("amount", amount);
+		map.put("type", type);
+		map.put("typeArr", typeArr);
+		
+		return template.selectList("boardMapper.getList", map);
 	}
 
 	//게시판 상세 조회

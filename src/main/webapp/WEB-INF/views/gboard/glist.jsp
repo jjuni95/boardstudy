@@ -74,12 +74,10 @@ ul{
 $(document).ready(function(){	
 
 	$('.imgClass').on('mouseover',function(){
-		
 		$(this).addClass('on');
 	});
 
 	$('.imgClass').on('mouseout',function(){
-		
 		$(this).removeClass('on');
 	});
 
@@ -98,5 +96,7 @@ function fn_delete(galleryNo){
 		}
 	})
 } 
+
+
 </script>
 </html>

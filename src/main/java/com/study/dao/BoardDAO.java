@@ -18,7 +18,8 @@ public interface BoardDAO {
 	public String selectWriter(String memberNo) throws Exception;
 	
 	//게시판 목록
-	public List<EhcacheVO> getList(CriteriaVO cri) throws Exception;
+	public List<EhcacheVO> getList(String keyword, int pageNum, int amount,
+			String type, String[] typeArr) throws Exception;
 	
 	//게시판 상세조회
 	public Map<String,Object> getPage(int boardNo) throws Exception;
