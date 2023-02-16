@@ -56,8 +56,8 @@
 			<include refid="criteria"></include>
 		</if>
 		ORDER BY BOARD_NO DESC
-		OFFSET 0 ROWS
-		FETCH NEXT 10 ROWS ONLY
+		OFFSET (#{pageNum}-1)*#{amount} ROWS
+		FETCH NEXT #{amount} ROWS ONLY
 
 	</select>
 

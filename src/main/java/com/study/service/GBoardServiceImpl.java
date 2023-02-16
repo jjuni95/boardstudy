@@ -64,6 +64,12 @@ public class GBoardServiceImpl implements GBoardService {
 		return gboardDAO.selectGelleryList();
 	}
 
+	//자유갤러리 8개씩 가져오기
+	@Override
+	public List<Map<String, Object>> listPlusEight(int galleryCnt) throws Exception {
+		return gboardDAO.listPlusEight(galleryCnt);
+	}
+	
 	//자유갤러리 삭제
 	@Override
 	public void delete(int galleryNo) {
@@ -76,5 +82,7 @@ public class GBoardServiceImpl implements GBoardService {
 	public List<Map<String, Object>> sixMain() throws Exception {
 		return gboardDAO.sixMain();
 	}
+
+
 
 }

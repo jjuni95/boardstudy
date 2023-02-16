@@ -265,7 +265,7 @@ public class BoardController {
 			}
 		} 
 		
-		//boardservice.modify(board, files, fileNames, mpRequest);
+		boardservice.modify(board, files, fileNames, mpRequest);
 		
 		return "redirect:/board/list";
 //		return "redirect:/board/get?boardNo=" + board.getBoardNo();

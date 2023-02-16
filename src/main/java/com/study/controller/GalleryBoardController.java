@@ -14,10 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.google.gson.Gson;
 import com.study.component.FileUtils;
 import com.study.model.GBoardVO;
 import com.study.model.MemberVO;
@@ -27,6 +27,8 @@ import com.study.service.GBoardService;
 @RequestMapping(value = "/gboard/*")
 public class GalleryBoardController {
 
+	private Gson gson = new Gson();
+	
 	@Autowired
 	private GBoardService gboardservice;
 
@@ -74,6 +76,17 @@ public class GalleryBoardController {
 		return "gboard/glist";
 	}
 
+	//자유갤러리 8개 이후 조회
+	@ResponseBody
+	@GetMapping("/plusList")
+	public String plusList(int galleryCnt)throws Exception{
+		
+		//model.addAttribute("plusList", gboardservice.listPlusEight(galleryCnt));
+		String result = gson.toJson(gboardservice.selectGelleryList());
+		System.out.println("gboardservice.selectGelleryList() ===> " + gboardservice.selectGelleryList());
+		
+		return result;
+	}
 	
 	//자유갤러리 삭제
 	@ResponseBody

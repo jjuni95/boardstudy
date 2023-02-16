@@ -21,8 +21,8 @@ values (
 </insert>
 
 <!-- 자유갤러리 조회 -->
-<select id="selectGelleryList" resultType="hashMap">
-SELECT 
+<select id="selectGelleryList" resultType="Map">
+SELECT TOP 8
 	GALLERY_NO as galleryNo,
 	MEMBER_NO,
 	ORIGINFILE_NAME,
@@ -34,6 +34,24 @@ SELECT
  WHERE ISENABLED = 'N'
  ORDER BY REG_DATE DESC
 </select>
+
+<!-- 자유갤러리 8개씩 가져오기 -->
+<select id="listPlusEight" resultType="Map">
+SELECT
+	GALLERY_NO as galleryNo,
+	MEMBER_NO,
+	ORIGINFILE_NAME,
+	SAVEDFILE_NAME as savedfileName,
+	ROUND(FILE_SIZE/1024,1) AS FILE_SIZE,
+	REG_DATE,
+	ISENABLED
+FROM Bd_GALLERY
+WHERE ISENABLED = 'N'
+ORDER BY REG_DATE DESC
+OFFSET (#{galleryCnt})*8 ROWS
+FETCH NEXT 8 ROWS ONLY
+</select>
+
 
 <!-- 자유갤러리 삭제 -->
 <update id="delete" parameterType="int">
@@ -57,6 +75,8 @@ SELECT TOP 6
 FROM Bd_GALLERY
 WHERE ISENABLED = 'N'
 ORDER BY REG_DATE DESC;
-
 </select>
+
+
+
 </mapper>

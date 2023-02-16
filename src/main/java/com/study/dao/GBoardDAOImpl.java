@@ -32,6 +32,12 @@ public class GBoardDAOImpl implements GBoardDAO {
 		return template.selectList("gboardMapper.selectGelleryList");
 	}
 
+	//자유갤러리 8개씩 가져오기
+	@Override
+	public List<Map<String, Object>> listPlusEight(int galleryCnt) throws Exception {
+		return template.selectList("gboardMapper.listPlusEight", galleryCnt);
+	}
+	
 	//자유갤러리 삭제
 	@Override
 	public void delete(int galleryNo) {
@@ -44,6 +50,9 @@ public class GBoardDAOImpl implements GBoardDAO {
 		return template.selectList("gboardMapper.sixMain");
 	}
 
+
+
+	
 
 
 }

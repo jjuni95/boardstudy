@@ -10,6 +10,9 @@ public interface GBoardDAO {
 	
 	//자유갤러리 목록
 	public List<Map<String,Object>> selectGelleryList() throws Exception;
+	
+	//자유갤러리 8개씩 가져오기
+	public List<Map<String,Object>> listPlusEight(int galleryCnt) throws Exception;
 
 	//자유갤러리 삭제
 	public void delete(int galleryNo);
