@@ -239,18 +239,20 @@ function fn_idChk(){
 	
 //이메일 중복검사
 function fn_emailChk(){
-	//이메일 2~6자리 영문 + 특수문자: . - 포함
-	//var emailRule = [0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
-	var emailRule = new RegExp("^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$");
-/* 	var selectEmail = '@' + "$('#selectEmail')"; */
-	if($('#selectEmail').val() == 1){
-		if(!emailRule.test($('#inputEmail').val())) {           
-			alert("이메일을 형식에 맞게 입력해주세요.");
-	        return false;
-	}
-}
+	var emailId = $("#emailId").val();
+	var inputEmail = $("#inputEmail").val();
+	var selectEmail =$("#selectEmail").val();
+	var email_rule =  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i; 
+	var mail1 = "";
+	var mail2 = "";
 	
-
+	mail1 = emailId + "@" + inputEmail;
+	mail2 = emailId + "@" + selectEmail;
+	
+	if(!email_rule.test(mail1) || !email_rule.test(mail2)){
+		alert("이메일을 형식에 맞게 입력해주세요.");
+		   return false; 
+	}else{
 	$.ajax({
 		url : "/member/memberEmailChk", 
 		type : "post",
@@ -267,7 +269,7 @@ function fn_emailChk(){
 				}
 			}
 		})
-			
+	}
 	}
 
 //연락처 숫자만 입력 가능

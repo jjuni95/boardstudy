@@ -39,6 +39,26 @@ border:#F00 2px solid;
 ul{
    list-style:none;
    }
+   
+   #loading {
+ width: 100%;   
+ height: 100%;   
+ top: 0px;
+ left: 0px;
+ position: fixed;   
+ display: block;   
+ opacity: 0.7;   
+ background-color: #fff;   
+ z-index: 99;   
+ text-align: center; }  
+ 
+#loading-image {   
+ position: absolute;   
+ top: 50%;   
+ left: 50%;  
+ z-index: 100; 
+ } 
+ 
 </style>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -50,29 +70,24 @@ ul{
 	
 		<div class="galleryList">
 				<ul>
-					<c:forEach items="${list}" var = "list">
-						<li class="imgLi">
-								<input type="hidden" name="galleryNo" id="galleryNo" value="${list.galleryNo}">
-							<div class="imgClass">
-								<input type="button" value="삭제" class="delete" onclick="fn_delete(${list.galleryNo});"/>
-								<img  src="${pageContext.request.contextPath}/resources/image/gallery/<c:out value="${list.savedfileName}" />">
-							</div>
-						</li>
-					</c:forEach>
 				</ul>
+				<div id="loading">
+					<img id="loading-image" src="${pageContext.request.contextPath}/resources/image/loding.gif" alt="Loading..." />
+				</div>
 		</div>
 	</form>
 </body>
 
 <script type="text/javascript">
-var loading = false;
-next_load(1);
-function next_load(page){
+let cPage = 1;
+next_load();
+let isLoad = true; //로딩 가능
+function next_load(){
 	$.ajax({
 	url : "/gboard/plusList", 
 	type : "get",
 	dataType : "json",
-	data : {"galleryCnt" : page},
+	data : {"galleryCnt" : cPage},
 	success : function(data){
 		console.log(data);
 		
@@ -88,11 +103,12 @@ function next_load(page){
 				html+="</div>"
 				html+="</li>"
 				
-				
-				
-				$(".galleryList").append(html);
 			})
-			page++;
+			$(".galleryList").append(html);
+			isLoad = true;
+			$('#loading').hide();   
+			cPage++
+			
 			 
 	} 
 	
@@ -100,23 +116,22 @@ function next_load(page){
 }
 
 $(window).scroll(function(){
-    if($(window).scrollTop()+200>=$(document).height() - $(window).height())
-    {
-        if(!loading)    //실행 가능 상태
-        {
-            loading = true; //실행 불가능 상태로 변경
-            next_load(); 
-        }
-        else            //실행 불가능 상태
-        {
-            alert('다음페이지를 로딩중입니다.');  
-        }
+    if($(window).scrollTop()+50>=$(document).height() - $(window).height()){
+		if(isLoad){
+			//false하고 데이터 받아오고 뿌리고 true 
+			isLoad = false;
+			$('#loading').show();   
+			next_load();
+			
+		}
     }
 });
 
+
+
+//마우스올리면 삭제버튼
 $(document).ready(function(){	
-	
-	//마우스올리면 삭제버튼
+	//마우스올리면 삭제버튼	
 	$('.imgClass').on('mouseover',function(){
 		$(this).addClass('on');
 	});
@@ -139,7 +154,6 @@ function fn_delete(galleryNo){
 	})
 } 
 
-var count = 8;
 
 </script>
 </html>
