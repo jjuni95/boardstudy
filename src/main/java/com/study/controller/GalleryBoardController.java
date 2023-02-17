@@ -82,8 +82,8 @@ public class GalleryBoardController {
 	public String plusList(int galleryCnt)throws Exception{
 		
 		//model.addAttribute("plusList", gboardservice.listPlusEight(galleryCnt));
-		String result = gson.toJson(gboardservice.selectGelleryList());
-		System.out.println("gboardservice.selectGelleryList() ===> " + gboardservice.selectGelleryList());
+		String result = gson.toJson(gboardservice.listPlusEight(galleryCnt));
+		System.out.println("result ===> " + result);
 		
 		return result;
 	}

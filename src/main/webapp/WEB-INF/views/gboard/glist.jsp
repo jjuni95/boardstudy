@@ -65,7 +65,7 @@ ul{
 </body>
 
 <script type="text/javascript">
-
+var loading = false;
 next_load(1);
 function next_load(page){
 	$.ajax({
@@ -87,6 +87,8 @@ function next_load(page){
 				html+="<img  src='${pageContext.request.contextPath}/resources/image/gallery/" + i.savedfileName + " '>"
 				html+="</div>"
 				html+="</li>"
+				
+				
 				
 				$(".galleryList").append(html);
 			})
