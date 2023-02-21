@@ -86,6 +86,7 @@ hr{
     height: 250px;
     margin-top: 20px;
     margin-left: 30px;
+    list-style:none;
 }
 
 .imgClass{
@@ -94,16 +95,16 @@ hr{
 }
 </style>
 <body>
-	<jsp:include page="/WEB-INF/views/common/header.jsp" />
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 	
 <div id="main">
 	<%-- 메인 배너 --%>
 	<div id="slideShow">
 		<ul class="slides">
-			<li><img src="${pageContext.request.contextPath}/resources/image/flower.jpg" alt=""></li>
-			<li><img src="${pageContext.request.contextPath}/resources/image/fox.jpg" alt=""></li>
-			<li><img src="${pageContext.request.contextPath}/resources/image/lightning.jpg" alt=""></li>
-			<li><img src="${pageContext.request.contextPath}/resources/image/moon.jpg" alt=""></li>
+			<li><img src="/resources/image/flower.jpg" alt=""></li>
+			<li><img src="/resources/image/fox.jpg" alt=""></li>
+			<li><img src="/resources/image/lightning.jpg" alt=""></li>
+			<li><img src="/resources/image/moon.jpg" alt=""></li>
 		</ul>
 		<p class="controller">
 			<span class="prev">&lang;</span>
@@ -143,7 +144,7 @@ hr{
 				<c:forEach items="${glist}" var = "glist">
 					<li class="imgLi">
 						<div class="imgClass">
-							<img  class="gImg" src="${pageContext.request.contextPath}/resources/image/gallery/<c:out value="${glist.savedfileName}" />">
+							<img  class="gImg" src="/gfilelist/<c:out value="${glist.savedfileName}" />">
 						</div>
 					</li>
 				</c:forEach>
@@ -152,11 +153,7 @@ hr{
 	</div>
 	
 </div>
-
-	
-	
-	
-	<jsp:include page="/WEB-INF/views/common/footer.jsp" />
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 <script type="text/javascript">
 

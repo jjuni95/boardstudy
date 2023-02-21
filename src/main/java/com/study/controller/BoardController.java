@@ -93,7 +93,8 @@ public class BoardController {
 		
 		// 3.화면에 원래 작성했던 검색키워드 저장
 		cri.setKeyword(keyword);
-			
+
+		model.addAttribute("loginSession", mVo);
 		model.addAttribute("pageMaker", pageMake);
 		model.addAttribute("list", boardList);
 		return "board/list";
@@ -113,6 +114,7 @@ public class BoardController {
 
 		String decWriter = boardservice.selectWriter(mVo.getMemberNo());
 		model.addAttribute("decWriter", decWriter);
+		model.addAttribute("loginSession", mVo);
 		System.out.println("게시판 등록 페이지 이동");
 		return "board/enroll";
 	}
@@ -122,9 +124,11 @@ public class BoardController {
 	public String boardEnrollPOST(BoardVO board
 								, HttpServletRequest request
 								, MultipartHttpServletRequest mpRequest
-								, HttpServletResponse response) throws Exception {
+								, HttpServletResponse response
+								, Model model) throws Exception {
 		HttpSession session = request.getSession();
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
+		
 		// model.addAttribute("loginSession", mVo); 로그인세션 이거 갖다쓰기!!
 
 		if (mVo == null) {
@@ -132,14 +136,15 @@ public class BoardController {
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
 		}
-		System.out.println("mVo = " + mVo);
 		board.setMemberNo(mVo.getMemberNo()); // 세션에서 회원번호 가져오기
 
 		boardservice.enroll(board, mpRequest, response);
 
 		request.setAttribute("msg", "게시글이 등록되었습니다.");
 		request.setAttribute("url", "/board/list");
+		
 		return "member/alert"; // alert.jsp로 이동
+		
 	}
 
 	// 게시판 상세 조회
@@ -179,7 +184,6 @@ public class BoardController {
 
 		//댓글 페이징처리
 		int total = replyService.getTotal(boardNo);
-		System.out.println("total-====> " + total);
 		PageMakerVO pageMake = new PageMakerVO(cri, total);
 		
 		//현재페이지가 전체마지막페이지보다 크면 1페이지로 이동

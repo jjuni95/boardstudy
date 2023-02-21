@@ -15,7 +15,7 @@ img {
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 <body>
-
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
    <form action="/gboard/gwrite" method="post" enctype="multipart/form-data">
       
       <div id="fileIndex" class="input_wrap">
@@ -49,38 +49,13 @@ img {
        
        
        
-      <button type="submit">등록</button>
+      <button type="submit" class="submit">등록</button>
       <button type="button" class="btn" onClick="location.href='http://localhost:8080/gboard/glist'">취소</button>
    </form>
 </body>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script>
-
-//파일추가
-/* function fn_addFile1(){
-
-   var html = "";
-   html+="<input type='hidden' id='file2No' name='file2No' value=''>";
-   html+="<div id='file2Div'>";
-   html+="<input type='text' id='file2Name' readonly>";
-   html+="<label for='file2'>찾기</label>";
-   html+="<input type='file' name='file2' id='file2' style='display: none' onchange='setThumbnail(event);'>";
-   html+="<input type='button' id='addFile2' onClick='fn_addFile2()' value='추가'>"; 
-   html+="<input type='button' id='delFile2' onClick='fn_delFile2()' value='삭제'>"; 
-   html+="<div id='image_container'>";
-   html+="</div>";
-   html+="</div>";
-   
-   $("#fileIndex").append(html);
-   
-   let disabled = document.querySelector('#addFile');
-   disabled.setAttribute('disabled' , true);
-
-}
- */
- 
-
- var cnt = 0;
-
+var cnt = 0;
  
 function fn_addFile(idx){
     console.log(idx);
@@ -91,29 +66,27 @@ function fn_addFile(idx){
       $("#fileHidden2").css("display", "block");
    }
 } 
- 
+
+<%-- 썸네일 --%>
 function setThumbnail(event, idx) {
-    
     var reader = new FileReader();
+    var fileVal = $("#file" + idx).val().split("\\");
+    var fileName = "";
     
-    reader.onload = function(event) {
-       
+    reader.onload = function(event) {  
       var img = document.createElement("img");
       img.setAttribute("src", event.target.result);
       $("#image_container" + idx +" img").remove();
-      document.querySelector("div#image_container"+ idx).appendChild(img);
-     
+      document.querySelector("div#image_container"+ idx).appendChild(img); 
     };
+    
+    fileName = fileVal[fileVal.length-1];
 
     reader.readAsDataURL(event.target.files[0]);
-    
-   var fileVal = $("#file" + idx).val().split("\\");
    
-   var fileName = fileVal[fileVal.length-1];
-   
-   $("#file" + idx + "Name").val(fileName);
-    $("#delFile" + idx).css("display", "inline-block");
-  }
+	$("#file" + idx + "Name").val(fileName);
+	$("#delFile" + idx).css("display", "inline-block");
+}
 
 function fn_delFile(idx){
     
@@ -122,8 +95,6 @@ function fn_delFile(idx){
    $("#image_container" + idx +" img").remove();
     $("#delFile" + idx).css("display", "none");
 
-    // var gap = idx - 1;
-    // $("#fileHidden" + gap).css("display", "none");
 }
 
 

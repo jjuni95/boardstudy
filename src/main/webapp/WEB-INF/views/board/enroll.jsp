@@ -7,7 +7,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 <body>
-
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 	<form action="/board/enroll" method="post" enctype="multipart/form-data">
 		
 		<div>작성자
@@ -29,6 +29,7 @@
 		<button type="button" class="btn" onClick="location.href='http://localhost:8080/board/list'">취소</button>
 	</form>
 </body>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script>
 
 //파일추가

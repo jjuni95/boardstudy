@@ -40,7 +40,7 @@ ul{
    list-style:none;
    }
    
-   #loading {
+ #loading {
  width: 100%;   
  height: 100%;   
  top: 0px;
@@ -50,38 +50,73 @@ ul{
  opacity: 0.7;   
  background-color: #fff;   
  z-index: 99;   
- text-align: center; }  
+ text-align: center;
+  }  
  
 #loading-image {   
  position: absolute;   
  top: 50%;   
  left: 50%;  
- z-index: 100; 
+ z-index: 100;
  } 
  
+ html, body {
+	height:100%;
+	margin:0; 
+	padding:0;
+ }
+ 
+ .galleryList {
+ 	margin-top:100px;
+	height:640px;
+	overflow:auto; 
+ }
 </style>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 <body>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 	<a href="/gboard/gwrite" class="top_btn">등록</a>
 	<form id="delete_form" method="post">
 	
 		<div class="galleryList">
-				<ul>
-				</ul>
-				<div id="loading">
-					<img id="loading-image" src="${pageContext.request.contextPath}/resources/image/loding.gif" alt="Loading..." />
-				</div>
+			<ul class="ulClass">
+					<c:forEach items="${list}" var = "list">
+						<li class="imgLi">
+							<input type="hidden" name="galleryNo" id="galleryNo" value="${list.galleryNo}">
+						<div class="imgClass">
+							<input type="button" value="삭제" class="delete" onclick="fn_delete(${list.galleryNo});"/>
+							<%-- <img  src="${pageContext.request.contextPath}/resources/image/gallery/<c:out value="${list.savedfileName}" />"> --%>
+							<img  src="/gfilelist/<c:out value="${list.savedfileName}" />">
+						</div>
+						</li>
+					</c:forEach>
+			</ul>
+			<div id="loading">
+				<img id="loading-image" src="${pageContext.request.contextPath}/resources/image/loding.gif" alt="Loading..." />
+			</div>
 		</div>
 	</form>
 </body>
-
 <script type="text/javascript">
-let cPage = 1;
-next_load();
-let isLoad = true; //로딩 가능
+//마우스올리면 삭제버튼
+ $(document).ready(function(){	
+	//마우스올리면 삭제버튼	
+	$('.imgClass').on('mouseover',function(){
+		$(this).addClass('on');
+	});
+	$('.imgClass').on('mouseout',function(){
+		$(this).removeClass('on');
+	});
+	
+}); 
+
+let cPage = 2;
+//next_load();
+let isLoad = false;
+$('#loading').hide(); 
 function next_load(){
 	$.ajax({
 	url : "/gboard/plusList", 
@@ -93,52 +128,50 @@ function next_load(){
 		
 			var html = "";
 			data.forEach(i => {
-				//console.log(i.ORIGINFILE_NAME);
-				//let html = $(".galleryList ul").html();
-				//console.log(html);
 				html+="<li class='imgLi'>"
 				html+="<div class='imgClass'>"
 				html+="<input type='button' value='삭제' class='delete' onclick='fn_delete(" + i.galleryNo + ");'/>"
-				html+="<img  src='${pageContext.request.contextPath}/resources/image/gallery/" + i.savedfileName + " '>"
+				html+="<img  src='/gfilelist/" + i.savedfileName + " '>"
 				html+="</div>"
 				html+="</li>"
 				
 			})
-			$(".galleryList").append(html);
-			isLoad = true;
-			$('#loading').hide();   
-			cPage++
+			html+="<script type='text/javascript'>"
+			html+="$(document).ready(function(){"	
+			html+="$('.imgClass').on('mouseover',function(){"
+			html+="$(this).addClass('on');"
+			html+="});"
+			html+="$('.imgClass').on('mouseout',function(){"
+			html+="$(this).removeClass('on');"
+			html+="});"
+			html+="});" 
 			
-			 
-	} 
-	
+			$(".ulClass").append(html);
+			
+			cPage++
+			isLoad=false;
+			$('#loading').hide();   
+		} 
 	});
+	
+	
 }
 
-$(window).scroll(function(){
-    if($(window).scrollTop()+50>=$(document).height() - $(window).height()){
-		if(isLoad){
+ $('.galleryList').scroll(function(){
+      //if($(window).scrollTop()+50>=$(document).height() - $(window).height()){
+    	  
+		if(!isLoad){
 			//false하고 데이터 받아오고 뿌리고 true 
-			isLoad = false;
+			isLoad = true;
 			$('#loading').show();   
-			next_load();
 			
+			next_load();
 		}
-    }
-});
+    //} 
+
+}); 
 
 
-
-//마우스올리면 삭제버튼
-$(document).ready(function(){	
-	//마우스올리면 삭제버튼	
-	$('.imgClass').on('mouseover',function(){
-		$(this).addClass('on');
-	});
-	$('.imgClass').on('mouseout',function(){
-		$(this).removeClass('on');
-	});
-});
 
 //자유갤러리 삭제 
 function fn_delete(galleryNo){

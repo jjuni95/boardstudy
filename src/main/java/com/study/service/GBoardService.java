@@ -12,7 +12,7 @@ import com.study.model.GBoardVO;
 public interface GBoardService {
 
 	// 자유갤러리 작성
-	public void insertGalleryFile(GBoardVO gboard, MultipartHttpServletRequest mpRequest, HttpServletResponse response) throws Exception;
+	public int insertGalleryFile(GBoardVO gboard, MultipartHttpServletRequest mpRequest, HttpServletResponse response) throws Exception;
 	
 	//자유갤러리 목록
 	public List<Map<String,Object>> selectGelleryList() throws Exception;

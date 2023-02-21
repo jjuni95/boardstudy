@@ -4,9 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
 </head>
 <body>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 	<div class="wrapper">
 		<form id="join_form" action="/member/memberUpdate" method="post" name="update_form">
 		<input type="hidden" name="memberId" value="${member.memberId}">
@@ -107,7 +107,7 @@
 		</form>
 	</div>
 </body>
-
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script
 	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript"

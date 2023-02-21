@@ -6,6 +6,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
+	<div>
+		<span onClick="location.href='http://localhost:8080/main'" style="cursor : pointer;">메인으로
+		</span>
+	</div>
 	<div onClick="location.href='http://localhost:8080/member/memberUpdateView'">
 		${member.memberId}
 	<c:if test="${loginSession != null}">

@@ -5,7 +5,7 @@
     <property name="LOG_PATTERN_FILE" value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n" />
 
     <!-- log file path -->
-    <property name="LOG_PATH" value="D:/study-workspace/boardstudy/logs" />
+    <property name="LOG_PATH" value="D://study-workspace//boardstudy//logs" />
     <!-- log file name -->
     <property name="LOG_FILE_NAME" value="log" />
     <!-- err log file name -->

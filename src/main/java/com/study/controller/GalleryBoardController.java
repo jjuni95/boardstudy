@@ -31,7 +31,7 @@ public class GalleryBoardController {
 	
 	@Autowired
 	private GBoardService gboardservice;
-
+	
 	@Resource(name = "fileUtils")
 	private FileUtils fileUtils;
 
@@ -40,6 +40,7 @@ public class GalleryBoardController {
 	public String boardEnrollGET(GBoardVO gboard, HttpServletRequest request, Model model) throws Exception {
 		HttpSession session = request.getSession();
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
+		model.addAttribute("loginSession", mVo);
 
 		if (mVo == null) {
 			request.setAttribute("msg", "자유갤러리작성은 로그인 상태로만 접근이 가능합니다.");
@@ -60,18 +61,36 @@ public class GalleryBoardController {
 		MemberVO mVo = (MemberVO) session.getAttribute("member");
 		System.out.println("mVo.getMemberNo() ===> " + mVo.getMemberNo());
 		gboard.setMemberNo(mVo.getMemberNo()); 
-		
-		gboardservice.insertGalleryFile(gboard, mpRequest, response);
-
-		request.setAttribute("msg", "게시글이 등록되었습니다.");
-		request.setAttribute("url", "/gboard/glist");
-		return "member/alert"; // alert.jsp로 이동
+		System.out.println("mpRequest===> "+ mpRequest);
+			int result = gboardservice.insertGalleryFile(gboard, mpRequest, response);
+			String msg = null;
+			//파일 등록 성공했을때
+			if(result == 0) {
+				msg = "등록했습니다.";
+			} else if(result == 1) {
+				msg = "파일이 5M 이상이여서 등록 실패했습니다.";
+			} else if(result == 2){
+				msg = "첨부파일을 등록 안했습니다.";
+			} else if(result == 3) {
+				msg = "jpg, png, gif만 가능합니다.";
+			}
+			request.setAttribute("msg", msg);
+			request.setAttribute("url", "/gboard/glist");
+			return "member/alert"; // alert.jsp로 이동
 	}
 
 	//자유갤러리 목록 조회
 	@GetMapping(value="/glist")
-	public String gboardList(Model model) throws Exception{
-		
+	public String gboardList(HttpServletRequest request, Model model) throws Exception{
+		HttpSession session = request.getSession();
+		MemberVO mVo = (MemberVO) session.getAttribute("member");
+
+		if (mVo == null) {
+			request.setAttribute("msg", "게시판 등록페이지는 로그인 상태로만 접근이 가능합니다.");
+			request.setAttribute("url", "/member/login");
+			return "member/alert"; // alert.jsp로 이동
+		}
+		model.addAttribute("loginSession", mVo);
 		model.addAttribute("list", gboardservice.selectGelleryList());
 		return "gboard/glist";
 	}
@@ -79,11 +98,8 @@ public class GalleryBoardController {
 	//자유갤러리 8개 이후 조회
 	@ResponseBody
 	@GetMapping("/plusList")
-	public String plusList(int galleryCnt)throws Exception{
-		
-		//model.addAttribute("plusList", gboardservice.listPlusEight(galleryCnt));
+	public String plusList(int galleryCnt)throws Exception{		
 		String result = gson.toJson(gboardservice.listPlusEight(galleryCnt));
-		System.out.println("result ===> " + result);
 		
 		return result;
 	}

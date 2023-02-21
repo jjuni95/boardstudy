@@ -49,6 +49,7 @@ a:hover {
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 <body>
 	<div class="table_wrap">
 		
@@ -137,7 +138,7 @@ a:hover {
 	</div>
 
 </body>
-
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script type="text/javascript">
 //마스킹처리
 $( document ).ready(function() {

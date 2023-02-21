@@ -1,6 +1,5 @@
 package com.study.service;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.component.FileUtils;
@@ -27,35 +27,54 @@ public class GBoardServiceImpl implements GBoardService {
 
 	// 자유갤러리 작성
 	@Override
-	public void insertGalleryFile(GBoardVO gboard, MultipartHttpServletRequest mpRequest, HttpServletResponse response)
+	public int insertGalleryFile(GBoardVO gboard, MultipartHttpServletRequest mpRequest, HttpServletResponse response)
 			throws Exception {
 
 		List<Map<String, Object>> fileList = fileUtils.parseInsertGBoardFileInfo(gboard, mpRequest);
+		System.out.println("fileList===>" + fileList);
 		Map<String, Object> map = new HashMap<String, Object>();
+		
+		int result = 0;
+		int fileCnt = fileList.size();
+		String regExp = "^([\\S]+(\\.(?i)(jpg|png|gif))$)";
 
-		int size = fileList.size();
-
-		for (int i = 0; i < size; i++) {
-
-			long fileSize = (long) fileList.get(i).get("FILE_SIZE");
-			long megaByte = 5242880;
-
-			if (fileSize < megaByte) {
-				map.put("memberNo", gboard.getMemberNo());
-				map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
-				map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
-				map.put("fileSize", fileList.get(i).get("FILE_SIZE"));
-
-				gboardDAO.insertGalleryFile(map);
-			} else {
-				response.setContentType("text/html; charset=UTF-8");
-
-				PrintWriter out = response.getWriter();
-				out.println("<script>alert('크기가 큽니다 ㅠ'); location.href='enroll';</script>");
-				out.flush();
+		
+		if(fileCnt > 0) {
+			for (int i = 0; i < fileCnt; i++) {
+				System.out.println("fileList ===> " + fileList.get(i));
+				long fileSize = (long) fileList.get(i).get("FILE_SIZE");
+				long megaByte = 5242880; //5MB
+				String fileName = (String) fileList.get(i).get("ORG_FILE_NAME");
+				
+				// 확장자가 다를경우
+				if(!fileName.matches(regExp)) {
+					result = 3;
+					break;
+				}
+				// 사이즈가 클 경우
+				else if (fileSize >= megaByte) {
+					result = 1;
+					break;
+				}
 			}
+			
+			// 다 통과하면 실행
+			if(result == 0)
+			{
+				for (int i = 0; i < fileCnt; i++) {
+					map.put("memberNo", gboard.getMemberNo());
+					map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
+					map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
+					map.put("fileSize", fileList.get(i).get("FILE_SIZE"));
+					
+					gboardDAO.insertGalleryFile(map);
+				}
+			}
+		} else {
+			result = 2; // 2 => 첨부파일을 등록 안했을때
 		}
-
+		//throw new RuntimeException("RuntimeException for rollback");
+		return result;
 	}
 
 	//자유갤러리 목록

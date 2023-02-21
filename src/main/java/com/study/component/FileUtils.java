@@ -17,7 +17,8 @@ import com.study.model.GBoardVO;
 
 @Component("fileUtils")
 public class FileUtils {
-	private static final String filePath = "D:\\study-workspace\\boardstudy\\src\\main\\webapp\\resources\\image\\gallery\\"; // 파일이 저장될 위치
+	private static final String filePath = "C:\\mp\\file\\"; // 파일이 저장될 위치
+	//private static final String filePath = "D:\\study-workspace\\boardstudy\\src\\main\\webapp\\resources\\image\\gallery\\"; // 파일이 저장될 위치
 
 	// 게시판에서 사용하는 첨부파일(등록)
 	public List<Map<String, Object>> parseInsertFileInfo(BoardVO boardVO, MultipartHttpServletRequest mpRequest)

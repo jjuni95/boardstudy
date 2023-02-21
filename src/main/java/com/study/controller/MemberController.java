@@ -154,8 +154,7 @@ public class MemberController {
 
 		HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
 		MemberVO mVo = (MemberVO) session.getAttribute("member"); // MemberVO로 형변환 시키고 다시 객체를 담아준다
-		
-		System.out.println("mVo===> "+ mVo);
+		model.addAttribute("loginSession", mVo);
 		// 복호화하기
 		String decName = aesutil.decrypt(mVo.getMemberName());
 		model.addAttribute("decName", decName);
