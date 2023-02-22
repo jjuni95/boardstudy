@@ -33,21 +33,20 @@ public class GBoardServiceImpl implements GBoardService {
 		List<Map<String, Object>> fileList = fileUtils.parseInsertGBoardFileInfo(gboard, mpRequest);
 		System.out.println("fileList===>" + fileList);
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+
 		int result = 0;
 		int fileCnt = fileList.size();
 		String regExp = "^([\\S]+(\\.(?i)(jpg|png|gif))$)";
 
-		
-		if(fileCnt > 0) {
+		if (fileCnt > 0) {
 			for (int i = 0; i < fileCnt; i++) {
 				System.out.println("fileList ===> " + fileList.get(i));
 				long fileSize = (long) fileList.get(i).get("FILE_SIZE");
-				long megaByte = 5242880; //5MB
+				long megaByte = 5242880; // 5MB
 				String fileName = (String) fileList.get(i).get("ORG_FILE_NAME");
-				
+
 				// 확장자가 다를경우
-				if(!fileName.matches(regExp)) {
+				if (!fileName.matches(regExp)) {
 					result = 3;
 					break;
 				}
@@ -57,51 +56,46 @@ public class GBoardServiceImpl implements GBoardService {
 					break;
 				}
 			}
-			
 			// 다 통과하면 실행
-			if(result == 0)
-			{
+			if (result == 0) {
 				for (int i = 0; i < fileCnt; i++) {
 					map.put("memberNo", gboard.getMemberNo());
 					map.put("originfileName", fileList.get(i).get("ORG_FILE_NAME"));
 					map.put("savedfileName", fileList.get(i).get("STORED_FILE_NAME"));
 					map.put("fileSize", fileList.get(i).get("FILE_SIZE"));
-					
+
 					gboardDAO.insertGalleryFile(map);
 				}
 			}
 		} else {
 			result = 2; // 2 => 첨부파일을 등록 안했을때
 		}
-		//throw new RuntimeException("RuntimeException for rollback");
+		// throw new RuntimeException("RuntimeException for rollback");
 		return result;
 	}
 
-	//자유갤러리 목록
+	// 자유갤러리 목록
 	@Override
 	public List<Map<String, Object>> selectGelleryList() throws Exception {
 		return gboardDAO.selectGelleryList();
 	}
 
-	//자유갤러리 8개씩 가져오기
+	// 자유갤러리 8개씩 가져오기
 	@Override
 	public List<Map<String, Object>> listPlusEight(int galleryCnt) throws Exception {
 		return gboardDAO.listPlusEight(galleryCnt);
 	}
-	
-	//자유갤러리 삭제
+
+	// 자유갤러리 삭제
 	@Override
 	public void delete(int galleryNo) {
 		gboardDAO.delete(galleryNo);
-		
+
 	}
 
-	//메인 자유갤러리 6개 가져오기
+	// 메인 자유갤러리 6개 가져오기
 	@Override
 	public List<Map<String, Object>> sixMain() throws Exception {
 		return gboardDAO.sixMain();
 	}
-
-
-
 }
