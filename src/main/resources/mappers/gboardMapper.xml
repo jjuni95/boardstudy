@@ -77,6 +77,4 @@ WHERE ISENABLED = 'N'
 ORDER BY REG_DATE DESC;
 </select>
 
-
-
 </mapper>

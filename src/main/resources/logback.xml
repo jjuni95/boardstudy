@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root" />
-    <property name="LOG_PATTERN_CONSOLE" value="%green(%d{yy-MM-dd HH:mm:ss}) %highlight(%-5level) %boldCyan([%logger{0}:%line]) %msg%n" />
+    <property name="LOG_PATTERN_CONSOLE" value="%date %level [%thread] %logger{10} [%file:%line] %msg%n" />
     <property name="LOG_PATTERN_FILE" value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n" />
 
     <!-- log file path -->
-    <property name="LOG_PATH" value="D://study-workspace//boardstudy//logs" />
+    <property name="LOG_PATH" value="D:\\study-workspace\\boardstudy\\logs" />
     <!-- log file name -->
     <property name="LOG_FILE_NAME" value="log" />
     <!-- err log file name -->
@@ -45,32 +45,20 @@
             <!--<MinIndex>1</MinIndex> <MaxIndex>10</MaxIndex> -->
         </rollingPolicy>
     </appender>
-
-    <appender name="Error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>error</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <file>${LOG_PATH}/${ERR_LOG_FILE_NAME}.log</file>
-        <encoder
-                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${LOG_PATTERN_FILE}</pattern>
-        </encoder>
-        <!-- Rolling 정책 -->
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
-            <fileNamePattern>${LOG_PATH}/${ERR_LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 파일당 최고 용량 kb, mb, gb -->
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- 일자별 로그파일 최대 보관주기(~일), 해당 설정일 이상된 파일은 자동으로 제거 -->
-            <maxHistory>14</maxHistory>
-        </rollingPolicy>
+    
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %5p [%c] %m%n" />
+        </layout>
     </appender>
-
+    
+    <appender name="console-infolog" class="org.apache.log4j.ConsoleAppender">
+          <layout class="org.apache.log4j.PatternLayout">
+              <param name="ConversionPattern" value="%d %5p %m%n"/>
+          </layout>  
+    </appender>
+    
     <!-- root 레벨 설정 -->
     <root level="${LOG_LEVEL}">
         <appender-ref ref="CONSOLE"/>

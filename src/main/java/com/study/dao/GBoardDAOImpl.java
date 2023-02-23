@@ -49,10 +49,4 @@ public class GBoardDAOImpl implements GBoardDAO {
 	public List<Map<String, Object>> sixMain() throws Exception {
 		return template.selectList("gboardMapper.sixMain");
 	}
-
-
-
-	
-
-
 }

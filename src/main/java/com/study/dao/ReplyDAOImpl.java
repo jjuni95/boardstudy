@@ -51,7 +51,6 @@ public class ReplyDAOImpl implements ReplyDAO{
 	public ReplyVO selectReply(int commentNo) throws Exception {
 		return template.selectOne("replyMapper.selectReply", commentNo);
 	}
-
 	
 	//댓글 일괄삭제
 	@Override

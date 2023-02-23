@@ -17,6 +17,7 @@ img {
 img:hover {
 border:#F00 2px solid;
 }
+
 .on .delete{
 	
     display: block;

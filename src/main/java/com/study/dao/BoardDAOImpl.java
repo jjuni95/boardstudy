@@ -54,7 +54,6 @@ public class BoardDAOImpl implements BoardDAO {
 		Map<String,Object> map = template.selectOne("boardMapper.getPage", boardNo);
 		return map;
 	}
-
 	
 	//게시판 총 갯수
 	@Override

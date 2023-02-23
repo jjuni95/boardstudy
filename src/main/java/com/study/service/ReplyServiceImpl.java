@@ -27,10 +27,7 @@ public class ReplyServiceImpl implements ReplyService{
 	public List<ReplyVO> readReply(int boardNo, CriteriaVO cri) throws Exception{
 		
 		List<ReplyVO> replyList = replyDAO.readReply(boardNo, cri);
-		
-		
 		for(int i = 0; i< replyList.size(); i++) {
-			
 			//이름
 			String memberName = replyList.get(i).getMemberName().toString();
 			String decMemberName = aesutil.decrypt(memberName);	
@@ -43,9 +40,7 @@ public class ReplyServiceImpl implements ReplyService{
 			String regDate = simpleDateFormat.format(regDateFormat);
 			
 			replyList.get(i).setRegDate(regDate);
-			
 		}
-		
 		return replyList;
 	}
 
@@ -85,7 +80,4 @@ public class ReplyServiceImpl implements ReplyService{
 		int boardCnt = replyDAO.getTotal(boardNo);
 		return boardCnt;
 	}
-	
-	
-
 }

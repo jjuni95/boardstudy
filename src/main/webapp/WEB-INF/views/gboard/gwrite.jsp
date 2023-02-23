@@ -37,7 +37,6 @@ img {
            <div id="image_container2"></div>
        </div> 
        
-       
        <div id="fileHidden2" class="input_wrap" style="display:none;">
          <input type="text" id="file3Name" readonly>
          <label for="file3">찾기</label>
@@ -46,8 +45,6 @@ img {
            <input type="button" id="delFile3" onClick="fn_delFile(3);" value="삭제" style="display: none"/>
            <div id="image_container3"></div>
        </div> 
-       
-       
        
       <button type="submit" class="submit">등록</button>
       <button type="button" class="btn" onClick="location.href='http://localhost:8080/gboard/glist'">취소</button>
@@ -96,7 +93,6 @@ function fn_delFile(idx){
     $("#delFile" + idx).css("display", "none");
 
 }
-
 
 </script>
 

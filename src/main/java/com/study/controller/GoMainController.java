@@ -25,7 +25,6 @@ public class GoMainController {
 	@Autowired
 	private GBoardService gboardservice;
 	
-	
 	//메인 페이지 이동
 	@RequestMapping(value = "/main", method = RequestMethod.GET) //url에 적는 main(http://localhost:8080/boardstudy/main)
 	public String mainPageGET(HttpServletRequest request, Model model) throws Exception {

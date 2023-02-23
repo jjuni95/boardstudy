@@ -56,20 +56,14 @@ public class MemberController {
 		// 회원가입 서비스 실행
 		memberservice.memberJoin(member);
 
-		// 여기에 request어쩌고 넣기
 		request.setAttribute("msg", "회원가입에 성공했습니다.");
 		request.setAttribute("url", "/member/login");
 		return "member/alert"; // alert.jsp로 이동
-
-		// return "redirect:/main";
-
 	}
 
 	// 로그인 페이지 이동
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String loginGET() {
-
-		System.out.println("로그인 페이지 진입...");
 
 		return "/member/login";
 	}
@@ -79,11 +73,7 @@ public class MemberController {
 	@RequestMapping(value = "/memberIdChk", method = RequestMethod.POST)
 	public int memberIdChkPOST(String memberId) throws Exception {
 
-		System.out.println("memberIdChk() 진입");
-
 		int result = memberservice.idCheck(memberId);
-
-		System.out.println("결과값 = " + result);
 
 		return result;
 	}
@@ -93,11 +83,7 @@ public class MemberController {
 	@RequestMapping(value = "/memberEmailChk", method = RequestMethod.POST)
 	public int memberEmailChkPOST(String emailId, String inputEmail, String selectEmail) throws Exception {
 
-		System.out.println("memberEmailChk() 진입");
-
 		int result = memberservice.emailCheck(emailId, inputEmail, selectEmail);
-
-		System.out.println("결과값 = " + result);
 
 		return result;
 	}
@@ -116,33 +102,27 @@ public class MemberController {
 		if (flag == "fail") { // 일치하지 않는 아이디, 비밀번호 입력 경우
 
 			int result = 0;
-			// request.setAttribute("result", result); //"name", value
 			model.addAttribute("result", result);
 
 			request.setAttribute("msg", "로그인에 실패했습니다.");
 			request.setAttribute("url", "/member/login");
 			return "member/alert"; // alert.jsp로 이동
-			// return "/member/login";
 		}
 		// 로그인 성공했을 경우
 		else {
 			// 로그인할때 저장하고싶은 값 담아오기
 			MemberVO mVo = memberservice.memberCheck(member.getMemberId()); // id를 넘겨서 mVo에 저장을 한다
-
 			session.setAttribute("member", mVo); // 일치하는 아이디, 비밀번호 경우 (로그인 성공) : 세션에 id랑, 이름이랑 memberNo 들어가있음
 			
 			return "redirect:/main";
 		}
-		
 	}
 
 	// 로그아웃
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public String logoutMainGET(HttpServletRequest request) throws Exception {
-		System.out.println("logoutMainGET 메서드 진입");
 
 		HttpSession session = request.getSession();
-
 		session.invalidate();
 
 		return "redirect:/member/login";
@@ -179,8 +159,6 @@ public class MemberController {
 		String[] emailSplit = decEmail.split("@");
 		String email1 = emailSplit[0];
 		String email2 = emailSplit[1];
-
-		
 				
 		model.addAttribute("email1", email1);
 		model.addAttribute("email2", email2);
@@ -188,13 +166,6 @@ public class MemberController {
 		model.addAttribute("decStreetAdr",decStreetAdr);
 		model.addAttribute("decDetailAdr",decDetailAdr);
 		
-		
-		System.out.println("decEmail===> " + decEmail);
-//		email = mVo.getEmail()
-//
-//		String decEmail = aesutil.decrypt(mVo.getEmail());
-//		model.addAttribute("decEmail", decEmail);
-//		
 		return "member/memberUpdateView";
 	}
 
@@ -202,8 +173,6 @@ public class MemberController {
 	@RequestMapping(value = "/memberUpdate", method = RequestMethod.POST)
 	public String memberUpdatePOST(HttpServletRequest request, MemberVO member, Model model) throws Exception {
 
-		// HttpSession session = request.getSession(); // 세션에서 가져올때 얘 꼭 붙여넣기!!!!
-//		MemberVO mVo = (MemberVO) session.getAttribute("member");
 		String flag = memberservice.memberLogin(member);
 
 		// 비밀번호 일치 여부 확인

@@ -90,7 +90,6 @@ public class GBoardServiceImpl implements GBoardService {
 	@Override
 	public void delete(int galleryNo) {
 		gboardDAO.delete(galleryNo);
-
 	}
 
 	// 메인 자유갤러리 6개 가져오기

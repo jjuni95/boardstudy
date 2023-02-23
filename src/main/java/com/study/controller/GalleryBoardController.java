@@ -94,7 +94,15 @@ public class GalleryBoardController {
 		}
 		model.addAttribute("loginSession", mVo);
 		model.addAttribute("list", gboardservice.selectGelleryList());
-		logger.error("Error");
+		
+		logger.error("너니??");
+		//강제로 오류 발생
+		int a = 3 / 0;
+		logger.debug("debug log = {}", a);
+		logger.error("error log = {}", a);
+		
+		
+		
 		return "gboard/glist";
 	}
 

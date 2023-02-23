@@ -10,7 +10,7 @@
 		<span onClick="location.href='http://localhost:8080/main'" style="cursor : pointer;">메인으로
 		</span>
 	</div>
-	<div onClick="location.href='http://localhost:8080/member/memberUpdateView'">
+	<div onClick="location.href='http://localhost:8080/member/memberUpdateView'" style="cursor : pointer;">
 		${member.memberId}
 	<c:if test="${loginSession != null}">
 	<a href="/member/logout" id="logout">로그아웃</a>

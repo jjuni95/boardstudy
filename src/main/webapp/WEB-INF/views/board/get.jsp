@@ -43,6 +43,7 @@ a:hover {
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 <body>
 
 	<form id="modifyForm" action="/board/modify" method="post" enctype="multipart/form-data">
@@ -203,6 +204,7 @@ a:hover {
 </form>	
 
 </body>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
