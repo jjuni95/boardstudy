@@ -6,13 +6,13 @@
 
 <!-- 자유갤러리 등록 -->
 <insert id="insertGelleryFile" parameterType="hashMap">
-insert into Bd_GALLERY(
+INSERT INTO Bd_GALLERY(
 	MEMBER_NO,
 	ORIGINFILE_NAME,
 	SAVEDFILE_NAME,
 	FILE_SIZE
 )
-values (
+VALUES (
 	#{memberNo}
 	, #{originfileName}
 	, #{savedfileName}
@@ -56,8 +56,7 @@ FETCH NEXT 8 ROWS ONLY
 <!-- 자유갤러리 삭제 -->
 <update id="delete" parameterType="int">
 UPDATE Bd_GALLERY
-SET	
-	ISENABLED = 'Y',
+SET	ISENABLED = 'Y',
 	DELETE_DATE = GETDATE()
 WHERE GALLERY_NO = #{galleryNo}
 </update>

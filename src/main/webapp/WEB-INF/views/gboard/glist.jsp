@@ -87,7 +87,6 @@ ul{
 			<ul class="ulClass">
 					<c:forEach items="${list}" var = "list">
 						<li class="imgLi">
-							<input type="hidden" name="galleryNo" id="galleryNo" value="${list.galleryNo}">
 						<div class="imgClass">
 							<input type="button" value="삭제" class="delete" onclick="fn_delete(${list.galleryNo});"/>
 							<img  src="/gfilelist/<c:out value="${list.savedfileName}" />">
@@ -107,7 +106,7 @@ let isLoad = false;
 
  $(document).ready(function(){	
 	 
-	//마우스올리면 삭제버튼	
+	<%-- 마우스 올리면 삭제버튼 --%>
 	$(document).on("mouseover",".imgClass",function(){
 		$(this).addClass('on');
 	});

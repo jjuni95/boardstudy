@@ -25,7 +25,7 @@
 
 	<!-- 게시판 글 등록 -->
 	<select id="insertBoard" parameterType="com.study.model.BoardVO" resultType="int">
-		insert into Bd_BOARD (MEMBER_NO, TITLE, CONTENT)
+		INSERT into Bd_BOARD (MEMBER_NO, TITLE, CONTENT)
 		VALUES (#{memberNo}, #{title}, #{content})
 		SELECT @@IDENTITY AS boardNo
 		
@@ -35,23 +35,23 @@
 	<!-- 세션으로 가져오면 바로 이름을 가져올수있지만 조인을 사용하라고 해서 게시판을 한번도 안쓴사람이 게시판을 쓰려고하면 이름을 
 		못가져온다 그래서 레프트 조인 씀!! -->
 	<select id="selectWriter" resultType="String">
-		select top 1 MEMBER_NAME
-		from Cu_MEMBER as a
-		left outer join Bd_BOARD as b 
+		SELECT top 1 MEMBER_NAME
+		FROM Cu_MEMBER as a
+		LEFT outer join Bd_BOARD as b 
 			on a.MEMBER_NO = b.MEMBER_NO
-		where a.MEMBER_NO = #{memberNo}
+		WHERE a.MEMBER_NO = #{memberNo}
 	</select>
 
 	<!-- 게시판 목록 -->
 	<select id="getList" resultType="com.study.model.EhcacheVO" parameterType="hashMap">
-		select b.MEMBER_NAME as memberName
+		SELECT b.MEMBER_NAME as memberName
 		,a.BOARD_NO as boardNo
 		,a.TITLE as title
 		,a.REG_DATE as bregDate
 		,a.ISENABLED as isEnabled
 		,b.MEMBER_NO as memberNo
-		from Bd_BOARD as a
-			inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
+		FROM Bd_BOARD as a
+			INNER JOIN Cu_MEMBER as b ON a.MEMBER_NO = b.MEMBER_NO
 		<if test="keyword != null">
 			<include refid="criteria"></include>
 		</if>
@@ -63,9 +63,9 @@
 
 	<!-- 게시물 총 개수 -->
 	<select id="getTotal" resultType="int">
-		select count(*) 
-		from Bd_BOARD as a
-			inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
+		SELECT count(*) 
+		FROM Bd_BOARD as a
+			INNER JOIN Cu_MEMBER as b ON a.MEMBER_NO = b.MEMBER_NO
 		<if test="keyword != null">
 			<include refid="criteria"></include>
 		</if>
@@ -73,7 +73,7 @@
 
 	<!-- 게시판 상세 조회 -->
 	<select id="getPage" resultType="hashMap">
-		select MEMBER_NAME as memberName
+		SELECT MEMBER_NAME as memberName
 			, HIT as hit
 			, a.REG_DATE as regDate
 			, a.UPDATE_DATE as updateDate
@@ -82,8 +82,8 @@
 			, b.MEMBER_NO as memberNo
 			, a.BOARD_NO as boardNo
 		FROM Bd_BOARD as a
-		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
-		where BOARD_NO = #{boardNo}
+		INNER JOIN Cu_MEMBER as b ON a.MEMBER_NO = b.MEMBER_NO
+		WHERE BOARD_NO = #{boardNo}
 	</select>
 
 	<!-- 첨부파일 업로드 -->
@@ -157,7 +157,7 @@
 	
 	<!-- 메인 게시판 4개 가져오기 -->
 	<select id="fourMain" resultType="hashMap">
-		select TOP 4 TITLE as title
+		SELECT TOP 4 TITLE as title
 					, REG_DATE as bregDate
 		FROM Bd_BOARD 
 		WHERE ISENABLED = 'N' 

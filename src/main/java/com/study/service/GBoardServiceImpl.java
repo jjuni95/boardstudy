@@ -70,8 +70,8 @@ public class GBoardServiceImpl implements GBoardService {
 		} else {
 			result = 2; // 2 => 첨부파일을 등록 안했을때
 		}
-		// throw new RuntimeException("RuntimeException for rollback");
-		return result;
+		throw new RuntimeException("RuntimeException for rollback");
+		//return result;
 	}
 
 	// 자유갤러리 목록

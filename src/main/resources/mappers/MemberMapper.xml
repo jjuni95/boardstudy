@@ -97,9 +97,9 @@
 	
 	<!-- 이메일로 아이디, 비밀번호 찾기 -->
 	<select id="findIdByEmail" resultType="com.study.model.MemberVO" parameterType="String">
-		select MEMBER_NO AS memberNo, MEMBER_ID AS memberId 
-		from Cu_MEMBER 
-		where EMAIL = #{email}
+		SELECT MEMBER_NO AS memberNo, MEMBER_ID AS memberId 
+		FROM Cu_MEMBER 
+		WHERE EMAIL = #{email}
 			AND ISENABLED = 'N'
 	</select>
 	
@@ -111,16 +111,16 @@
 	
 	<!-- 비밀번호 변경 -->
 	<update id="updatePw" parameterType="String">
-		update Cu_MEMBER
+		UPDATE Cu_MEMBER
 		SET MEMBER_PASSWORD = #{tempPw}
 		WHERE MEMBER_NO = #{memberNo}
 	</update>
 	
 	<!-- 작성자 가져오기(회원번호로 이름 조회하기) -->
 	<select id="selectWriter" resultType="String">
-		select top 1 MEMBER_NAME
-			from Cu_MEMBER
-		where MEMBER_NO = #{memberNo}
+		SELECT top 1 MEMBER_NAME
+			FROM Cu_MEMBER
+		WHERE MEMBER_NO = #{memberNo}
 	</select>
 	
   </mapper>

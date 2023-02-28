@@ -32,7 +32,6 @@ public class MemberServiceImpl implements MemberService {
 
 		// 이메일 합치기
 		String selectEmail = member.getSelectEmail();
-		System.out.println(member.getSelectEmail());
 		if (selectEmail == "1") {
 			member.setEmail(member.getEmailId() + "@" + member.getInputEmail());
 		} else {
@@ -41,13 +40,11 @@ public class MemberServiceImpl implements MemberService {
 		
 		// 회원번호 구하기 ㅠㅠ
 		String result = memberDAO.selectMemberNo();
-		System.out.println("result= " + result);
 
 		// 오늘 날짜 구하기(yyyyMMdd)
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Calendar c1 = Calendar.getInstance();
 		String strToday = sdf.format(c1.getTime());
-		System.out.println("Today=" + strToday);
 
 		if (result == null) {
 			result = "CU" + strToday + "A" + "00001";
@@ -56,12 +53,10 @@ public class MemberServiceImpl implements MemberService {
 			String memberNo2 = result.substring(10, 11); // A
 			String member3Str = "";
 			int memberNo3 = Integer.parseInt(result.substring(11, 16)); // 00004
-			System.out.println("memberNo3= " + memberNo3);
 			char aString = memberNo2.charAt(0); // string -> char
 			memberNo3++;
 
 			// 0공백으로 처리
-			System.out.println(String.format("%05d", memberNo3));
 			member3Str = String.format("%05d", memberNo3);
 
 			if (memberNo3 > 99999) {

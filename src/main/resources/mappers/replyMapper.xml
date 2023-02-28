@@ -6,7 +6,7 @@
 
 	<!-- 댓글조회 -->
 	<select id="readReply" resultType="com.study.model.ReplyVO">
-		select 
+		SELECT 
 			b.MEMBER_NAME as memberName
 			, a.COMMENT_NO as commentNo
 			, a.MEMBER_NO as memberNo
@@ -14,10 +14,10 @@
 			, a.REG_DATE as regDate
 			, a.MODIFIED_DATE as modifiedDate
 			, a.ISENABLED as isEnabled
-		from Bd_COMMENT as a
-		inner join Cu_MEMBER as b on a.MEMBER_NO = b.MEMBER_NO
-		where BOARD_NO = #{boardNo}
-			and a.ISENABLED = 'N'
+		FROM Bd_COMMENT as a
+		INNER JOIN Cu_MEMBER as b ON a.MEMBER_NO = b.MEMBER_NO
+		WHERE BOARD_NO = #{boardNo}
+			AND a.ISENABLED = 'N'
 		ORDER BY COMMENT_NO DESC
 		OFFSET (#{cri.pageNum}-1)*#{cri.amount} ROWS
 		FETCH NEXT #{cri.amount} ROWS ONLY
@@ -25,8 +25,8 @@
 
 	<!-- 댓글작성 -->
 	<insert id="writeReply" parameterType="com.study.model.ReplyVO">
-		insert into Bd_COMMENT(BOARD_NO, MEMBER_NO, CONTENT)
-		values(#{boardNo}, #{memberNo}, #{content})
+		INSERT into Bd_COMMENT(BOARD_NO, MEMBER_NO, CONTENT)
+		VALUES(#{boardNo}, #{memberNo}, #{content})
 	</insert>
 	
 	<!-- 댓글수정 -->
@@ -72,9 +72,9 @@
 	
 	<!-- 댓글 총 갯수 -->
 	<select id="getTotal" resultType="int">
-	select count(*) 
-	from Bd_COMMENT 
-	where BOARD_NO = #{boardNo}
+	SELECT count(*) 
+	FROM Bd_COMMENT 
+	WHERE BOARD_NO = #{boardNo}
 	</select>
 </mapper>
 
